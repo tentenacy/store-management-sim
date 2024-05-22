@@ -161,12 +161,15 @@ public class CategoryService {
     @Transactional
     public void deleteMainCategory(String strCd, String mainCateCd) {
         Category foundMainCategory = categoryRepository.mainCategory(strCd, mainCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
-        categoryRepository.delete(foundMainCategory);
+//        categoryRepository.delete(foundMainCategory);
+        foundMainCategory.doesNotUse();
     }
 
     @Transactional
     public void deleteMainCategories(String strCd, CategoriesDeleteRequest request) {
-        categoryRepository.deleteMainCategories(strCd, request.getCategoryCodes());
+//        categoryRepository.deleteMainCategories(strCd, request.getCategoryCodes());
+        List<Category> foundCategories = categoryRepository.mainCategories(strCd, request.getCategoryCodes());
+        foundCategories.forEach(Category::doesNotUse);
     }
 
     @Transactional
@@ -224,12 +227,15 @@ public class CategoryService {
     @Transactional
     public void deleteMiddleCategory(String strCd, String mainCateCd, String middleCateCd) {
         Category foundMiddleCategory = categoryRepository.middleCategory(strCd, mainCateCd, middleCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
-        categoryRepository.delete(foundMiddleCategory);
+//        categoryRepository.delete(foundMiddleCategory);
+        foundMiddleCategory.doesNotUse();
     }
 
     @Transactional
     public void deleteMiddleCategories(String strCd, String mainCateCd, CategoriesDeleteRequest request) {
-        categoryRepository.deleteMiddleCategories(strCd, mainCateCd, request.getCategoryCodes());
+//        categoryRepository.deleteMiddleCategories(strCd, mainCateCd, request.getCategoryCodes());
+        List<Category> foundCategories = categoryRepository.middleCategories(strCd, mainCateCd, request.getCategoryCodes());
+        foundCategories.forEach(Category::doesNotUse);
     }
 
     @Transactional
@@ -274,12 +280,15 @@ public class CategoryService {
     @Transactional
     public void deleteSubCategory(String strCd, String mainCateCd, String middleCateCd, String subCateCd) {
         Category foundSubCategory = categoryRepository.subCategory(strCd, mainCateCd, middleCateCd, subCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
-        categoryRepository.delete(foundSubCategory);
+//        categoryRepository.delete(foundSubCategory);
+        foundSubCategory.doesNotUse();
     }
 
     @Transactional
     public void deleteSubCategories(String strCd, String mainCateCd, String middleCateCd, CategoriesDeleteRequest request) {
-        categoryRepository.deleteSubCategories(strCd, mainCateCd, middleCateCd, request.getCategoryCodes());
+//        categoryRepository.deleteSubCategories(strCd, mainCateCd, middleCateCd, request.getCategoryCodes());
+        List<Category> foundCategories = categoryRepository.subCategories(strCd, mainCateCd, middleCateCd, request.getCategoryCodes());
+        foundCategories.forEach(Category::doesNotUse);
     }
 
     @Transactional
