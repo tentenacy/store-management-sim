@@ -247,4 +247,16 @@ public class CategoryApiController {
     public void deleteSubCategories(@PathVariable String strCd, @PathVariable String mainCateCd, @PathVariable String middleCateCd, @Valid @RequestBody CategoriesDeleteRequest request) {
         categoryService.deleteSubCategories(strCd, mainCateCd, middleCateCd, request);
     }
+
+    /**
+     * 소분류순서변경
+     * @param strCd 가맹점코드
+     * @param mainCateCd 대분류코드
+     * @param middleCateCd 중분류코드
+     * @param request
+     */
+    @PostMapping("/main/{mainCateCd}/middle/{middleCateCd}/sub/priorities")
+    public void changeSubCategoryPriorities(@PathVariable String strCd, @PathVariable String mainCateCd, @PathVariable String middleCateCd, @Valid @RequestBody CategoryPrioritiesChangeRequest request) {
+        categoryService.changeSubCategoryPriorities(strCd, mainCateCd, middleCateCd, request);
+    }
 }

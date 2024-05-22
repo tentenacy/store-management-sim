@@ -282,6 +282,16 @@ public class CategoryService {
         categoryRepository.deleteSubCategories(strCd, mainCateCd, middleCateCd, request.getCategoryCodes());
     }
 
+    @Transactional
+    public void changeSubCategoryPriorities(String strCd, String mainCateCd, String middleCateCd, CategoryPrioritiesChangeRequest request) {
+        List<Category> foundCategories = categoryRepository.subCategories(strCd, mainCateCd, middleCateCd, request.getCategories().stream().map(CategoryPrioritiesChangeRequest.MainCategory::getCategoryCode).collect(Collectors.toList()));
+        foundCategories.forEach(cat -> {
+            request.getCategories().stream().filter(reqCat -> reqCat.getCategoryCode().equals(cat.getCateCd3())).findFirst().ifPresent(reqCat -> {
+                cat.updatePriority(reqCat.getPriority());
+            });
+        });
+    }
+
     private int latestPriority(List<Integer> latestPriorities) {
         return latestPriorities.isEmpty() ? 0 : (ObjectUtils.isEmpty(latestPriorities.get(0)) ? 0 : latestPriorities.get(0));
     }
