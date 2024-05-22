@@ -106,4 +106,21 @@ public class CategoryService {
                 foundMainCategory.getUpdatedAt()
         );
     }
+
+    public SubCategoryResponse subCategory(String strCd, String mainCateCd, String middleCateCd, String subCateCd) {
+        Category foundMainCategory = categoryRepository.subCategory(strCd, mainCateCd, middleCateCd, subCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
+        return new SubCategoryResponse(
+                foundMainCategory.getStrCd(),
+                foundMainCategory.getCateCd1(),
+                foundMainCategory.getCateCd2(),
+                foundMainCategory.getCateCd3(),
+                foundMainCategory.getCateName(),
+                foundMainCategory.getBlCdBoolean(),
+                foundMainCategory.getPriority(),
+                foundMainCategory.getCreatedBy(),
+                foundMainCategory.getCreatedAt(),
+                foundMainCategory.getUpdatedBy(),
+                foundMainCategory.getUpdatedAt()
+        );
+    }
 }
