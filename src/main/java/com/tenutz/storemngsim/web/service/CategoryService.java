@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.stream.Collectors;
 
@@ -125,10 +126,10 @@ public class CategoryService {
     }
 
     @Transactional
-    public void createMainCategory(MainCategoryCreateRequest request) {
+    public void createMainCategory(String strCd, MainCategoryCreateRequest request) {
         categoryRepository.save(
                 Category.createMainCategory(
-                        request.getStoreCode(),
+                        strCd,
                         request.getCategoryCode(),
                         request.getCategoryName(),
                         request.getUse(),
@@ -136,4 +137,20 @@ public class CategoryService {
                 )
         );
     }
+
+    @Transactional
+    public void updateMainCategory(String strCd, String mainCateCd, MainCategoryUpdateRequest request) {
+        Category foundMainCategory = categoryRepository.mainCategory(strCd, mainCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
+        foundMainCategory.updateMainCategory(
+                request.getCategoryName(),
+                request.getUse(),
+                request.getOrder()
+        );
+    }
+
+    /*@Transactional
+    public void deleteMainCategory(String strCd, String mainCateCd) {
+        Category foundMainCategory = categoryRepository.mainCategory(strCd, mainCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
+        categoryRepository.delete(foundMainCategory);
+    }*/
 }

@@ -9,10 +9,8 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MainCategoryCreateRequest {
+public class MainCategoryUpdateRequest {
 
-    @NotEmpty
-    private String categoryCode;
     @NotEmpty
     private String categoryName;
     @NotNull

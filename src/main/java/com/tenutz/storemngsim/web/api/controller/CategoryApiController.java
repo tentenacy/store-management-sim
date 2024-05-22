@@ -27,9 +27,19 @@ public class CategoryApiController {
     }
 
     @PostMapping("/main")
-    public void createMainCategory(@Valid @RequestBody MainCategoryCreateRequest request) {
-        categoryService.createMainCategory(request);
+    public void createMainCategory(@PathVariable String strCd, @Valid @RequestBody com.tenutz.storemngsim.web.api.dto.category.MainCategoryCreateRequest request) {
+        categoryService.createMainCategory(strCd, request);
     }
+
+    @PutMapping("/main/{mainCateCd}")
+    public void updateMainCategory(@PathVariable String strCd, @PathVariable String mainCateCd, @Valid @RequestBody MainCategoryUpdateRequest request) {
+        categoryService.updateMainCategory(strCd, mainCateCd, request);
+    }
+
+    /*@DeleteMapping("/main/{mainCateCd}")
+    public void deleteMainCategory(@PathVariable String strCd, @PathVariable String mainCateCd) {
+        categoryService.deleteMainCategory(strCd, mainCateCd);
+    }*/
 
     @GetMapping("/main/{mainCateCd}/middle")
     public MiddleCategoriesResponse middleCategories(@PathVariable String strCd, @PathVariable String mainCateCd) {
