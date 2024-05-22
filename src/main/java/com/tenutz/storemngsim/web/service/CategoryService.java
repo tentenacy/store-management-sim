@@ -197,6 +197,22 @@ public class CategoryService {
         );
     }
 
+    @Transactional
+    public void updateMiddleCategory(String strCd, String mainCateCd, String middleCateCd, MiddleCategoryUpdateRequest request) {
+        Category foundMainCategory = categoryRepository.middleCategory(strCd, mainCateCd, middleCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
+        foundMainCategory.updateMiddleCategory(
+                request.getCategoryName(),
+                request.getUse(),
+                !ObjectUtils.isEmpty(request.getImage()) ? request.getImage().getImageName() : null,
+                !ObjectUtils.isEmpty(request.getImage()) ? request.getImage().getImageUrl() : null,
+                request.getBusinessNumber(),
+                request.getRepresentativeName(),
+                request.getTel(),
+                request.getAddress(),
+                request.getTid()
+        );
+    }
+
     private int latestPriority(List<Integer> latestPriorities) {
         return ObjectUtils.isEmpty(latestPriorities.get(0)) ? 0 : latestPriorities.get(0);
     }

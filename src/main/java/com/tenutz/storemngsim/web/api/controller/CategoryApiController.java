@@ -117,11 +117,17 @@ public class CategoryApiController {
     /**
      * 중분류추가
      * @param strCd 가맹점코드
+     * @param mainCateCd 대분류코드
      * @param request
      */
     @PostMapping("/main/{mainCateCd}/middle")
     public void createMiddleCategory(@PathVariable String strCd, @PathVariable String mainCateCd, @Valid @RequestBody MiddleCategoryCreateRequest request) {
         categoryService.createMiddleCategory(strCd, mainCateCd, request);
+    }
+
+    @PutMapping("/main/{mainCateCd}/middle/{middleCateCd}")
+    public void updateMiddleCategory(@PathVariable String strCd, @PathVariable String mainCateCd, @PathVariable String middleCateCd, @Valid @RequestBody MiddleCategoryUpdateRequest request) {
+        categoryService.updateMiddleCategory(strCd, mainCateCd, middleCateCd, request);
     }
 
     /**
