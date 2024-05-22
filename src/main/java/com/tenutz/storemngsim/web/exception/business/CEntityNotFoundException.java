@@ -18,4 +18,10 @@ public class CEntityNotFoundException extends CBusinessException {
             super(ErrorCode.CATEGORY_NOT_FOUND);
         }
     }
+
+    public static class CStoreMasterNotFoundException extends CEntityNotFoundException {
+        public CStoreMasterNotFoundException() {
+            super(ErrorCode.STORE_MASTER_NOT_FOUND);
+        }
+    }
 }

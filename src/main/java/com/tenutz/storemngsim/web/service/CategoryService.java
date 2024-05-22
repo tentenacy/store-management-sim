@@ -2,14 +2,16 @@ package com.tenutz.storemngsim.web.service;
 
 import com.tenutz.storemngsim.domain.menu.Category;
 import com.tenutz.storemngsim.domain.menu.CategoryRepository;
+import com.tenutz.storemngsim.domain.store.StoreMaster;
+import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.web.api.dto.category.*;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CategoryService {
 
+    private final StoreMasterRepository storeMasterRepository;
     private final CategoryRepository categoryRepository;
 
     public MainCategoriesResponse mainCategories(String strCd) {
@@ -127,9 +130,11 @@ public class CategoryService {
 
     @Transactional
     public void createMainCategory(String strCd, MainCategoryCreateRequest request) {
+        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findFirst().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
         categoryRepository.save(
                 Category.createMainCategory(
-                        strCd,
+                        foundStoreMaster.getSiteCd(),
+                        foundStoreMaster.getStrCd(),
                         request.getCategoryCode(),
                         request.getCategoryName(),
                         request.getUse(),
@@ -143,8 +148,7 @@ public class CategoryService {
         Category foundMainCategory = categoryRepository.mainCategory(strCd, mainCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
         foundMainCategory.updateMainCategory(
                 request.getCategoryName(),
-                request.getUse(),
-                request.getOrder()
+                request.getUse()
         );
     }
 
@@ -159,4 +163,13 @@ public class CategoryService {
         categoryRepository.deleteMainCategories(strCd, request.getMainCategoryCodes());
     }
 
+    @Transactional
+    public void changeMainCategoryPriorities(String strCd, MainCategoryPrioritiesChangeRequest request) {
+        List<Category> foundCategories = categoryRepository.mainCategories(strCd, request.getMainCategories().stream().map(MainCategoryPrioritiesChangeRequest.MainCategory::getCategoryCode).collect(Collectors.toList()));
+        foundCategories.forEach(cat -> {
+            request.getMainCategories().stream().filter(reqCat -> reqCat.getCategoryCode().equals(cat.getCateCd1())).findFirst().ifPresent(reqCat -> {
+                cat.updatePriority(reqCat.getPriority());
+            });
+        });
+    }
 }

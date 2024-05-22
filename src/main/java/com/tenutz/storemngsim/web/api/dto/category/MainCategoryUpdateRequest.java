@@ -15,5 +15,4 @@ public class MainCategoryUpdateRequest {
     private String categoryName;
     @NotNull
     private Boolean use;
-    private Integer order;
 }
