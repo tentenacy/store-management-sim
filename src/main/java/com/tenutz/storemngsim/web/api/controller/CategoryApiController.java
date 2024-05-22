@@ -125,9 +125,22 @@ public class CategoryApiController {
         categoryService.createMiddleCategory(strCd, mainCateCd, request);
     }
 
+    /**
+     * 중분류수정
+     * @param strCd 가맹점코드
+     * @param mainCateCd 대분류코드
+     * @param middleCateCd 중분류코드
+     * @param request
+     */
     @PutMapping("/main/{mainCateCd}/middle/{middleCateCd}")
     public void updateMiddleCategory(@PathVariable String strCd, @PathVariable String mainCateCd, @PathVariable String middleCateCd, @Valid @RequestBody MiddleCategoryUpdateRequest request) {
         categoryService.updateMiddleCategory(strCd, mainCateCd, middleCateCd, request);
+    }
+
+    @DeleteMapping("/main/{mainCateCd}/middle/{middleCateCd}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteMiddleCategory(@PathVariable String strCd, @PathVariable String mainCateCd, @PathVariable String middleCateCd) {
+        categoryService.deleteMiddleCategory(strCd, mainCateCd, middleCateCd);
     }
 
     /**
