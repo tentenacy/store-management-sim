@@ -1,8 +1,6 @@
 package com.tenutz.storemngsim.web.api.controller;
 
-import com.tenutz.storemngsim.web.api.dto.category.MainCategoriesResponse;
-import com.tenutz.storemngsim.web.api.dto.category.MainCategoryResponse;
-import com.tenutz.storemngsim.web.api.dto.category.MiddleCategoriesResponse;
+import com.tenutz.storemngsim.web.api.dto.category.*;
 import com.tenutz.storemngsim.web.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,5 +30,15 @@ public class CategoryApiController {
     @GetMapping("/main/{mainCateCd}/middle")
     public MiddleCategoriesResponse middleCategories(@PathVariable String strCd, @PathVariable String mainCateCd) {
         return categoryService.middleCategories(strCd, mainCateCd);
+    }
+
+    @GetMapping("/main/{mainCateCd}/middle/{middleCateCd}")
+    public MiddleCategoryResponse middleCategory(@PathVariable String strCd, @PathVariable String mainCateCd, @PathVariable String middleCateCd) {
+        return categoryService.middleCategory(strCd, mainCateCd, middleCateCd);
+    }
+
+    @GetMapping("/main/{mainCateCd}/middle/{middleCateCd}/sub")
+    public SubCategoriesResponse subCategories(@PathVariable String strCd, @PathVariable String mainCateCd, @PathVariable String middleCateCd) {
+        return categoryService.subCategories(strCd, mainCateCd, middleCateCd);
     }
 }

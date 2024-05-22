@@ -2,9 +2,7 @@ package com.tenutz.storemngsim.web.service;
 
 import com.tenutz.storemngsim.domain.menu.Category;
 import com.tenutz.storemngsim.domain.menu.CategoryRepository;
-import com.tenutz.storemngsim.web.api.dto.category.MainCategoriesResponse;
-import com.tenutz.storemngsim.web.api.dto.category.MainCategoryResponse;
-import com.tenutz.storemngsim.web.api.dto.category.MiddleCategoriesResponse;
+import com.tenutz.storemngsim.web.api.dto.category.*;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +52,23 @@ public class CategoryService {
         );
     }
 
+    public SubCategoriesResponse subCategories(String strCd, String mainCateCd, String middleCateCd) {
+        return new SubCategoriesResponse(
+                categoryRepository.subCategories(strCd, mainCateCd, middleCateCd).stream()
+                        .map(cat -> new SubCategoriesResponse.SubCategory(
+                                cat.getStrCd(),
+                                cat.getCateCd1(),
+                                cat.getCateCd2(),
+                                cat.getCateCd3(),
+                                cat.getCateName(),
+                                cat.getBlCdBoolean(),
+                                cat.getPriority(),
+                                cat.getCreatedAt(),
+                                cat.getUpdatedAt()
+                        )).collect(Collectors.toList())
+        );
+    }
+
     public MainCategoryResponse mainCategory(String strCd, String mainCateCd) {
         Category foundMainCategory = categoryRepository.mainCategory(strCd, mainCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
         return new MainCategoryResponse(
@@ -62,6 +77,29 @@ public class CategoryService {
                 foundMainCategory.getCateName(),
                 foundMainCategory.getBlCdBoolean(),
                 foundMainCategory.getPriority(),
+                foundMainCategory.getCreatedBy(),
+                foundMainCategory.getCreatedAt(),
+                foundMainCategory.getUpdatedBy(),
+                foundMainCategory.getUpdatedAt()
+        );
+    }
+
+    public MiddleCategoryResponse middleCategory(String strCd, String mainCateCd, String middleCateCd) {
+        Category foundMainCategory = categoryRepository.middleCategory(strCd, mainCateCd, middleCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
+        return new MiddleCategoryResponse(
+                foundMainCategory.getStrCd(),
+                foundMainCategory.getCateCd1(),
+                foundMainCategory.getCateCd2(),
+                foundMainCategory.getCateName(),
+                foundMainCategory.getBlCdBoolean(),
+                foundMainCategory.getImgName(),
+                foundMainCategory.getImgUrl(),
+                foundMainCategory.getPriority(),
+                foundMainCategory.getBizNo(),
+                foundMainCategory.getOwnerName(),
+                foundMainCategory.getPhoneNo(),
+                foundMainCategory.getAddr(),
+                foundMainCategory.getTid(),
                 foundMainCategory.getCreatedBy(),
                 foundMainCategory.getCreatedAt(),
                 foundMainCategory.getUpdatedBy(),
