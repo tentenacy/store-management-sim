@@ -26,10 +26,10 @@ public class CategoryApiController {
         return categoryService.mainCategory(strCd, mainCateCd);
     }
 
-    /*@PostMapping("/main")
-    public void createMainCategories(@Valid @RequestBody MainCategoryCreateRequest request) {
-        return categoryService.createMainCategories();
-    }*/
+    @PostMapping("/main")
+    public void createMainCategory(@Valid @RequestBody MainCategoryCreateRequest request) {
+        categoryService.createMainCategory(request);
+    }
 
     @GetMapping("/main/{mainCateCd}/middle")
     public MiddleCategoriesResponse middleCategories(@PathVariable String strCd, @PathVariable String mainCateCd) {

@@ -123,4 +123,17 @@ public class CategoryService {
                 foundMainCategory.getUpdatedAt()
         );
     }
+
+    @Transactional
+    public void createMainCategory(MainCategoryCreateRequest request) {
+        categoryRepository.save(
+                Category.createMainCategory(
+                        request.getStoreCode(),
+                        request.getCategoryCode(),
+                        request.getCategoryName(),
+                        request.getUse(),
+                        request.getOrder()
+                )
+        );
+    }
 }
