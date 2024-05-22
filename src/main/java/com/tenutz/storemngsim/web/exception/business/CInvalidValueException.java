@@ -4,7 +4,7 @@ import com.tenutz.storemngsim.web.api.dto.common.ErrorCode;
 
 public class CInvalidValueException extends CBusinessException {
     public CInvalidValueException(ErrorCode errorCode) {
-            super(errorCode);
+        super(errorCode);
     }
 
     public static class CAlreadySignedupException extends CInvalidValueException {
@@ -16,6 +16,12 @@ public class CInvalidValueException extends CBusinessException {
     public static class CLoginFailedException extends CInvalidValueException {
         public CLoginFailedException() {
             super(ErrorCode.LOGIN_FAIL);
+        }
+    }
+
+    public static class CAlreadyCategoryCreatedException extends CInvalidValueException {
+        public CAlreadyCategoryCreatedException() {
+            super(ErrorCode.ALREADY_CATEGORY_CREATED);
         }
     }
 }

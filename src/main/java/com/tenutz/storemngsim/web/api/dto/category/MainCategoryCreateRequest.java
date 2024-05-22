@@ -17,5 +17,4 @@ public class MainCategoryCreateRequest {
     private String categoryName;
     @NotNull
     private Boolean use;
-    private Integer order;
 }

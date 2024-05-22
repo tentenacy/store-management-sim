@@ -6,10 +6,12 @@ import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.web.api.dto.category.*;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
+import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -131,6 +133,11 @@ public class CategoryService {
     @Transactional
     public void createMainCategory(String strCd, MainCategoryCreateRequest request) {
         StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findFirst().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
+        categoryRepository.mainCategory(strCd, request.getCategoryCode()).ifPresent(cat -> {
+            throw new CInvalidValueException.CAlreadyCategoryCreatedException();
+        });
+        List<Integer> latestMainCategoryPriorities = categoryRepository.latestMainCategoryPriority(strCd);
+        int latestMainCategoryPriority = ObjectUtils.isEmpty(latestMainCategoryPriorities.get(0)) ? 0 : latestMainCategoryPriorities.get(0);
         categoryRepository.save(
                 Category.createMainCategory(
                         foundStoreMaster.getSiteCd(),
@@ -138,7 +145,7 @@ public class CategoryService {
                         request.getCategoryCode(),
                         request.getCategoryName(),
                         request.getUse(),
-                        request.getOrder()
+                        latestMainCategoryPriority + 1
                 )
         );
     }
