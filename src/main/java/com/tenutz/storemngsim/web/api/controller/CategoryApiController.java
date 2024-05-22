@@ -87,7 +87,7 @@ public class CategoryApiController {
      * @param request
      */
     @PostMapping("/main/priorities")
-    public void changeMainCategoryPriorities(@PathVariable String strCd, @Valid @RequestBody com.tenutz.storemngsim.web.api.dto.category.CategoryPrioritiesChangeRequest request) {
+    public void changeMainCategoryPriorities(@PathVariable String strCd, @Valid @RequestBody CategoryPrioritiesChangeRequest request) {
         categoryService.changeMainCategoryPriorities(strCd, request);
     }
 
@@ -168,7 +168,7 @@ public class CategoryApiController {
      * @param request
      */
     @PostMapping("/main/{mainCateCd}/middle/priorities")
-    public void changeMiddleCategoryPriorities(@PathVariable String strCd, @PathVariable String mainCateCd, @Valid @RequestBody com.tenutz.storemngsim.web.api.dto.category.CategoryPrioritiesChangeRequest request) {
+    public void changeMiddleCategoryPriorities(@PathVariable String strCd, @PathVariable String mainCateCd, @Valid @RequestBody CategoryPrioritiesChangeRequest request) {
         categoryService.changeMiddleCategoryPriorities(strCd, mainCateCd, request);
     }
 
@@ -195,5 +195,17 @@ public class CategoryApiController {
     @GetMapping("/main/{mainCateCd}/middle/{middleCateCd}/sub/{subCateCd}")
     public SubCategoryResponse subCategory(@PathVariable String strCd, @PathVariable String mainCateCd, @PathVariable String middleCateCd, @PathVariable String subCateCd) {
         return categoryService.subCategory(strCd, mainCateCd, middleCateCd, subCateCd);
+    }
+
+    /**
+     * 소분류추가
+     * @param strCd 가맹점코드
+     * @param mainCateCd 대분류코드
+     * @param middleCateCd 중분류코드
+     * @param request
+     */
+    @PostMapping("/main/{mainCateCd}/middle/{middleCateCd}/sub")
+    public void createSubCategory(@PathVariable String strCd, @PathVariable String mainCateCd, @PathVariable String middleCateCd, @Valid @RequestBody SubCategoryCreateRequest request) {
+        categoryService.createSubCategory(strCd, mainCateCd, middleCateCd, request);
     }
 }

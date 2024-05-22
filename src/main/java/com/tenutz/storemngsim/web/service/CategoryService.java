@@ -192,7 +192,14 @@ public class CategoryService {
                         request.getCategoryCode(),
                         request.getCategoryName(),
                         request.getUse(),
-                        latestPriority(categoryRepository.latestMiddleCategoryPriorities(strCd, mainCateCd)) + 1
+                        latestPriority(categoryRepository.latestMiddleCategoryPriorities(strCd, mainCateCd)) + 1,
+                        !ObjectUtils.isEmpty(request.getImage()) ? request.getImage().getImageName() : null,
+                        !ObjectUtils.isEmpty(request.getImage()) ? request.getImage().getImageUrl() : null,
+                        request.getBusinessNumber(),
+                        request.getRepresentativeName(),
+                        request.getTel(),
+                        request.getAddress(),
+                        request.getTid()
                 )
         );
     }
@@ -224,10 +231,6 @@ public class CategoryService {
         categoryRepository.deleteMiddleCategories(strCd, mainCateCd, request.getCategoryCodes());
     }
 
-    private int latestPriority(List<Integer> latestPriorities) {
-        return ObjectUtils.isEmpty(latestPriorities.get(0)) ? 0 : latestPriorities.get(0);
-    }
-
     @Transactional
     public void changeMiddleCategoryPriorities(String strCd, String mainCateCd, CategoryPrioritiesChangeRequest request) {
         List<Category> foundCategories = categoryRepository.middleCategories(strCd, mainCateCd, request.getCategories().stream().map(CategoryPrioritiesChangeRequest.MainCategory::getCategoryCode).collect(Collectors.toList()));
@@ -236,5 +239,29 @@ public class CategoryService {
                 cat.updatePriority(reqCat.getPriority());
             });
         });
+    }
+
+    @Transactional
+    public void createSubCategory(String strCd, String mainCateCd, String middleCateCd, SubCategoryCreateRequest request) {
+        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findFirst().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
+        categoryRepository.subCategory(strCd, mainCateCd, middleCateCd, request.getCategoryCode()).ifPresent(cat -> {
+            throw new CInvalidValueException.CAlreadyCategoryCreatedException();
+        });
+        categoryRepository.save(
+                Category.createSubCategory(
+                        foundStoreMaster.getSiteCd(),
+                        foundStoreMaster.getStrCd(),
+                        mainCateCd,
+                        middleCateCd,
+                        request.getCategoryCode(),
+                        request.getCategoryName(),
+                        request.getUse(),
+                        latestPriority(categoryRepository.latestSubCategoryPriorities(strCd, mainCateCd, middleCateCd)) + 1
+                )
+        );
+    }
+
+    private int latestPriority(List<Integer> latestPriorities) {
+        return latestPriorities.isEmpty() ? 0 : (ObjectUtils.isEmpty(latestPriorities.get(0)) ? 0 : latestPriorities.get(0));
     }
 }
