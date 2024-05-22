@@ -1,7 +1,7 @@
 package com.tenutz.storemngsim.web.service;
 
 import com.tenutz.storemngsim.domain.menu.MainMenuRepository;
-import com.tenutz.storemngsim.web.api.dto.menu.MenusResponse;
+import com.tenutz.storemngsim.web.api.dto.menu.MainMenusResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,9 +17,9 @@ public class MenuService {
 
     private final MainMenuRepository mainMenuRepository;
 
-    public MenusResponse mainMenus(String strCd, String mainCateCd, String middleCateCd, String subCateCd) {
-        return new MenusResponse(mainMenuRepository.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd).stream().map(menu ->
-                new MenusResponse.Menu(
+    public MainMenusResponse mainMenus(String strCd, String mainCateCd, String middleCateCd, String subCateCd) {
+        return new MainMenusResponse(mainMenuRepository.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd).stream().map(menu ->
+                new MainMenusResponse.MainMenu(
                         menu.getStrCd(),
                         menu.getCateCd1(),
                         menu.getCateCd2(),

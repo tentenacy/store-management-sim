@@ -10,14 +10,14 @@ import java.util.List;
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class MenusResponse {
+public class MainMenusResponse {
 
-    private List<Menu> menus;
+    private List<MainMenu> mainMenus;
 
     @Data
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
-    public static class Menu {
+    public static class MainMenu {
 
         private String storeCode;
         private String mainCategoryCode;
