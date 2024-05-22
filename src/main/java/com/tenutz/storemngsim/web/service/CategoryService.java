@@ -148,9 +148,15 @@ public class CategoryService {
         );
     }
 
-    /*@Transactional
+    @Transactional
     public void deleteMainCategory(String strCd, String mainCateCd) {
         Category foundMainCategory = categoryRepository.mainCategory(strCd, mainCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
         categoryRepository.delete(foundMainCategory);
-    }*/
+    }
+
+    @Transactional
+    public void deleteMainCategories(String strCd, MainCategoriesDeleteRequest request) {
+        categoryRepository.deleteMainCategories(strCd, request.getMainCategoryCodes());
+    }
+
 }

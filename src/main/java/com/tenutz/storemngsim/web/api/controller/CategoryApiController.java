@@ -4,6 +4,7 @@ import com.tenutz.storemngsim.web.api.dto.category.*;
 import com.tenutz.storemngsim.web.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -27,7 +28,7 @@ public class CategoryApiController {
     }
 
     @PostMapping("/main")
-    public void createMainCategory(@PathVariable String strCd, @Valid @RequestBody com.tenutz.storemngsim.web.api.dto.category.MainCategoryCreateRequest request) {
+    public void createMainCategory(@PathVariable String strCd, @Valid @RequestBody MainCategoryCreateRequest request) {
         categoryService.createMainCategory(strCd, request);
     }
 
@@ -36,10 +37,17 @@ public class CategoryApiController {
         categoryService.updateMainCategory(strCd, mainCateCd, request);
     }
 
-    /*@DeleteMapping("/main/{mainCateCd}")
+    @DeleteMapping("/main/{mainCateCd}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteMainCategory(@PathVariable String strCd, @PathVariable String mainCateCd) {
         categoryService.deleteMainCategory(strCd, mainCateCd);
-    }*/
+    }
+
+    @DeleteMapping("/main")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteMainCategories(@PathVariable String strCd, @Valid @RequestBody MainCategoriesDeleteRequest request) {
+        categoryService.deleteMainCategories(strCd, request);
+    }
 
     @GetMapping("/main/{mainCateCd}/middle")
     public MiddleCategoriesResponse middleCategories(@PathVariable String strCd, @PathVariable String mainCateCd) {
