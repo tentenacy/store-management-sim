@@ -55,7 +55,7 @@ public class CategoryApiController {
      * @param request
      */
     @PutMapping("/main/{mainCateCd}")
-    public void updateMainCategory(@PathVariable String strCd, @PathVariable String mainCateCd, @Valid @RequestBody com.tenutz.storemngsim.web.api.dto.category.MainCategoryUpdateRequest request) {
+    public void updateMainCategory(@PathVariable String strCd, @PathVariable String mainCateCd, @Valid @RequestBody MainCategoryUpdateRequest request) {
         categoryService.updateMainCategory(strCd, mainCateCd, request);
     }
 
@@ -112,6 +112,16 @@ public class CategoryApiController {
     @GetMapping("/main/{mainCateCd}/middle/{middleCateCd}")
     public MiddleCategoryResponse middleCategory(@PathVariable String strCd, @PathVariable String mainCateCd, @PathVariable String middleCateCd) {
         return categoryService.middleCategory(strCd, mainCateCd, middleCateCd);
+    }
+
+    /**
+     * 중분류추가
+     * @param strCd 가맹점코드
+     * @param request
+     */
+    @PostMapping("/main/{mainCateCd}/middle")
+    public void createMiddleCategory(@PathVariable String strCd, @PathVariable String mainCateCd, @Valid @RequestBody MiddleCategoryCreateRequest request) {
+        categoryService.createMiddleCategory(strCd, mainCateCd, request);
     }
 
     /**

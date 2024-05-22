@@ -136,8 +136,6 @@ public class CategoryService {
         categoryRepository.mainCategory(strCd, request.getCategoryCode()).ifPresent(cat -> {
             throw new CInvalidValueException.CAlreadyCategoryCreatedException();
         });
-        List<Integer> latestMainCategoryPriorities = categoryRepository.latestMainCategoryPriority(strCd);
-        int latestMainCategoryPriority = ObjectUtils.isEmpty(latestMainCategoryPriorities.get(0)) ? 0 : latestMainCategoryPriorities.get(0);
         categoryRepository.save(
                 Category.createMainCategory(
                         foundStoreMaster.getSiteCd(),
@@ -145,7 +143,7 @@ public class CategoryService {
                         request.getCategoryCode(),
                         request.getCategoryName(),
                         request.getUse(),
-                        latestMainCategoryPriority + 1
+                        latestPriority(categoryRepository.latestMainCategoryPriorities(strCd)) + 1
                 )
         );
     }
@@ -178,5 +176,28 @@ public class CategoryService {
                 cat.updatePriority(reqCat.getPriority());
             });
         });
+    }
+
+    @Transactional
+    public void createMiddleCategory(String strCd, String mainCateCd, MiddleCategoryCreateRequest request) {
+        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findFirst().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
+        categoryRepository.middleCategory(strCd, mainCateCd, request.getCategoryCode()).ifPresent(cat -> {
+            throw new CInvalidValueException.CAlreadyCategoryCreatedException();
+        });
+        categoryRepository.save(
+                Category.createMiddleCategory(
+                        foundStoreMaster.getSiteCd(),
+                        foundStoreMaster.getStrCd(),
+                        mainCateCd,
+                        request.getCategoryCode(),
+                        request.getCategoryName(),
+                        request.getUse(),
+                        latestPriority(categoryRepository.latestMiddleCategoryPriorities(strCd, mainCateCd)) + 1
+                )
+        );
+    }
+
+    private int latestPriority(List<Integer> latestPriorities) {
+        return ObjectUtils.isEmpty(latestPriorities.get(0)) ? 0 : latestPriorities.get(0);
     }
 }
