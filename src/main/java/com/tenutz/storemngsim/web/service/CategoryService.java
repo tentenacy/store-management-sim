@@ -169,10 +169,10 @@ public class CategoryService {
     }
 
     @Transactional
-    public void changeMainCategoryPriorities(String strCd, MainCategoryPrioritiesChangeRequest request) {
-        List<Category> foundCategories = categoryRepository.mainCategories(strCd, request.getMainCategories().stream().map(MainCategoryPrioritiesChangeRequest.MainCategory::getCategoryCode).collect(Collectors.toList()));
+    public void changeMainCategoryPriorities(String strCd, CategoryPrioritiesChangeRequest request) {
+        List<Category> foundCategories = categoryRepository.mainCategories(strCd, request.getCategories().stream().map(CategoryPrioritiesChangeRequest.MainCategory::getCategoryCode).collect(Collectors.toList()));
         foundCategories.forEach(cat -> {
-            request.getMainCategories().stream().filter(reqCat -> reqCat.getCategoryCode().equals(cat.getCateCd1())).findFirst().ifPresent(reqCat -> {
+            request.getCategories().stream().filter(reqCat -> reqCat.getCategoryCode().equals(cat.getCateCd1())).findFirst().ifPresent(reqCat -> {
                 cat.updatePriority(reqCat.getPriority());
             });
         });
@@ -226,5 +226,15 @@ public class CategoryService {
 
     private int latestPriority(List<Integer> latestPriorities) {
         return ObjectUtils.isEmpty(latestPriorities.get(0)) ? 0 : latestPriorities.get(0);
+    }
+
+    @Transactional
+    public void changeMiddleCategoryPriorities(String strCd, String mainCateCd, CategoryPrioritiesChangeRequest request) {
+        List<Category> foundCategories = categoryRepository.middleCategories(strCd, mainCateCd, request.getCategories().stream().map(CategoryPrioritiesChangeRequest.MainCategory::getCategoryCode).collect(Collectors.toList()));
+        foundCategories.forEach(cat -> {
+            request.getCategories().stream().filter(reqCat -> reqCat.getCategoryCode().equals(cat.getCateCd2())).findFirst().ifPresent(reqCat -> {
+                cat.updatePriority(reqCat.getPriority());
+            });
+        });
     }
 }

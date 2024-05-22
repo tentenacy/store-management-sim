@@ -77,7 +77,7 @@ public class CategoryApiController {
      */
     @DeleteMapping("/main")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteMainCategories(@PathVariable String strCd, @Valid @RequestBody com.tenutz.storemngsim.web.api.dto.category.CategoriesDeleteRequest request) {
+    public void deleteMainCategories(@PathVariable String strCd, @Valid @RequestBody CategoriesDeleteRequest request) {
         categoryService.deleteMainCategories(strCd, request);
     }
 
@@ -87,7 +87,7 @@ public class CategoryApiController {
      * @param request
      */
     @PostMapping("/main/priorities")
-    public void changeMainCategoryPriorities(@PathVariable String strCd, @Valid @RequestBody MainCategoryPrioritiesChangeRequest request) {
+    public void changeMainCategoryPriorities(@PathVariable String strCd, @Valid @RequestBody com.tenutz.storemngsim.web.api.dto.category.CategoryPrioritiesChangeRequest request) {
         categoryService.changeMainCategoryPriorities(strCd, request);
     }
 
@@ -157,8 +157,19 @@ public class CategoryApiController {
      */
     @DeleteMapping("/main/{mainCateCd}/middle")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteMiddleCategories(@PathVariable String strCd, @PathVariable String mainCateCd, @Valid @RequestBody com.tenutz.storemngsim.web.api.dto.category.CategoriesDeleteRequest request) {
+    public void deleteMiddleCategories(@PathVariable String strCd, @PathVariable String mainCateCd, @Valid @RequestBody CategoriesDeleteRequest request) {
         categoryService.deleteMiddleCategories(strCd, mainCateCd, request);
+    }
+
+    /**
+     * 중분류순서변경
+     * @param strCd 가맹점코드
+     * @param mainCateCd 대분류코드
+     * @param request
+     */
+    @PostMapping("/main/{mainCateCd}/middle/priorities")
+    public void changeMiddleCategoryPriorities(@PathVariable String strCd, @PathVariable String mainCateCd, @Valid @RequestBody com.tenutz.storemngsim.web.api.dto.category.CategoryPrioritiesChangeRequest request) {
+        categoryService.changeMiddleCategoryPriorities(strCd, mainCateCd, request);
     }
 
     /**
