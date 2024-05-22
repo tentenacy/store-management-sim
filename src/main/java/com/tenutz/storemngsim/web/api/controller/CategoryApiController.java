@@ -234,4 +234,17 @@ public class CategoryApiController {
     public void deleteSubCategory(@PathVariable String strCd, @PathVariable String mainCateCd, @PathVariable String middleCateCd, @PathVariable String subCateCd) {
         categoryService.deleteSubCategory(strCd, mainCateCd, middleCateCd, subCateCd);
     }
+
+    /**
+     * 소분류복수삭제
+     * @param strCd 가맹점코드
+     * @param mainCateCd 대분류코드
+     * @param middleCateCd 중분류코드
+     * @param request
+     */
+    @DeleteMapping("/main/{mainCateCd}/middle/{middleCateCd}/sub")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteSubCategories(@PathVariable String strCd, @PathVariable String mainCateCd, @PathVariable String middleCateCd, @Valid @RequestBody CategoriesDeleteRequest request) {
+        categoryService.deleteSubCategories(strCd, mainCateCd, middleCateCd, request);
+    }
 }

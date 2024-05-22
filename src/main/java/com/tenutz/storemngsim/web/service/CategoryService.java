@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -274,6 +275,11 @@ public class CategoryService {
     public void deleteSubCategory(String strCd, String mainCateCd, String middleCateCd, String subCateCd) {
         Category foundSubCategory = categoryRepository.subCategory(strCd, mainCateCd, middleCateCd, subCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
         categoryRepository.delete(foundSubCategory);
+    }
+
+    @Transactional
+    public void deleteSubCategories(String strCd, String mainCateCd, String middleCateCd, CategoriesDeleteRequest request) {
+        categoryRepository.deleteSubCategories(strCd, mainCateCd, middleCateCd, request.getCategoryCodes());
     }
 
     private int latestPriority(List<Integer> latestPriorities) {
