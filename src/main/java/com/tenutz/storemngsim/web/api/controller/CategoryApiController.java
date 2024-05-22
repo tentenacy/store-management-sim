@@ -77,7 +77,7 @@ public class CategoryApiController {
      */
     @DeleteMapping("/main")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteMainCategories(@PathVariable String strCd, @Valid @RequestBody MainCategoriesDeleteRequest request) {
+    public void deleteMainCategories(@PathVariable String strCd, @Valid @RequestBody com.tenutz.storemngsim.web.api.dto.category.CategoriesDeleteRequest request) {
         categoryService.deleteMainCategories(strCd, request);
     }
 
@@ -137,10 +137,28 @@ public class CategoryApiController {
         categoryService.updateMiddleCategory(strCd, mainCateCd, middleCateCd, request);
     }
 
+    /**
+     * 중분류삭제
+     * @param strCd 가맹점코드
+     * @param mainCateCd 대분류코드
+     * @param middleCateCd 중분류코드
+     */
     @DeleteMapping("/main/{mainCateCd}/middle/{middleCateCd}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteMiddleCategory(@PathVariable String strCd, @PathVariable String mainCateCd, @PathVariable String middleCateCd) {
         categoryService.deleteMiddleCategory(strCd, mainCateCd, middleCateCd);
+    }
+
+    /**
+     * 중분류복수삭제
+     * @param strCd 가맹점코드
+     * @param mainCateCd 대분류코드
+     * @param request
+     */
+    @DeleteMapping("/main/{mainCateCd}/middle")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteMiddleCategories(@PathVariable String strCd, @PathVariable String mainCateCd, @Valid @RequestBody com.tenutz.storemngsim.web.api.dto.category.CategoriesDeleteRequest request) {
+        categoryService.deleteMiddleCategories(strCd, mainCateCd, request);
     }
 
     /**

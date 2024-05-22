@@ -164,8 +164,8 @@ public class CategoryService {
     }
 
     @Transactional
-    public void deleteMainCategories(String strCd, MainCategoriesDeleteRequest request) {
-        categoryRepository.deleteMainCategories(strCd, request.getMainCategoryCodes());
+    public void deleteMainCategories(String strCd, CategoriesDeleteRequest request) {
+        categoryRepository.deleteMainCategories(strCd, request.getCategoryCodes());
     }
 
     @Transactional
@@ -217,6 +217,11 @@ public class CategoryService {
     public void deleteMiddleCategory(String strCd, String mainCateCd, String middleCateCd) {
         Category foundMiddleCategory = categoryRepository.middleCategory(strCd, mainCateCd, middleCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
         categoryRepository.delete(foundMiddleCategory);
+    }
+
+    @Transactional
+    public void deleteMiddleCategories(String strCd, String mainCateCd, CategoriesDeleteRequest request) {
+        categoryRepository.deleteMiddleCategories(strCd, mainCateCd, request.getCategoryCodes());
     }
 
     private int latestPriority(List<Integer> latestPriorities) {

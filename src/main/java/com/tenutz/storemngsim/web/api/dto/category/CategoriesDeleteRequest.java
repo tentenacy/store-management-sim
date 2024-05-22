@@ -9,8 +9,8 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MainCategoriesDeleteRequest {
+public class CategoriesDeleteRequest {
 
     @NotNull
-    private List<String> mainCategoryCodes;
+    private List<String> categoryCodes;
 }
