@@ -270,6 +270,12 @@ public class CategoryService {
         );
     }
 
+    @Transactional
+    public void deleteSubCategory(String strCd, String mainCateCd, String middleCateCd, String subCateCd) {
+        Category foundSubCategory = categoryRepository.subCategory(strCd, mainCateCd, middleCateCd, subCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
+        categoryRepository.delete(foundSubCategory);
+    }
+
     private int latestPriority(List<Integer> latestPriorities) {
         return latestPriorities.isEmpty() ? 0 : (ObjectUtils.isEmpty(latestPriorities.get(0)) ? 0 : latestPriorities.get(0));
     }
