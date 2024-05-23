@@ -183,7 +183,7 @@ public class MenuService {
     public void changeMainMenuPriorities(String strCd, String mainCateCd, String middleCateCd, String subCateCd, MenuPrioritiesChangeRequest request) {
         List<MainMenu> foundMenus = mainMenuRepository.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenus().stream().map(MenuPrioritiesChangeRequest.MainCategory::getMenuCode).collect(Collectors.toList()));
         if(request.getMenus().size() != foundMenus.size()) {
-            throw new CEntityNotFoundException.CNonExistentMainMenuIncludedException();
+            throw new CInvalidValueException.CNonExistentMainMenuIncludedException();
         }
         foundMenus.forEach(menu -> {
             request.getMenus().stream().filter(reqCat -> reqCat.getMenuCode().equals(menu.getMenuCd())).findAny().ifPresent(reqCat -> {

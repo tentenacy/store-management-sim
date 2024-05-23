@@ -42,4 +42,22 @@ public class CInvalidValueException extends CBusinessException {
             super(ErrorCode.ALREADY_MAIN_MENU_MAPPED);
         }
     }
+
+    public static class CNonExistentOptionGroupMainMenuIncludedException extends CEntityNotFoundException {
+        public CNonExistentOptionGroupMainMenuIncludedException() {
+            super(ErrorCode.NON_EXISTENT_OPTION_GROUP_MAIN_MENU_INCLUDED);
+        }
+    }
+
+    public static class CNonExistentMainMenuIncludedException extends CEntityNotFoundException {
+        public CNonExistentMainMenuIncludedException() {
+            super(ErrorCode.NON_EXISTENT_MAIN_MENU_INCLUDED);
+        }
+    }
+
+    public static class CNonExistentCategoryIncludedException extends CEntityNotFoundException {
+        public CNonExistentCategoryIncludedException() {
+            super(ErrorCode.NON_EXISTENT_CATEGORY_INCLUDED);
+        }
+    }
 }

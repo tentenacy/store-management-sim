@@ -176,7 +176,7 @@ public class CategoryService {
     public void changeMainCategoryPriorities(String strCd, CategoryPrioritiesChangeRequest request) {
         List<Category> foundCategories = categoryRepository.mainCategories(strCd, request.getCategories().stream().map(CategoryPrioritiesChangeRequest.MainCategory::getCategoryCode).collect(Collectors.toList()));
         if(request.getCategories().size() != foundCategories.size()) {
-            throw new CEntityNotFoundException.CNonExistentCategoryIncludedException();
+            throw new CInvalidValueException.CNonExistentCategoryIncludedException();
         }
         foundCategories.forEach(cat -> {
             request.getCategories().stream().filter(reqCat -> reqCat.getCategoryCode().equals(cat.getCateCd1())).findAny().ifPresent(reqCat -> {
@@ -245,7 +245,7 @@ public class CategoryService {
     public void changeMiddleCategoryPriorities(String strCd, String mainCateCd, CategoryPrioritiesChangeRequest request) {
         List<Category> foundCategories = categoryRepository.middleCategories(strCd, mainCateCd, request.getCategories().stream().map(CategoryPrioritiesChangeRequest.MainCategory::getCategoryCode).collect(Collectors.toList()));
         if(request.getCategories().size() != foundCategories.size()) {
-            throw new CEntityNotFoundException.CNonExistentCategoryIncludedException();
+            throw new CInvalidValueException.CNonExistentCategoryIncludedException();
         }
         foundCategories.forEach(cat -> {
             request.getCategories().stream().filter(reqCat -> reqCat.getCategoryCode().equals(cat.getCateCd2())).findAny().ifPresent(reqCat -> {
@@ -301,7 +301,7 @@ public class CategoryService {
     public void changeSubCategoryPriorities(String strCd, String mainCateCd, String middleCateCd, CategoryPrioritiesChangeRequest request) {
         List<Category> foundCategories = categoryRepository.subCategories(strCd, mainCateCd, middleCateCd, request.getCategories().stream().map(CategoryPrioritiesChangeRequest.MainCategory::getCategoryCode).collect(Collectors.toList()));
         if(request.getCategories().size() != foundCategories.size()) {
-            throw new CEntityNotFoundException.CNonExistentCategoryIncludedException();
+            throw new CInvalidValueException.CNonExistentCategoryIncludedException();
         }
         foundCategories.forEach(cat -> {
             request.getCategories().stream().filter(reqCat -> reqCat.getCategoryCode().equals(cat.getCateCd3())).findAny().ifPresent(reqCat -> {

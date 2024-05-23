@@ -1,5 +1,6 @@
 package com.tenutz.storemngsim.web.api.controller;
 
+import com.tenutz.storemngsim.web.api.dto.option.OptionResponse;
 import com.tenutz.storemngsim.web.api.dto.option.OptionsResponse;
 import com.tenutz.storemngsim.web.service.OptionGroupService;
 import com.tenutz.storemngsim.web.service.OptionService;
@@ -27,5 +28,16 @@ public class OptionApiController {
     @GetMapping
     public OptionsResponse options(@PathVariable String strCd) {
         return optionService.options(strCd);
+    }
+
+    /**
+     * 옵션상세
+     * @param strCd 가맹점코드
+     * @param optionCd 옵션코드
+     * @return
+     */
+    @GetMapping("/{optionCd}")
+    public OptionResponse option(@PathVariable String strCd, @PathVariable String optionCd) {
+        return optionService.option(strCd, optionCd);
     }
 }
