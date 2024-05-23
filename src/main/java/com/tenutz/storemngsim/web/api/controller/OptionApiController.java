@@ -64,4 +64,14 @@ public class OptionApiController {
         optionService.updateOption(strCd, optionCd, request);
     }
 
+    /**
+     * 옵션삭제
+     * @param strCd 가맹점코드
+     * @param optionCd 옵션코드
+     */
+    @DeleteMapping("/{optionCd}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteOption(@PathVariable String strCd, @PathVariable String optionCd) {
+        optionService.deleteOption(strCd, optionCd);
+    }
 }

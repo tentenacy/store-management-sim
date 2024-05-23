@@ -1,5 +1,6 @@
 package com.tenutz.storemngsim.web.service;
 
+import com.tenutz.storemngsim.domain.menu.MainMenu;
 import com.tenutz.storemngsim.domain.menu.Option;
 import com.tenutz.storemngsim.domain.menu.OptionRepository;
 import com.tenutz.storemngsim.domain.store.StoreMaster;
@@ -124,5 +125,11 @@ public class OptionService {
                 request.getEventTimeTo(),
                 request.getEventDayOfWeek()
         );
+    }
+
+    @Transactional
+    public void deleteOption(String strCd, String optionCd) {
+        Option foundOption = optionRepository.option(strCd, optionCd).orElseThrow(CEntityNotFoundException.COptionNotFoundException::new);
+        foundOption.delete();
     }
 }
