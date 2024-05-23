@@ -36,4 +36,10 @@ public class CInvalidValueException extends CBusinessException {
             super(ErrorCode.ALREADY_MAIN_MENU_DETAILS_CREATED);
         }
     }
+
+    public static class CAlreadyMainMenuMappedException extends CInvalidValueException {
+        public CAlreadyMainMenuMappedException() {
+            super(ErrorCode.ALREADY_MAIN_MENU_MAPPED);
+        }
+    }
 }

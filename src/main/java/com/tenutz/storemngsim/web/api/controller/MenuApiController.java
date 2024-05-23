@@ -1,5 +1,6 @@
 package com.tenutz.storemngsim.web.api.controller;
 
+import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsMappedByRequest;
 import com.tenutz.storemngsim.web.api.dto.menu.*;
 import com.tenutz.storemngsim.web.service.MenuService;
 import com.tenutz.storemngsim.web.service.OptionGroupService;
@@ -192,16 +193,15 @@ public class MenuApiController {
         return optionGroupService.mainMenuMappers(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd);
     }
 
-    /*@PostMapping("/main-menus/{mainMenuCd}/mapped-by")
+    @PostMapping("/main-menus/{mainMenuCd}/mapped-by")
     public void mapToOptionGroups(
             @PathVariable String strCd,
             @PathVariable String mainCateCd,
             @PathVariable String middleCateCd,
             @PathVariable String subCateCd,
             @PathVariable String mainMenuCd,
-            @PathVariable String optionGroupCd,
-            @Valid @RequestBody MenuOptionGroupsMappedByRequest request
+            @Valid @RequestBody OptionGroupsMappedByRequest request
     ) {
-        menuService.mapToOptionGroups(strCd, mainCateCd, middleCateCd, subCateCd, request);
-    }*/
+        menuService.mapToOptionGroups(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd, request);
+    }
 }

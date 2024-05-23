@@ -46,7 +46,8 @@ public enum ErrorCode {
     TERMS_AGREEMENT_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "MZS-1023", "약관 동의가 존재하지 않습니다."),
     ALREADY_CATEGORY_CREATED(HttpStatus.BAD_REQUEST.value(), "MZS-1024", "이미 생성된 카테고리입니다."),
     ALREADY_MAIN_MENU_CREATED(HttpStatus.BAD_REQUEST.value(), "MZS-1025", "이미 생성된 메인메뉴입니다."),
-    ALREADY_MAIN_MENU_DETAILS_CREATED(HttpStatus.BAD_REQUEST.value(), "MZS-1025", "이미 생성된 메뉴 성분 정보입니다."),
+    ALREADY_MAIN_MENU_DETAILS_CREATED(HttpStatus.BAD_REQUEST.value(), "MZS-1026", "이미 생성된 메뉴 성분 정보입니다."),
+    ALREADY_MAIN_MENU_MAPPED(HttpStatus.BAD_REQUEST.value(), "MZS-1027", "이미 옵션 그룹에 설정된 메뉴입니다."),
 
     /**
      * SOCIAL
