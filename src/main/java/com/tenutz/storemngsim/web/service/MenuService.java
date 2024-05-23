@@ -4,15 +4,23 @@ import com.tenutz.storemngsim.domain.menu.MainMenu;
 import com.tenutz.storemngsim.domain.menu.MainMenuDetails;
 import com.tenutz.storemngsim.domain.menu.MainMenuDetailsRepository;
 import com.tenutz.storemngsim.domain.menu.MainMenuRepository;
+import com.tenutz.storemngsim.domain.store.StoreMaster;
+import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
+import com.tenutz.storemngsim.web.api.dto.menu.MainMenuCreateRequest;
 import com.tenutz.storemngsim.web.api.dto.menu.MainMenuResponse;
 import com.tenutz.storemngsim.web.api.dto.menu.MainMenusResponse;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
+import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -23,6 +31,7 @@ public class MenuService {
 
     private final MainMenuRepository mainMenuRepository;
     private final MainMenuDetailsRepository mainMenuDetailsRepository;
+    private final StoreMasterRepository storeMasterRepository;
 
     public MainMenusResponse mainMenus(String strCd, String mainCateCd, String middleCateCd, String subCateCd) {
         return new MainMenusResponse(mainMenuRepository.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd).stream().map(menu ->
@@ -43,7 +52,6 @@ public class MenuService {
 
     public MainMenuResponse mainMenu(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd) {
         MainMenu foundMainMenu = mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).orElseThrow(CEntityNotFoundException.CMainMenuNotFoundException::new);
-        MainMenuDetails foundMainMenuDetails = mainMenuDetailsRepository.details(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).orElse(null);
         return new MainMenuResponse(
                 foundMainMenu.getStrCd(),
                 foundMainMenu.getCateCd1(),
@@ -73,7 +81,53 @@ public class MenuService {
                 foundMainMenu.getEvtWeekday(),
                 foundMainMenu.getMemoKor(),
                 foundMainMenu.getSortNum(),
-                !ObjectUtils.isEmpty(foundMainMenuDetails) ? foundMainMenuDetails.getDetails() : null
+                mainMenuDetailsRepository.details(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).map(MainMenuDetails::getDetails).orElse(null)
         );
+    }
+
+    @Transactional
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createMainMenu(String strCd, String mainCateCd, String middleCateCd, String subCateCd, MainMenuCreateRequest request) {
+        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findFirst().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
+        mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenuCode()).ifPresent(mainMenu -> {
+            throw new CInvalidValueException.CAlreadyCategoryCreatedException();
+        });
+        mainMenuRepository.save(
+                MainMenu.create(
+                        foundStoreMaster.getSiteCd(),
+                        strCd,
+                        mainCateCd,
+                        middleCateCd,
+                        subCateCd,
+                        request.getMenuCode(),
+                        request.getMenuName(),
+                        request.getPrice(),
+                        !ObjectUtils.isEmpty(request.getDiscountedPrice()) ? request.getDiscountedPrice() : 0,
+                        !ObjectUtils.isEmpty(request.getAdditionalPackagingPrice()) ? request.getAdditionalPackagingPrice() : 0,
+                        request.getPackaging(),
+                        request.getOutOfStock(),
+                        request.getUse(),
+                        request.getIngredientDisplay(),
+                        request.getImageName(),
+                        request.getMainMenuNameKor(),
+                        request.getHighlightType(),
+                        request.getShowDateFrom(),
+                        request.getShowDateTo(),
+                        request.getShowTimeFrom(),
+                        request.getShowTimeTo(),
+                        request.getShowDayOfWeek(),
+                        request.getEventDateFrom(),
+                        request.getEventDateTo(),
+                        request.getEventTimeFrom(),
+                        request.getEventTimeTo(),
+                        request.getEventDayOfWeek(),
+                        request.getMemoKor(),
+                        latestPriority(mainMenuRepository.latestPriorities(strCd, mainCateCd, middleCateCd, subCateCd)) + 1
+                )
+        );
+    }
+
+    private int latestPriority(List<Integer> latestPriorities) {
+        return latestPriorities.isEmpty() ? 0 : (ObjectUtils.isEmpty(latestPriorities.get(0)) ? 0 : latestPriorities.get(0));
     }
 }

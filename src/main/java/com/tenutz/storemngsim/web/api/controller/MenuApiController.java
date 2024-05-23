@@ -1,14 +1,14 @@
 package com.tenutz.storemngsim.web.api.controller;
 
+import com.tenutz.storemngsim.web.api.dto.menu.MainMenuCreateRequest;
 import com.tenutz.storemngsim.web.api.dto.menu.MainMenuResponse;
 import com.tenutz.storemngsim.web.api.dto.menu.MainMenusResponse;
 import com.tenutz.storemngsim.web.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Slf4j
 @RestController
@@ -32,5 +32,16 @@ public class MenuApiController {
             @PathVariable String mainMenuCd
     ) {
         return menuService.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd);
+    }
+
+    @PostMapping("/main-menus")
+    public void createMainMenu(
+            @PathVariable String strCd,
+            @PathVariable String mainCateCd,
+            @PathVariable String middleCateCd,
+            @PathVariable String subCateCd,
+            @Valid @RequestBody MainMenuCreateRequest request
+    ) {
+        menuService.createMainMenu(strCd, mainCateCd, middleCateCd, subCateCd, request);
     }
 }
