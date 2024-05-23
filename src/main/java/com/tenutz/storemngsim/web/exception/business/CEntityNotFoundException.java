@@ -24,4 +24,16 @@ public class CEntityNotFoundException extends CBusinessException {
             super(ErrorCode.STORE_MASTER_NOT_FOUND);
         }
     }
+
+    public static class CMainMenuNotFoundException extends CEntityNotFoundException {
+        public CMainMenuNotFoundException() {
+            super(ErrorCode.MAIN_MENU_NOT_FOUND);
+        }
+    }
+
+    public static class CMainMenuDetailsNotFoundException extends CEntityNotFoundException {
+        public CMainMenuDetailsNotFoundException() {
+            super(ErrorCode.MAIN_MENU_DETAILS_NOT_FOUND);
+        }
+    }
 }

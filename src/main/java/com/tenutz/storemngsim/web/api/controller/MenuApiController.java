@@ -1,5 +1,6 @@
 package com.tenutz.storemngsim.web.api.controller;
 
+import com.tenutz.storemngsim.web.api.dto.menu.MainMenuResponse;
 import com.tenutz.storemngsim.web.api.dto.menu.MainMenusResponse;
 import com.tenutz.storemngsim.web.service.MenuService;
 import lombok.RequiredArgsConstructor;
@@ -20,5 +21,16 @@ public class MenuApiController {
     @GetMapping("/main-menus")
     public MainMenusResponse mainMenus(@PathVariable String strCd, @PathVariable String mainCateCd, @PathVariable String middleCateCd, @PathVariable String subCateCd) {
         return menuService.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd);
+    }
+
+    @GetMapping("/main-menus/{mainMenuCd}")
+    public MainMenuResponse mainMenu(
+            @PathVariable String strCd,
+            @PathVariable String mainCateCd,
+            @PathVariable String middleCateCd,
+            @PathVariable String subCateCd,
+            @PathVariable String mainMenuCd
+    ) {
+        return menuService.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd);
     }
 }
