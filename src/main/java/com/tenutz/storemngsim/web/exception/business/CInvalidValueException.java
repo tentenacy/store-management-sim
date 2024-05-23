@@ -60,4 +60,10 @@ public class CInvalidValueException extends CBusinessException {
             super(ErrorCode.NON_EXISTENT_CATEGORY_INCLUDED);
         }
     }
+
+    public static class CAlreadyOptionCreatedException extends CInvalidValueException {
+        public CAlreadyOptionCreatedException() {
+            super(ErrorCode.ALREADY_MAIN_MENU_CREATED);
+        }
+    }
 }

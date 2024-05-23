@@ -51,6 +51,7 @@ public enum ErrorCode {
     NON_EXISTENT_OPTION_GROUP_MAIN_MENU_INCLUDED(HttpStatus.BAD_REQUEST.value(), "MZS-1028", "요청에 존재하지 않는 메인메뉴 옵션 그룹 매핑이 있습니다."),
     NON_EXISTENT_MAIN_MENU_INCLUDED(HttpStatus.BAD_REQUEST.value(), "MZS-1029", "요청에 존재하지 않는 메인메뉴가 있습니다."),
     NON_EXISTENT_CATEGORY_INCLUDED(HttpStatus.BAD_REQUEST.value(), "MZS-1030", "요청에 존재하지 않는 카테고리가 있습니다."),
+    ALREADY_OPTION_CREATED(HttpStatus.BAD_REQUEST.value(), "MZS-1031", "이미 생성된 옵션입니다."),
 
     /**
      * SOCIAL
