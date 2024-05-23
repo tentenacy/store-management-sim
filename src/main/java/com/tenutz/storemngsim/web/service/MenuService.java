@@ -8,6 +8,7 @@ import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.web.api.dto.menu.MainMenuCreateRequest;
 import com.tenutz.storemngsim.web.api.dto.menu.MainMenuResponse;
+import com.tenutz.storemngsim.web.api.dto.menu.MainMenuUpdateRequest;
 import com.tenutz.storemngsim.web.api.dto.menu.MainMenusResponse;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
@@ -124,6 +125,35 @@ public class MenuService {
                         request.getMemoKor(),
                         latestPriority(mainMenuRepository.latestPriorities(strCd, mainCateCd, middleCateCd, subCateCd)) + 1
                 )
+        );
+    }
+
+    @Transactional
+    public void updateMainMenu(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd, MainMenuUpdateRequest request) {
+        MainMenu foundMainMenu = mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).orElseThrow(CEntityNotFoundException.CMainMenuNotFoundException::new);
+        foundMainMenu.update(
+                request.getMenuName(),
+                request.getPrice(),
+                !ObjectUtils.isEmpty(request.getDiscountedPrice()) ? request.getDiscountedPrice() : 0,
+                !ObjectUtils.isEmpty(request.getAdditionalPackagingPrice()) ? request.getAdditionalPackagingPrice() : 0,
+                request.getPackaging(),
+                request.getOutOfStock(),
+                request.getUse(),
+                request.getIngredientDisplay(),
+                request.getImageName(),
+                request.getMainMenuNameKor(),
+                request.getHighlightType(),
+                request.getShowDateFrom(),
+                request.getShowDateTo(),
+                request.getShowTimeFrom(),
+                request.getShowTimeTo(),
+                request.getShowDayOfWeek(),
+                request.getEventDateFrom(),
+                request.getEventDateTo(),
+                request.getEventTimeFrom(),
+                request.getEventTimeTo(),
+                request.getEventDayOfWeek(),
+                request.getMemoKor()
         );
     }
 

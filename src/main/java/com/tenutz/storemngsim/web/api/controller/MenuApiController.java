@@ -2,6 +2,7 @@ package com.tenutz.storemngsim.web.api.controller;
 
 import com.tenutz.storemngsim.web.api.dto.menu.MainMenuCreateRequest;
 import com.tenutz.storemngsim.web.api.dto.menu.MainMenuResponse;
+import com.tenutz.storemngsim.web.api.dto.menu.MainMenuUpdateRequest;
 import com.tenutz.storemngsim.web.api.dto.menu.MainMenusResponse;
 import com.tenutz.storemngsim.web.service.MenuService;
 import lombok.RequiredArgsConstructor;
@@ -43,5 +44,17 @@ public class MenuApiController {
             @Valid @RequestBody MainMenuCreateRequest request
     ) {
         menuService.createMainMenu(strCd, mainCateCd, middleCateCd, subCateCd, request);
+    }
+
+    @PutMapping("/main-menus/{mainMenuCd}")
+    public void updateMainMenu(
+            @PathVariable String strCd,
+            @PathVariable String mainCateCd,
+            @PathVariable String middleCateCd,
+            @PathVariable String subCateCd,
+            @PathVariable String mainMenuCd,
+            @Valid @RequestBody MainMenuUpdateRequest request
+    ) {
+        menuService.updateMainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd, request);
     }
 }
