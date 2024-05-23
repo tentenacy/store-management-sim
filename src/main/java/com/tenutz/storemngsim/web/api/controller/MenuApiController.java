@@ -1,5 +1,6 @@
 package com.tenutz.storemngsim.web.api.controller;
 
+import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsDeleteRequest;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsMappedByRequest;
 import com.tenutz.storemngsim.web.api.dto.menu.*;
 import com.tenutz.storemngsim.web.service.MenuService;
@@ -193,7 +194,17 @@ public class MenuApiController {
         return optionGroupService.mainMenuMappers(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd);
     }
 
+    /**
+     * 메뉴옵션그룹맵핑추가
+     * @param strCd 가맹점코드
+     * @param mainCateCd 대분류코드
+     * @param middleCateCd 중분류코드
+     * @param subCateCd 소분류코드
+     * @param mainMenuCd 메뉴코드
+     * @param request
+     */
     @PostMapping("/main-menus/{mainMenuCd}/mapped-by")
+    @ResponseStatus(HttpStatus.CREATED)
     public void mapToOptionGroups(
             @PathVariable String strCd,
             @PathVariable String mainCateCd,
@@ -204,4 +215,27 @@ public class MenuApiController {
     ) {
         menuService.mapToOptionGroups(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd, request);
     }
+
+    /**
+     * 메뉴옵션그룹맵핑복수삭제
+     * @param strCd 가맹점코드
+     * @param mainCateCd 대분류코드
+     * @param middleCateCd 중분류코드
+     * @param subCateCd 소분류코드
+     * @param mainMenuCd 메뉴코드
+     * @param request
+     */
+    @DeleteMapping("/main-menus/{mainMenuCd}/mappers")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteMappers(
+            @PathVariable String strCd,
+            @PathVariable String mainCateCd,
+            @PathVariable String middleCateCd,
+            @PathVariable String subCateCd,
+            @PathVariable String mainMenuCd,
+            @Valid @RequestBody OptionGroupsDeleteRequest request
+    ) {
+        optionGroupService.deleteMainMenuMappers(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd, request);
+    }
+
 }

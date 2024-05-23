@@ -1,8 +1,10 @@
 package com.tenutz.storemngsim.web.service;
 
+import com.tenutz.storemngsim.domain.menu.MainMenu;
 import com.tenutz.storemngsim.domain.menu.OptionGroupMainMenu;
 import com.tenutz.storemngsim.domain.menu.OptionGroupMainMenuRepository;
 import com.tenutz.storemngsim.domain.menu.OptionGroupRepository;
+import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsDeleteRequest;
 import com.tenutz.storemngsim.web.api.dto.menu.MainMenuMappersResponse;
 import com.tenutz.storemngsim.web.api.dto.menu.MainMenuOptionGroupsResponse;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -36,5 +39,11 @@ public class OptionGroupService {
 
     public MainMenuMappersResponse mainMenuMappers(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd) {
         return new MainMenuMappersResponse(optionGroupMainMenuRepository.mainMenuMappers(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd));
+    }
+
+    @Transactional
+    public void deleteMainMenuMappers(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd, OptionGroupsDeleteRequest request) {
+        List<OptionGroupMainMenu> foundMainMenuMappers = optionGroupMainMenuRepository.optionGroupMainMenus(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd, request.getOptionGroupCodes());
+        foundMainMenuMappers.forEach(OptionGroupMainMenu::delete);
     }
 }
