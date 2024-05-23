@@ -1,9 +1,6 @@
 package com.tenutz.storemngsim.web.api.controller;
 
-import com.tenutz.storemngsim.web.api.dto.option.OptionCreateRequest;
-import com.tenutz.storemngsim.web.api.dto.option.OptionResponse;
-import com.tenutz.storemngsim.web.api.dto.option.OptionUpdateRequest;
-import com.tenutz.storemngsim.web.api.dto.option.OptionsResponse;
+import com.tenutz.storemngsim.web.api.dto.option.*;
 import com.tenutz.storemngsim.web.service.OptionGroupService;
 import com.tenutz.storemngsim.web.service.OptionService;
 import lombok.RequiredArgsConstructor;
@@ -73,5 +70,16 @@ public class OptionApiController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteOption(@PathVariable String strCd, @PathVariable String optionCd) {
         optionService.deleteOption(strCd, optionCd);
+    }
+
+    /**
+     * 옵션복수삭제
+     * @param strCd 가맹점코드
+     * @param request
+     */
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteOptions(@PathVariable String strCd, @Valid @RequestBody com.tenutz.storemngsim.web.api.dto.option.OptionsDeleteRequest request) {
+        optionService.deleteOptions(strCd, request);
     }
 }

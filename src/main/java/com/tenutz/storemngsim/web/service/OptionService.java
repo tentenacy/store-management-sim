@@ -5,10 +5,7 @@ import com.tenutz.storemngsim.domain.menu.Option;
 import com.tenutz.storemngsim.domain.menu.OptionRepository;
 import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
-import com.tenutz.storemngsim.web.api.dto.option.OptionCreateRequest;
-import com.tenutz.storemngsim.web.api.dto.option.OptionResponse;
-import com.tenutz.storemngsim.web.api.dto.option.OptionUpdateRequest;
-import com.tenutz.storemngsim.web.api.dto.option.OptionsResponse;
+import com.tenutz.storemngsim.web.api.dto.option.*;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -131,5 +129,14 @@ public class OptionService {
     public void deleteOption(String strCd, String optionCd) {
         Option foundOption = optionRepository.option(strCd, optionCd).orElseThrow(CEntityNotFoundException.COptionNotFoundException::new);
         foundOption.delete();
+    }
+
+    @Transactional
+    public void deleteOptions(String strCd, OptionsDeleteRequest request) {
+        List<Option> foundOptions = optionRepository.options(strCd, request.getOptionCodes(), "X");
+        if(request.getOptionCodes().size() != foundOptions.size()) {
+            throw new CInvalidValueException.CNonExistentOptionIncludedException();
+        }
+        foundOptions.forEach(Option::delete);
     }
 }

@@ -66,4 +66,10 @@ public class CInvalidValueException extends CBusinessException {
             super(ErrorCode.ALREADY_OPTION_CREATED);
         }
     }
+
+    public static class CNonExistentOptionIncludedException extends CEntityNotFoundException {
+        public CNonExistentOptionIncludedException() {
+            super(ErrorCode.NON_EXISTENT_OPTION_INCLUDED);
+        }
+    }
 }

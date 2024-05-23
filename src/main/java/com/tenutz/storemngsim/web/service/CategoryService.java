@@ -169,6 +169,9 @@ public class CategoryService {
     public void deleteMainCategories(String strCd, CategoriesDeleteRequest request) {
 //        categoryRepository.deleteMainCategories(strCd, request.getCategoryCodes());
         List<Category> foundCategories = categoryRepository.mainCategories(strCd, request.getCategoryCodes());
+        if(request.getCategoryCodes().size() != foundCategories.size()) {
+            throw new CInvalidValueException.CNonExistentCategoryIncludedException();
+        }
         foundCategories.forEach(Category::doesNotUse);
     }
 
@@ -238,6 +241,9 @@ public class CategoryService {
     public void deleteMiddleCategories(String strCd, String mainCateCd, CategoriesDeleteRequest request) {
 //        categoryRepository.deleteMiddleCategories(strCd, mainCateCd, request.getCategoryCodes());
         List<Category> foundCategories = categoryRepository.middleCategories(strCd, mainCateCd, request.getCategoryCodes());
+        if(request.getCategoryCodes().size() != foundCategories.size()) {
+            throw new CInvalidValueException.CNonExistentCategoryIncludedException();
+        }
         foundCategories.forEach(Category::doesNotUse);
     }
 
@@ -294,6 +300,9 @@ public class CategoryService {
     public void deleteSubCategories(String strCd, String mainCateCd, String middleCateCd, CategoriesDeleteRequest request) {
 //        categoryRepository.deleteSubCategories(strCd, mainCateCd, middleCateCd, request.getCategoryCodes());
         List<Category> foundCategories = categoryRepository.subCategories(strCd, mainCateCd, middleCateCd, request.getCategoryCodes());
+        if(request.getCategoryCodes().size() != foundCategories.size()) {
+            throw new CInvalidValueException.CNonExistentCategoryIncludedException();
+        }
         foundCategories.forEach(Category::doesNotUse);
     }
 

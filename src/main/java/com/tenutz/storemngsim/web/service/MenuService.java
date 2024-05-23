@@ -175,13 +175,16 @@ public class MenuService {
 
     @Transactional
     public void deleteMainMenus(String strCd, String mainCateCd, String middleCateCd, String subCateCd, MenusDeleteRequest request) {
-        List<MainMenu> foundMenus = mainMenuRepository.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenuCodes());
+        List<MainMenu> foundMenus = mainMenuRepository.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenuCodes(), "X");
+        if(request.getMenuCodes().size() != foundMenus.size()) {
+            throw new CInvalidValueException.CNonExistentMainMenuIncludedException();
+        }
         foundMenus.forEach(MainMenu::delete);
     }
 
     @Transactional
     public void changeMainMenuPriorities(String strCd, String mainCateCd, String middleCateCd, String subCateCd, MenuPrioritiesChangeRequest request) {
-        List<MainMenu> foundMenus = mainMenuRepository.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenus().stream().map(MenuPrioritiesChangeRequest.MainCategory::getMenuCode).collect(Collectors.toList()));
+        List<MainMenu> foundMenus = mainMenuRepository.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenus().stream().map(MenuPrioritiesChangeRequest.MainCategory::getMenuCode).collect(Collectors.toList()), "D");
         if(request.getMenus().size() != foundMenus.size()) {
             throw new CInvalidValueException.CNonExistentMainMenuIncludedException();
         }
@@ -195,7 +198,7 @@ public class MenuService {
     @Transactional
     public void mapToOptionGroups(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd, OptionGroupsMappedByRequest request) {
         StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
-        List<OptionGroupMainMenu> foundOptionGroupMainMenus = optionGroupMainMenuRepository.optionGroupMainMenus(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd, request.getOptionGroupCodes());
+        List<OptionGroupMainMenu> foundOptionGroupMainMenus = optionGroupMainMenuRepository.optionGroupMainMenus(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd, request.getOptionGroupCodes(), "D");
         List<String> optionGroupCodes = foundOptionGroupMainMenus.stream().map(OptionGroupMainMenu::getOptGrpCd).collect(Collectors.toList());
         request.getOptionGroupCodes().forEach(code -> {
             if(optionGroupCodes.contains(code)) {
