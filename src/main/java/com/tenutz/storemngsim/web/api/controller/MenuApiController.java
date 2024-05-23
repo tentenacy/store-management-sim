@@ -131,5 +131,22 @@ public class MenuApiController {
         menuService.deleteMainMenus(strCd, mainCateCd, middleCateCd, subCateCd, request);
     }
 
-
+    /**
+     * 메뉴순서변경
+     * @param strCd 가맹점코드
+     * @param mainCateCd 대분류코드
+     * @param middleCateCd 중분류코드
+     * @param subCateCd 소분류코드
+     * @param request
+     */
+    @PostMapping("/main-menus/priorities")
+    public void changeMainMenuPriorities(
+            @PathVariable String strCd,
+            @PathVariable String mainCateCd,
+            @PathVariable String middleCateCd,
+            @PathVariable String subCateCd,
+            @Valid @RequestBody MenuPrioritiesChangeRequest request
+    ) {
+        menuService.changeMainMenuPriorities(strCd, mainCateCd, middleCateCd, subCateCd, request);
+    }
 }

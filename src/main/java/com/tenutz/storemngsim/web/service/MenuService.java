@@ -3,6 +3,7 @@ package com.tenutz.storemngsim.web.service;
 import com.tenutz.storemngsim.domain.menu.*;
 import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
+import com.tenutz.storemngsim.web.api.dto.category.CategoryPrioritiesChangeRequest;
 import com.tenutz.storemngsim.web.api.dto.menu.*;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
@@ -175,6 +176,16 @@ public class MenuService {
     public void deleteMainMenus(String strCd, String mainCateCd, String middleCateCd, String subCateCd, MenusDeleteRequest request) {
         List<MainMenu> foundMenus = mainMenuRepository.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenuCodes());
         foundMenus.forEach(MainMenu::delete);
+    }
+
+    @Transactional
+    public void changeMainMenuPriorities(String strCd, String mainCateCd, String middleCateCd, String subCateCd, MenuPrioritiesChangeRequest request) {
+        List<MainMenu> foundMenus = mainMenuRepository.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenus().stream().map(MenuPrioritiesChangeRequest.MainCategory::getMenuCode).collect(Collectors.toList()));
+        foundMenus.forEach(menu -> {
+            request.getMenus().stream().filter(reqCat -> reqCat.getMenuCode().equals(menu.getMenuCd())).findFirst().ifPresent(reqCat -> {
+                menu.updatePriority(reqCat.getPriority());
+            });
+        });
     }
 
     private int latestPriority(List<Integer> latestPriorities) {
