@@ -1,5 +1,6 @@
 package com.tenutz.storemngsim.web.api.controller;
 
+import com.tenutz.storemngsim.web.api.dto.common.OptionGroupPrioritiesChangeRequest;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsDeleteRequest;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsMappedByRequest;
 import com.tenutz.storemngsim.web.api.dto.menu.*;
@@ -227,7 +228,7 @@ public class MenuApiController {
      */
     @DeleteMapping("/main-menus/{mainMenuCd}/mappers")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteMappers(
+    public void deleteMainMenuMappers(
             @PathVariable String strCd,
             @PathVariable String mainCateCd,
             @PathVariable String middleCateCd,
@@ -236,6 +237,18 @@ public class MenuApiController {
             @Valid @RequestBody OptionGroupsDeleteRequest request
     ) {
         optionGroupService.deleteMainMenuMappers(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd, request);
+    }
+
+    @PostMapping("/main-menus/{mainMenuCd}/mappers/priorities")
+    public void changeMainMenuMapperPriorities(
+            @PathVariable String strCd,
+            @PathVariable String mainCateCd,
+            @PathVariable String middleCateCd,
+            @PathVariable String subCateCd,
+            @PathVariable String mainMenuCd,
+            @Valid @RequestBody OptionGroupPrioritiesChangeRequest request
+    ) {
+        optionGroupService.changeMainMenuMapperPriorities(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd, request);
     }
 
 }

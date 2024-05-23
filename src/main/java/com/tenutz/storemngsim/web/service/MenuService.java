@@ -85,7 +85,7 @@ public class MenuService {
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)
     public void createMainMenu(String strCd, String mainCateCd, String middleCateCd, String subCateCd, MainMenuCreateRequest request) {
-        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findFirst().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
+        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
         mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenuCode()).ifPresent(mainMenu -> {
             throw new CInvalidValueException.CAlreadyMainMenuCreatedException();
         });
@@ -182,8 +182,11 @@ public class MenuService {
     @Transactional
     public void changeMainMenuPriorities(String strCd, String mainCateCd, String middleCateCd, String subCateCd, MenuPrioritiesChangeRequest request) {
         List<MainMenu> foundMenus = mainMenuRepository.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenus().stream().map(MenuPrioritiesChangeRequest.MainCategory::getMenuCode).collect(Collectors.toList()));
+        if(request.getMenus().size() != foundMenus.size()) {
+            throw new CEntityNotFoundException.CNonExistentMainMenuIncludedException();
+        }
         foundMenus.forEach(menu -> {
-            request.getMenus().stream().filter(reqCat -> reqCat.getMenuCode().equals(menu.getMenuCd())).findFirst().ifPresent(reqCat -> {
+            request.getMenus().stream().filter(reqCat -> reqCat.getMenuCode().equals(menu.getMenuCd())).findAny().ifPresent(reqCat -> {
                 menu.updatePriority(reqCat.getPriority());
             });
         });
@@ -191,7 +194,7 @@ public class MenuService {
 
     @Transactional
     public void mapToOptionGroups(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd, OptionGroupsMappedByRequest request) {
-        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findFirst().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
+        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
         List<OptionGroupMainMenu> foundOptionGroupMainMenus = optionGroupMainMenuRepository.optionGroupMainMenus(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd, request.getOptionGroupCodes());
         List<String> optionGroupCodes = foundOptionGroupMainMenus.stream().map(OptionGroupMainMenu::getOptGrpCd).collect(Collectors.toList());
         request.getOptionGroupCodes().forEach(code -> {

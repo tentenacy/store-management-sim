@@ -36,4 +36,28 @@ public class CEntityNotFoundException extends CBusinessException {
             super(ErrorCode.MAIN_MENU_DETAILS_NOT_FOUND);
         }
     }
+
+    public static class COptionGroupMainMenuNotFoundException extends CEntityNotFoundException {
+        public COptionGroupMainMenuNotFoundException() {
+            super(ErrorCode.OPTION_GROUP_MAIN_MENU_NOT_FOUND);
+        }
+    }
+
+    public static class CNonExistentOptionGroupMainMenuIncludedException extends CEntityNotFoundException {
+        public CNonExistentOptionGroupMainMenuIncludedException() {
+            super(ErrorCode.NON_EXISTENT_OPTION_GROUP_MAIN_MENU_INCLUDED);
+        }
+    }
+
+    public static class CNonExistentMainMenuIncludedException extends CEntityNotFoundException {
+        public CNonExistentMainMenuIncludedException() {
+            super(ErrorCode.NON_EXISTENT_MAIN_MENU_INCLUDED);
+        }
+    }
+
+    public static class CNonExistentCategoryIncludedException extends CEntityNotFoundException {
+        public CNonExistentCategoryIncludedException() {
+            super(ErrorCode.NON_EXISTENT_CATEGORY_INCLUDED);
+        }
+    }
 }

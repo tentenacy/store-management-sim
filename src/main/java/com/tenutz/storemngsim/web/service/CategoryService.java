@@ -133,7 +133,7 @@ public class CategoryService {
 
     @Transactional
     public void createMainCategory(String strCd, MainCategoryCreateRequest request) {
-        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findFirst().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
+        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
         categoryRepository.mainCategory(strCd, request.getCategoryCode()).ifPresent(cat -> {
             throw new CInvalidValueException.CAlreadyCategoryCreatedException();
         });
@@ -175,8 +175,11 @@ public class CategoryService {
     @Transactional
     public void changeMainCategoryPriorities(String strCd, CategoryPrioritiesChangeRequest request) {
         List<Category> foundCategories = categoryRepository.mainCategories(strCd, request.getCategories().stream().map(CategoryPrioritiesChangeRequest.MainCategory::getCategoryCode).collect(Collectors.toList()));
+        if(request.getCategories().size() != foundCategories.size()) {
+            throw new CEntityNotFoundException.CNonExistentCategoryIncludedException();
+        }
         foundCategories.forEach(cat -> {
-            request.getCategories().stream().filter(reqCat -> reqCat.getCategoryCode().equals(cat.getCateCd1())).findFirst().ifPresent(reqCat -> {
+            request.getCategories().stream().filter(reqCat -> reqCat.getCategoryCode().equals(cat.getCateCd1())).findAny().ifPresent(reqCat -> {
                 cat.updatePriority(reqCat.getPriority());
             });
         });
@@ -184,7 +187,7 @@ public class CategoryService {
 
     @Transactional
     public void createMiddleCategory(String strCd, String mainCateCd, MiddleCategoryCreateRequest request) {
-        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findFirst().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
+        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
         categoryRepository.middleCategory(strCd, mainCateCd, request.getCategoryCode()).ifPresent(cat -> {
             throw new CInvalidValueException.CAlreadyCategoryCreatedException();
         });
@@ -241,8 +244,11 @@ public class CategoryService {
     @Transactional
     public void changeMiddleCategoryPriorities(String strCd, String mainCateCd, CategoryPrioritiesChangeRequest request) {
         List<Category> foundCategories = categoryRepository.middleCategories(strCd, mainCateCd, request.getCategories().stream().map(CategoryPrioritiesChangeRequest.MainCategory::getCategoryCode).collect(Collectors.toList()));
+        if(request.getCategories().size() != foundCategories.size()) {
+            throw new CEntityNotFoundException.CNonExistentCategoryIncludedException();
+        }
         foundCategories.forEach(cat -> {
-            request.getCategories().stream().filter(reqCat -> reqCat.getCategoryCode().equals(cat.getCateCd2())).findFirst().ifPresent(reqCat -> {
+            request.getCategories().stream().filter(reqCat -> reqCat.getCategoryCode().equals(cat.getCateCd2())).findAny().ifPresent(reqCat -> {
                 cat.updatePriority(reqCat.getPriority());
             });
         });
@@ -250,7 +256,7 @@ public class CategoryService {
 
     @Transactional
     public void createSubCategory(String strCd, String mainCateCd, String middleCateCd, SubCategoryCreateRequest request) {
-        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findFirst().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
+        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
         categoryRepository.subCategory(strCd, mainCateCd, middleCateCd, request.getCategoryCode()).ifPresent(cat -> {
             throw new CInvalidValueException.CAlreadyCategoryCreatedException();
         });
@@ -294,8 +300,11 @@ public class CategoryService {
     @Transactional
     public void changeSubCategoryPriorities(String strCd, String mainCateCd, String middleCateCd, CategoryPrioritiesChangeRequest request) {
         List<Category> foundCategories = categoryRepository.subCategories(strCd, mainCateCd, middleCateCd, request.getCategories().stream().map(CategoryPrioritiesChangeRequest.MainCategory::getCategoryCode).collect(Collectors.toList()));
+        if(request.getCategories().size() != foundCategories.size()) {
+            throw new CEntityNotFoundException.CNonExistentCategoryIncludedException();
+        }
         foundCategories.forEach(cat -> {
-            request.getCategories().stream().filter(reqCat -> reqCat.getCategoryCode().equals(cat.getCateCd3())).findFirst().ifPresent(reqCat -> {
+            request.getCategories().stream().filter(reqCat -> reqCat.getCategoryCode().equals(cat.getCateCd3())).findAny().ifPresent(reqCat -> {
                 cat.updatePriority(reqCat.getPriority());
             });
         });
