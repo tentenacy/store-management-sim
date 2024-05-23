@@ -188,6 +188,11 @@ public class MenuService {
         });
     }
 
+    /*@Transactional
+    public void mapToOptionGroups(String strCd, String mainCateCd, String middleCateCd, String subCateCd, MenuOptionGroupsMappedByRequest request) {
+
+    }*/
+
     private int latestPriority(List<Integer> latestPriorities) {
         return latestPriorities.isEmpty() ? 0 : (ObjectUtils.isEmpty(latestPriorities.get(0)) ? 0 : latestPriorities.get(0));
     }

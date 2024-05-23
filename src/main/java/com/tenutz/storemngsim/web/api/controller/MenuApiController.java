@@ -2,6 +2,7 @@ package com.tenutz.storemngsim.web.api.controller;
 
 import com.tenutz.storemngsim.web.api.dto.menu.*;
 import com.tenutz.storemngsim.web.service.MenuService;
+import com.tenutz.storemngsim.web.service.OptionGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import javax.validation.Valid;
 public class MenuApiController {
 
     private final MenuService menuService;
+    private final OptionGroupService optionGroupService;
 
     /**
      * 메뉴조회
@@ -149,4 +151,57 @@ public class MenuApiController {
     ) {
         menuService.changeMainMenuPriorities(strCd, mainCateCd, middleCateCd, subCateCd, request);
     }
+
+    /**
+     * 메뉴옵션그룹조회
+     * @param strCd 가맹점코드
+     * @param mainCateCd 대분류코드
+     * @param middleCateCd 중분류코드
+     * @param subCateCd 소분류코드
+     * @param mainMenuCd 메뉴코드
+     * @return
+     */
+    @GetMapping("/main-menus/{mainMenuCd}/option-groups")
+    public MainMenuOptionGroupsResponse mainMenuOptionGroups(
+            @PathVariable String strCd,
+            @PathVariable String mainCateCd,
+            @PathVariable String middleCateCd,
+            @PathVariable String subCateCd,
+            @PathVariable String mainMenuCd
+    ) {
+        return optionGroupService.mainMenuOptionGroups(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd);
+    }
+
+    /**
+     * 선택된메뉴옵션그룹조회
+     * @param strCd 가맹점코드
+     * @param mainCateCd 대분류코드
+     * @param middleCateCd 중분류코드
+     * @param subCateCd 소분류코드
+     * @param mainMenuCd 메뉴코드
+     * @return
+     */
+    @GetMapping("/main-menus/{mainMenuCd}/mappers")
+    public MainMenuMappersResponse mainMenuMappers(
+            @PathVariable String strCd,
+            @PathVariable String mainCateCd,
+            @PathVariable String middleCateCd,
+            @PathVariable String subCateCd,
+            @PathVariable String mainMenuCd
+    ) {
+        return optionGroupService.mainMenuMappers(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd);
+    }
+
+    /*@PostMapping("/main-menus/{mainMenuCd}/mapped-by")
+    public void mapToOptionGroups(
+            @PathVariable String strCd,
+            @PathVariable String mainCateCd,
+            @PathVariable String middleCateCd,
+            @PathVariable String subCateCd,
+            @PathVariable String mainMenuCd,
+            @PathVariable String optionGroupCd,
+            @Valid @RequestBody MenuOptionGroupsMappedByRequest request
+    ) {
+        menuService.mapToOptionGroups(strCd, mainCateCd, middleCateCd, subCateCd, request);
+    }*/
 }
