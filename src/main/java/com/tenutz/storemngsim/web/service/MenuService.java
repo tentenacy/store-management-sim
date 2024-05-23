@@ -1,15 +1,9 @@
 package com.tenutz.storemngsim.web.service;
 
-import com.tenutz.storemngsim.domain.menu.MainMenu;
-import com.tenutz.storemngsim.domain.menu.MainMenuDetails;
-import com.tenutz.storemngsim.domain.menu.MainMenuDetailsRepository;
-import com.tenutz.storemngsim.domain.menu.MainMenuRepository;
+import com.tenutz.storemngsim.domain.menu.*;
 import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
-import com.tenutz.storemngsim.web.api.dto.menu.MainMenuCreateRequest;
-import com.tenutz.storemngsim.web.api.dto.menu.MainMenuResponse;
-import com.tenutz.storemngsim.web.api.dto.menu.MainMenuUpdateRequest;
-import com.tenutz.storemngsim.web.api.dto.menu.MainMenusResponse;
+import com.tenutz.storemngsim.web.api.dto.menu.*;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +16,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -175,7 +168,13 @@ public class MenuService {
     @Transactional
     public void deleteMainMenu(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd) {
         MainMenu foundMainMenu = mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).orElseThrow(CEntityNotFoundException.CMainMenuNotFoundException::new);
-        foundMainMenu.doesNotUse();
+        foundMainMenu.delete();
+    }
+
+    @Transactional
+    public void deleteMainMenus(String strCd, String mainCateCd, String middleCateCd, String subCateCd, MenusDeleteRequest request) {
+        List<MainMenu> foundMenus = mainMenuRepository.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenuCodes());
+        foundMenus.forEach(MainMenu::delete);
     }
 
     private int latestPriority(List<Integer> latestPriorities) {

@@ -1,12 +1,10 @@
 package com.tenutz.storemngsim.web.api.controller;
 
-import com.tenutz.storemngsim.web.api.dto.menu.MainMenuCreateRequest;
-import com.tenutz.storemngsim.web.api.dto.menu.MainMenuResponse;
-import com.tenutz.storemngsim.web.api.dto.menu.MainMenuUpdateRequest;
-import com.tenutz.storemngsim.web.api.dto.menu.MainMenusResponse;
+import com.tenutz.storemngsim.web.api.dto.menu.*;
 import com.tenutz.storemngsim.web.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -61,6 +59,7 @@ public class MenuApiController {
      * @param request
      */
     @PostMapping("/main-menus")
+    @ResponseStatus(HttpStatus.CREATED)
     public void createMainMenu(
             @PathVariable String strCd,
             @PathVariable String mainCateCd,
@@ -101,6 +100,7 @@ public class MenuApiController {
      * @param mainMenuCd 메뉴코드
      */
     @DeleteMapping("/main-menus/{mainMenuCd}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteMainMenu(
             @PathVariable String strCd,
             @PathVariable String mainCateCd,
@@ -110,4 +110,26 @@ public class MenuApiController {
     ) {
         menuService.deleteMainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd);
     }
+
+    /**
+     * 메뉴복수삭제
+     * @param strCd 가맹점코드
+     * @param mainCateCd 대분류코드
+     * @param middleCateCd 중분류코드
+     * @param subCateCd 소분류코드
+     * @param request
+     */
+    @DeleteMapping("/main-menus")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteMainMenus(
+            @PathVariable String strCd,
+            @PathVariable String mainCateCd,
+            @PathVariable String middleCateCd,
+            @PathVariable String subCateCd,
+            @Valid @RequestBody MenusDeleteRequest request
+    ) {
+        menuService.deleteMainMenus(strCd, mainCateCd, middleCateCd, subCateCd, request);
+    }
+
+
 }
