@@ -24,4 +24,16 @@ public class CInvalidValueException extends CBusinessException {
             super(ErrorCode.ALREADY_CATEGORY_CREATED);
         }
     }
+
+    public static class CAlreadyMainMenuCreatedException extends CInvalidValueException {
+        public CAlreadyMainMenuCreatedException() {
+            super(ErrorCode.ALREADY_MAIN_MENU_CREATED);
+        }
+    }
+
+    public static class CAlreadyMainMenuDetailsCreatedException extends CInvalidValueException {
+        public CAlreadyMainMenuDetailsCreatedException() {
+            super(ErrorCode.ALREADY_MAIN_MENU_DETAILS_CREATED);
+        }
+    }
 }

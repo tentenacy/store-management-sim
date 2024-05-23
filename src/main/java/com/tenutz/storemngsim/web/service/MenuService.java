@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
@@ -91,8 +92,22 @@ public class MenuService {
     public void createMainMenu(String strCd, String mainCateCd, String middleCateCd, String subCateCd, MainMenuCreateRequest request) {
         StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findFirst().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
         mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenuCode()).ifPresent(mainMenu -> {
-            throw new CInvalidValueException.CAlreadyCategoryCreatedException();
+            throw new CInvalidValueException.CAlreadyMainMenuCreatedException();
         });
+        if(StringUtils.hasText(request.getIngredientDetails())) {
+            mainMenuDetailsRepository.details(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenuCode()).ifPresent(mainMenuDetails -> {
+                throw new CInvalidValueException.CAlreadyMainMenuDetailsCreatedException();
+            });
+            mainMenuDetailsRepository.save(MainMenuDetails.create(
+                    foundStoreMaster.getSiteCd(),
+                    strCd,
+                    mainCateCd,
+                    middleCateCd,
+                    subCateCd,
+                    request.getMenuCode(),
+                    request.getIngredientDetails()
+            ));
+        }
         mainMenuRepository.save(
                 MainMenu.create(
                         foundStoreMaster.getSiteCd(),
@@ -155,6 +170,12 @@ public class MenuService {
                 request.getEventDayOfWeek(),
                 request.getMemoKor()
         );
+    }
+
+    @Transactional
+    public void deleteMainMenu(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd) {
+        MainMenu foundMainMenu = mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).orElseThrow(CEntityNotFoundException.CMainMenuNotFoundException::new);
+        foundMainMenu.doesNotUse();
     }
 
     private int latestPriority(List<Integer> latestPriorities) {
