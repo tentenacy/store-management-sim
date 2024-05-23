@@ -239,6 +239,15 @@ public class MenuApiController {
         optionGroupService.deleteMainMenuMappers(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd, request);
     }
 
+    /**
+     * 메뉴옵션그룹맵핑순서변경
+     * @param strCd 가맹점코드
+     * @param mainCateCd 대분류코드
+     * @param middleCateCd 중분류코드
+     * @param subCateCd 소분류코드
+     * @param mainMenuCd 메뉴코드
+     * @param request
+     */
     @PostMapping("/main-menus/{mainMenuCd}/mappers/priorities")
     public void changeMainMenuMapperPriorities(
             @PathVariable String strCd,
