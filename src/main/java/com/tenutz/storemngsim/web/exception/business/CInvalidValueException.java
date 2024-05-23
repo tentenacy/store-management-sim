@@ -63,7 +63,7 @@ public class CInvalidValueException extends CBusinessException {
 
     public static class CAlreadyOptionCreatedException extends CInvalidValueException {
         public CAlreadyOptionCreatedException() {
-            super(ErrorCode.ALREADY_MAIN_MENU_CREATED);
+            super(ErrorCode.ALREADY_OPTION_CREATED);
         }
     }
 }

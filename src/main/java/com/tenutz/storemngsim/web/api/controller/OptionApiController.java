@@ -2,6 +2,7 @@ package com.tenutz.storemngsim.web.api.controller;
 
 import com.tenutz.storemngsim.web.api.dto.option.OptionCreateRequest;
 import com.tenutz.storemngsim.web.api.dto.option.OptionResponse;
+import com.tenutz.storemngsim.web.api.dto.option.OptionUpdateRequest;
 import com.tenutz.storemngsim.web.api.dto.option.OptionsResponse;
 import com.tenutz.storemngsim.web.service.OptionGroupService;
 import com.tenutz.storemngsim.web.service.OptionService;
@@ -51,4 +52,16 @@ public class OptionApiController {
     public void createOption(@PathVariable String strCd, @Valid @RequestBody OptionCreateRequest request) {
         optionService.createOption(strCd, request);
     }
+
+    /**
+     * 옵션수정
+     * @param strCd 가맹점코드
+     * @param optionCd 옵션코드
+     * @param request
+     */
+    @PutMapping("/{optionCd}")
+    public void updateOption(@PathVariable String strCd, @PathVariable String optionCd, @Valid @RequestBody OptionUpdateRequest request) {
+        optionService.updateOption(strCd, optionCd, request);
+    }
+
 }

@@ -6,6 +6,7 @@ import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.web.api.dto.option.OptionCreateRequest;
 import com.tenutz.storemngsim.web.api.dto.option.OptionResponse;
+import com.tenutz.storemngsim.web.api.dto.option.OptionUpdateRequest;
 import com.tenutz.storemngsim.web.api.dto.option.OptionsResponse;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
@@ -96,6 +97,32 @@ public class OptionService {
                         request.getEventTimeTo(),
                         request.getEventDayOfWeek()
                 )
+        );
+    }
+
+    @Transactional
+    public void updateOption(String strCd, String optionCd, OptionUpdateRequest request) {
+        Option foundOption = optionRepository.option(strCd, optionCd).orElseThrow(CEntityNotFoundException.COptionNotFoundException::new);
+        foundOption.update(
+                request.getOptionName(),
+                request.getPrice(),
+                !ObjectUtils.isEmpty(request.getDiscountedPrice()) ? request.getDiscountedPrice() : 0,
+                !ObjectUtils.isEmpty(request.getAdditionalPackagingPrice()) ? request.getAdditionalPackagingPrice() : 0,
+                request.getPackaging(),
+                request.getOutOfStock(),
+                request.getUse(),
+                request.getImageName(),
+                request.getOptionNameKor(),
+                request.getShowDateFrom(),
+                request.getShowDateTo(),
+                request.getShowTimeFrom(),
+                request.getShowTimeTo(),
+                request.getShowDayOfWeek(),
+                request.getEventDateFrom(),
+                request.getEventDateTo(),
+                request.getEventTimeFrom(),
+                request.getEventTimeTo(),
+                request.getEventDayOfWeek()
         );
     }
 }
