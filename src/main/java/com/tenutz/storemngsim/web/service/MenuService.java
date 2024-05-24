@@ -202,7 +202,9 @@ public class MenuService {
         List<String> optionGroupCodes = foundOptionGroupMainMenus.stream().map(OptionGroupMainMenu::getOptGrpCd).collect(Collectors.toList());
         request.getOptionGroupCodes().forEach(code -> {
             if(optionGroupCodes.contains(code)) {
-                throw new CInvalidValueException.CAlreadyMainMenuMappedException();
+                foundOptionGroupMainMenus.stream()
+                        .filter(optionGroupOption -> optionGroupOption.getOptGrpCd().equals(code))
+                        .findAny().ifPresent(OptionGroupMainMenu::use);
             }
             optionGroupMainMenuRepository.save(
                     OptionGroupMainMenu.create(

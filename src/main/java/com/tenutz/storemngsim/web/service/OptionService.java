@@ -147,7 +147,9 @@ public class OptionService {
         List<String> optionGroupCodes = foundOptionGroupOptions.stream().map(OptionGroupOption::getOptGrpCd).collect(Collectors.toList());
         request.getOptionGroupCodes().forEach(code -> {
             if(optionGroupCodes.contains(code)) {
-                throw new CInvalidValueException.CAlreadyOptionMappedException();
+                foundOptionGroupOptions.stream()
+                        .filter(optionGroupOption -> optionGroupOption.getOptGrpCd().equals(code))
+                        .findAny().ifPresent(OptionGroupOption::use);
             }
             optionGroupOptionRepository.save(
                     OptionGroupOption.create(

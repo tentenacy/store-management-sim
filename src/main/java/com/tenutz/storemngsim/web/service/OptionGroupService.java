@@ -193,6 +193,34 @@ public class OptionGroupService {
         );
     }
 
+    public OptionGroupOptionMappersResponse optionGroupOptionMappers(String strCd, String optionGroupCd) {
+        return new OptionGroupOptionMappersResponse(optionRepository.optionGroupOptionMappers(strCd, optionGroupCd));
+    }
+
+    @Transactional
+    public void mapToOptions(String strCd, String optionGroupCd, OptionsMappedByRequest request) {
+        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
+        List<OptionGroupOption> foundOptionGroupOptions = optionGroupOptionRepository.optionGroupOptions2(strCd, optionGroupCd, request.getOptionCodes(), "D");
+        List<String> optionGroupCodes = foundOptionGroupOptions.stream().map(OptionGroupOption::getOptGrpCd).collect(Collectors.toList());
+        request.getOptionCodes().forEach(code -> {
+            if(optionGroupCodes.contains(code)) {
+                foundOptionGroupOptions.stream()
+                        .filter(optionGroupOption -> optionGroupOption.getOptCd().equals(code))
+                        .findAny().ifPresent(OptionGroupOption::use);
+            } else {
+                optionGroupOptionRepository.save(
+                        OptionGroupOption.create(
+                                foundStoreMaster.getSiteCd(),
+                                strCd,
+                                code,
+                                optionGroupCd,
+                                latestPriority(optionGroupOptionRepository.latestPriorities2(strCd, optionGroupCd)) + 1
+                        )
+                );
+            }
+        });
+    }
+
     private int latestPriority(List<Integer> latestPriorities) {
         return latestPriorities.isEmpty() ? 0 : (ObjectUtils.isEmpty(latestPriorities.get(0)) ? 0 : latestPriorities.get(0));
     }

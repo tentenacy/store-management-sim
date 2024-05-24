@@ -1,6 +1,7 @@
 package com.tenutz.storemngsim.web.api.controller;
 
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsDeleteRequest;
+import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsMappedByRequest;
 import com.tenutz.storemngsim.web.api.dto.option.OptionsResponse;
 import com.tenutz.storemngsim.web.api.dto.optiongroup.*;
 import com.tenutz.storemngsim.web.service.OptionGroupService;
@@ -93,5 +94,27 @@ public class OptionGroupApiController {
     @GetMapping("/{optionGroupCd}/options")
     public OptionGroupOptionsResponse optionGroupOptions(@PathVariable String strCd, @PathVariable String optionGroupCd) {
         return optionGroupService.optionGroupOptions(strCd, optionGroupCd);
+    }
+
+    /**
+     * 선택된옵션그룹옵션조회
+     * @param strCd         가맹점코드
+     * @param optionGroupCd 옵션그룹코드
+     * @return
+     */
+    @GetMapping("/{optionGroupCd}/option-mappers")
+    public OptionGroupOptionMappersResponse optionGroupOptionMappers(@PathVariable String strCd, @PathVariable String optionGroupCd) {
+        return optionGroupService.optionGroupOptionMappers(strCd, optionGroupCd);
+    }
+
+    /**
+     * 옵션그룹옵션맵핑추가
+     * @param strCd         가맹점코드
+     * @param optionGroupCd 옵션그룹코드
+     * @param request
+     */
+    @PostMapping("/{optionGroupCd}/mapped-by-option")
+    public void mapToOptions(@PathVariable String strCd, @PathVariable String optionGroupCd, @Valid @RequestBody OptionsMappedByRequest request) {
+        optionGroupService.mapToOptions(strCd, optionGroupCd, request);
     }
 }
