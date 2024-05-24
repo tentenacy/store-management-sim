@@ -11,6 +11,7 @@ import com.tenutz.storemngsim.web.api.dto.option.OptionMappersResponse;
 import com.tenutz.storemngsim.web.api.dto.option.OptionOptionGroupsResponse;
 import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupCreateRequest;
 import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupResponse;
+import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupUpdateRequest;
 import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupsResponse;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
@@ -155,6 +156,16 @@ public class OptionGroupService {
                         request.getRequired(),
                         latestPriority(optionGroupRepository.latestPriorities(strCd)) + 1
                 )
+        );
+    }
+
+    @Transactional
+    public void update(String strCd, String optionGroupCd, OptionGroupUpdateRequest request) {
+        OptionGroup foundOptionGroup = optionGroupRepository.optionGroup(strCd, optionGroupCd).orElseThrow(CEntityNotFoundException.COptionGroupNotFoundException::new);
+        foundOptionGroup.update(
+                request.getOptionGroupName(),
+                request.getToggleSelect(),
+                request.getRequired()
         );
     }
 

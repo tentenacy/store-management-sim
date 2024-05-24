@@ -3,6 +3,7 @@ package com.tenutz.storemngsim.web.api.controller;
 import com.tenutz.storemngsim.web.api.dto.option.OptionsResponse;
 import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupCreateRequest;
 import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupResponse;
+import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupUpdateRequest;
 import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupsResponse;
 import com.tenutz.storemngsim.web.service.OptionGroupService;
 import lombok.RequiredArgsConstructor;
@@ -52,5 +53,15 @@ public class OptionGroupApiController {
         optionGroupService.create(strCd, request);
     }
 
+    /**
+     * 옵션그룹수정
+     * @param strCd         가맹점코드
+     * @param optionGroupCd 옵션그룹코드
+     * @param request
+     */
+    @PutMapping("/{optionGroupCd}")
+    public void updateOptionGroup(@PathVariable String strCd, @PathVariable String optionGroupCd, @Valid @RequestBody OptionGroupUpdateRequest request) {
+        optionGroupService.update(strCd, optionGroupCd, request);
+    }
 
 }
