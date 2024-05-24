@@ -307,6 +307,38 @@ public class OptionGroupService {
     }
 
     @Transactional
+    public void changeOptionGroupMainMenuMapperPriorities(String strCd, String optionGroupCd, OptionGroupMainMenuMapperPrioritiesChangeRequest request) {
+        List<OptionGroupMainMenu> foundMappers = optionGroupMainMenuRepository.findByStrCdAndOptGrpCdAndPartialIdIn(
+                        strCd,
+                        optionGroupCd,
+                        request.getOptionGroupMainMenus().stream().map(mainMenusMappedBy ->
+                                new PartialOptionGroupMainMenuId(
+                                        mainMenusMappedBy.getMainCategoryCode(),
+                                        mainMenusMappedBy.getMiddleCategoryCode(),
+                                        mainMenusMappedBy.getSubCategoryCode(),
+                                        mainMenusMappedBy.getMenuCode()
+                                )
+                        ).collect(Collectors.toList())
+                ).stream()
+                .filter(ogmm -> !ogmm.getUseYn().equals("D"))
+                .collect(Collectors.toList());
+        if(request.getOptionGroupMainMenus().size() != foundMappers.size()) {
+            throw new CInvalidValueException.CNonExistentOptionGroupMainMenuIncludedException();
+        }
+        foundMappers.forEach(optionGroupMainMenu -> {
+            request.getOptionGroupMainMenus().stream().filter(reqOptionGroupMainMenu ->
+                    new PartialOptionGroupMainMenuId(
+                            reqOptionGroupMainMenu.getMainCategoryCode(),
+                            reqOptionGroupMainMenu.getMiddleCategoryCode(),
+                            reqOptionGroupMainMenu.getSubCategoryCode(),
+                            reqOptionGroupMainMenu.getMenuCode()
+                    ).equals(optionGroupMainMenu.getPartialId())).findAny().ifPresent(reqOptionGroupMainMenu -> {
+                optionGroupMainMenu.updatePriority(reqOptionGroupMainMenu.getPriority());
+            });
+        });
+    }
+
+    @Transactional
     public void deleteOptionGroupMainMenuMappers(String strCd, String optionGroupCd, OptionGroupMainMenuMappersDeleteRequest request) {
         List<OptionGroupMainMenu> foundOptionGroupMainMenus = optionGroupMainMenuRepository.findByStrCdAndOptGrpCdAndPartialIdIn(
                 strCd,

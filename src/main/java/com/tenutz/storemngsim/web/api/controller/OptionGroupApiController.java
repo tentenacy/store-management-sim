@@ -182,8 +182,23 @@ public class OptionGroupApiController {
      * @param request
      */
     @PostMapping("/{optionGroupCd}/mapped-by-main-menus")
-    public void mapToMainMenus(@PathVariable String strCd, @PathVariable String optionGroupCd, @Valid @RequestBody MainMenusMappedByRequest request) {
+    public void mapToMainMenus(@PathVariable String strCd, @PathVariable String optionGroupCd, @Valid @RequestBody com.tenutz.storemngsim.web.api.dto.optiongroup.MainMenusMappedByRequest request) {
         optionGroupService.mapToMainMenus(strCd, optionGroupCd, request);
+    }
+
+    /**
+     * 옵션그룹메뉴순서변경
+     * @param strCd         가맹점코드
+     * @param optionGroupCd 옵션그룹코드
+     * @param request
+     */
+    @PostMapping("/{optionGroupCd}/main-menu-mappers/priorities")
+    public void changeOptionGroupMainMenuMapperPriorities(
+            @PathVariable String strCd,
+            @PathVariable String optionGroupCd,
+            @Valid @RequestBody OptionGroupMainMenuMapperPrioritiesChangeRequest request
+    ) {
+        optionGroupService.changeOptionGroupMainMenuMapperPriorities(strCd, optionGroupCd, request);
     }
 
     /**
@@ -197,7 +212,7 @@ public class OptionGroupApiController {
     public void deleteOptionGroupMainMenuMappers(
             @PathVariable String strCd,
             @PathVariable String optionGroupCd,
-            @Valid @RequestBody OptionGroupMainMenuMappersDeleteRequest request
+            @Valid @RequestBody com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupMainMenuMappersDeleteRequest request
     ) {
         optionGroupService.deleteOptionGroupMainMenuMappers(strCd, optionGroupCd, request);
     }

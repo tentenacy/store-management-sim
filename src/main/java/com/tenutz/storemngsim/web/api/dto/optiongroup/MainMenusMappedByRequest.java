@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -23,9 +24,13 @@ public class MainMenusMappedByRequest {
     @AllArgsConstructor
     public static class MainMenuMappedBy {
 
+        @NotEmpty
         private String mainCategoryCode;
+        @NotEmpty
         private String middleCategoryCode;
+        @NotEmpty
         private String subCategoryCode;
+        @NotEmpty
         private String menuCode;
     }
 }

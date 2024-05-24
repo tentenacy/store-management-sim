@@ -1,7 +1,6 @@
 package com.tenutz.storemngsim.web.api.dto.optiongroup;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,16 +11,16 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class OptionGroupMainMenuMappersDeleteRequest {
+public class OptionGroupMainMenuMapperPrioritiesChangeRequest {
 
     @Valid
     @NotNull
-    List<OptionGroupMainMenuMapperDelete> optionGroupMainMenus;
+//    @Size(min = 1)
+    List<OptionGroupMainMenu> optionGroupMainMenus;
 
     @Data
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    @AllArgsConstructor
-    public static class OptionGroupMainMenuMapperDelete {
+    public static class OptionGroupMainMenu {
 
         @NotEmpty
         private String mainCategoryCode;
@@ -31,5 +30,8 @@ public class OptionGroupMainMenuMappersDeleteRequest {
         private String subCategoryCode;
         @NotEmpty
         private String menuCode;
+
+        @NotNull
+        private Integer priority;
     }
 }
