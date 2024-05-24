@@ -93,4 +93,15 @@ public class OptionApiController {
     public OptionOptionGroupsResponse optionOptionGroups(@PathVariable String strCd, @PathVariable String optionCd) {
         return optionGroupService.optionOptionGroups(strCd, optionCd);
     }
+
+    /**
+     * 선택된옵션옵션그룹조회
+     * @param strCd    가맹점코드
+     * @param optionCd 옵션코드
+     * @return
+     */
+    @GetMapping("/{optionCd}/mappers")
+    public OptionMappersResponse optionMappers(@PathVariable String strCd, @PathVariable String optionCd) {
+        return optionGroupService.optionMappers(strCd, optionCd);
+    }
 }

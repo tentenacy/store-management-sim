@@ -7,6 +7,7 @@ import com.tenutz.storemngsim.web.api.dto.common.OptionGroupPrioritiesChangeRequ
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsDeleteRequest;
 import com.tenutz.storemngsim.web.api.dto.menu.MainMenuMappersResponse;
 import com.tenutz.storemngsim.web.api.dto.menu.MainMenuOptionGroupsResponse;
+import com.tenutz.storemngsim.web.api.dto.option.OptionMappersResponse;
 import com.tenutz.storemngsim.web.api.dto.option.OptionOptionGroupsResponse;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
 import lombok.RequiredArgsConstructor;
@@ -73,5 +74,9 @@ public class OptionGroupService {
                         )
                 ).collect(Collectors.toList())
         );
+    }
+
+    public OptionMappersResponse optionMappers(String strCd, String optionCd) {
+        return new OptionMappersResponse(optionGroupMainMenuRepository.optionMappers(strCd, optionCd));
     }
 }
