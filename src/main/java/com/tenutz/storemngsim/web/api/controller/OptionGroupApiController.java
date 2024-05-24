@@ -185,4 +185,20 @@ public class OptionGroupApiController {
     public void mapToMainMenus(@PathVariable String strCd, @PathVariable String optionGroupCd, @Valid @RequestBody MainMenusMappedByRequest request) {
         optionGroupService.mapToMainMenus(strCd, optionGroupCd, request);
     }
+
+    /**
+     * 옵션그룹메뉴맵핑복수삭제
+     * @param strCd         가맹점코드
+     * @param optionGroupCd 옵션그룹코드
+     * @param request
+     */
+    @DeleteMapping("/{optionGroupCd}/main-menu-mappers")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteOptionGroupMainMenuMappers(
+            @PathVariable String strCd,
+            @PathVariable String optionGroupCd,
+            @Valid @RequestBody OptionGroupMainMenuMappersDeleteRequest request
+    ) {
+        optionGroupService.deleteOptionGroupMainMenuMappers(strCd, optionGroupCd, request);
+    }
 }

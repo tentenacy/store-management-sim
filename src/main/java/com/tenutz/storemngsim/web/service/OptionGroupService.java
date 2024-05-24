@@ -269,10 +269,9 @@ public class OptionGroupService {
     @Transactional
     public void mapToMainMenus(String strCd, String optionGroupCd, MainMenusMappedByRequest request) {
         StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
-        //D
         List<OptionGroupMainMenu> foundOptionGroupMainMenus = optionGroupMainMenuRepository.findByStrCdAndOptGrpCdAndPartialIdIn(
-                        optionGroupCd,
                         strCd,
+                        optionGroupCd,
                         request.getMainMenusMappedBy().stream().map(mainMenusMappedBy ->
                                 new PartialOptionGroupMainMenuId(
                                         mainMenusMappedBy.getMainCategoryCode(),
@@ -305,6 +304,26 @@ public class OptionGroupService {
                 );
             }
         });
+    }
+
+    @Transactional
+    public void deleteOptionGroupMainMenuMappers(String strCd, String optionGroupCd, OptionGroupMainMenuMappersDeleteRequest request) {
+        List<OptionGroupMainMenu> foundOptionGroupMainMenus = optionGroupMainMenuRepository.findByStrCdAndOptGrpCdAndPartialIdIn(
+                strCd,
+                optionGroupCd,
+                request.getOptionGroupMainMenus().stream().map(mainMenusMappedBy ->
+                        new PartialOptionGroupMainMenuId(
+                                mainMenusMappedBy.getMainCategoryCode(),
+                                mainMenusMappedBy.getMiddleCategoryCode(),
+                                mainMenusMappedBy.getSubCategoryCode(),
+                                mainMenusMappedBy.getMenuCode()
+                        )
+                ).collect(Collectors.toList())
+        );
+        if(request.getOptionGroupMainMenus().size() != foundOptionGroupMainMenus.size()) {
+            throw new CInvalidValueException.CNonExistentOptionGroupIncludedException();
+        }
+        foundOptionGroupMainMenus.forEach(OptionGroupMainMenu::delete);
     }
 
     private int latestPriority(List<Integer> latestPriorities) {
