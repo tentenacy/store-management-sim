@@ -234,6 +234,15 @@ public class OptionGroupService {
         });
     }
 
+    @Transactional
+    public void deleteOptionGroupOptionMappers(String strCd, String optionGroupCd, OptionGroupOptionMappersDeleteRequest request) {
+        List<OptionGroupOption> foundOptionGroups = optionGroupOptionRepository.optionGroupOptions2(strCd, optionGroupCd, request.getOptionGroupOptionCodes(), "X");
+        if(request.getOptionGroupOptionCodes().size() != foundOptionGroups.size()) {
+            throw new CInvalidValueException.CNonExistentOptionGroupIncludedException();
+        }
+        foundOptionGroups.forEach(OptionGroupOption::delete);
+    }
+
     private int latestPriority(List<Integer> latestPriorities) {
         return latestPriorities.isEmpty() ? 0 : (ObjectUtils.isEmpty(latestPriorities.get(0)) ? 0 : latestPriorities.get(0));
     }

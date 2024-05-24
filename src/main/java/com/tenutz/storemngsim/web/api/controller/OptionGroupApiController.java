@@ -130,4 +130,20 @@ public class OptionGroupApiController {
     ) {
         optionGroupService.changeOptionGroupOptionMapperPriorities(strCd, optionGroupCd, request);
     }
+
+    /**
+     * 옵션그룹옵션맵핑복수삭제
+     * @param strCd         가맹점코드
+     * @param optionGroupCd 옵션그룹코드
+     * @param request
+     */
+    @DeleteMapping("/{optionGroupCd}/option-mappers")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteOptionGroupOptionMappers(
+            @PathVariable String strCd,
+            @PathVariable String optionGroupCd,
+            @Valid @RequestBody OptionGroupOptionMappersDeleteRequest request
+    ) {
+        optionGroupService.deleteOptionGroupOptionMappers(strCd, optionGroupCd, request);
+    }
 }
