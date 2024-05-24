@@ -100,7 +100,7 @@ public class OptionGroupService {
 
     @Transactional
     public void changeOptionMapperPriorities(String strCd, String optionCd, OptionGroupPrioritiesChangeRequest request) {
-        List<OptionGroupOption> foundMappers = optionGroupMainMenuRepository.optionGroupOptions(strCd, optionCd, request.getOptionGroups().stream().map(OptionGroupPrioritiesChangeRequest.OptionGroup::getOptionGroupCode).collect(Collectors.toList()), "D");
+        List<OptionGroupOption> foundMappers = optionGroupOptionRepository.optionGroupOptions(strCd, optionCd, request.getOptionGroups().stream().map(OptionGroupPrioritiesChangeRequest.OptionGroup::getOptionGroupCode).collect(Collectors.toList()), "D");
         if(request.getOptionGroups().size() != foundMappers.size()) {
             throw new CInvalidValueException.CNonExistentOptionGroupOptionIncludedException();
         }
@@ -218,6 +218,19 @@ public class OptionGroupService {
                         )
                 );
             }
+        });
+    }
+
+    @Transactional
+    public void changeOptionGroupOptionMapperPriorities(String strCd, String optionGroupCd, OptionGroupOptionMapperPrioritiesChangeRequest request) {
+        List<OptionGroupOption> foundMappers = optionGroupOptionRepository.optionGroupOptions2(strCd, optionGroupCd, request.getOptionGroupOptions().stream().map(OptionGroupOptionMapperPrioritiesChangeRequest.OptionGroupOption::getOptionCode).collect(Collectors.toList()), "D");
+        if(request.getOptionGroupOptions().size() != foundMappers.size()) {
+            throw new CInvalidValueException.CNonExistentOptionGroupOptionIncludedException();
+        }
+        foundMappers.forEach(optionGroupOption -> {
+            request.getOptionGroupOptions().stream().filter(reqOptionGroupOption -> reqOptionGroupOption.getOptionCode().equals(optionGroupOption.getOptCd())).findAny().ifPresent(reqOptionGroupOption -> {
+                optionGroupOption.updatePriority(reqOptionGroupOption.getPriority());
+            });
         });
     }
 
