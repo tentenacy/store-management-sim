@@ -3,6 +3,7 @@ package com.tenutz.storemngsim.web.service;
 import com.tenutz.storemngsim.domain.menu.*;
 import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
+import com.tenutz.storemngsim.web.api.dto.common.MainMenuSearchRequest;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupPrioritiesChangeRequest;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsDeleteRequest;
 import com.tenutz.storemngsim.web.api.dto.menu.MainMenuMappersResponse;
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +34,7 @@ public class OptionGroupService {
     private final OptionGroupOptionRepository optionGroupOptionRepository;
     private final StoreMasterRepository storeMasterRepository;
     private final OptionRepository optionRepository;
+    private final MainMenuRepository mainMenuRepository;
 
     public MainMenuOptionGroupsResponse mainMenuOptionGroups(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd) {
         return new MainMenuOptionGroupsResponse(
@@ -241,6 +244,20 @@ public class OptionGroupService {
             throw new CInvalidValueException.CNonExistentOptionGroupIncludedException();
         }
         foundOptionGroups.forEach(OptionGroupOption::delete);
+    }
+
+    public OptionGroupMainMenusResponse optionGroupMainMenus(String strCd, String optionGroupCd, MainMenuSearchRequest request) {
+        return new OptionGroupMainMenusResponse(mainMenuRepository.optionGroupMainMenus(strCd, optionGroupCd, request.getMainCateCd(), request.getMiddleCateCd(), request.getSubCateCd()).stream().map(mainMenu ->
+                new OptionGroupMainMenusResponse.OptionGroupMainMenu(
+                        strCd,
+                        mainMenu.getMenuCd(),
+                        mainMenu.getMenuNm(),
+                        mainMenu.getSellAmt(),
+                        mainMenu.getCateCd1(),
+                        mainMenu.getCateCd2(),
+                        mainMenu.getCateCd3()
+                )).collect(Collectors.toList())
+        );
     }
 
     private int latestPriority(List<Integer> latestPriorities) {
