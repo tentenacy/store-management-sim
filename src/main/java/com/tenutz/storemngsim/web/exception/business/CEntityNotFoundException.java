@@ -48,4 +48,10 @@ public class CEntityNotFoundException extends CBusinessException {
             super(ErrorCode.OPTION_NOT_FOUND);
         }
     }
+
+    public static class COptionGroupNotFoundException extends CEntityNotFoundException {
+        public COptionGroupNotFoundException() {
+            super(ErrorCode.OPTION_GROUP_NOT_FOUND);
+        }
+    }
 }

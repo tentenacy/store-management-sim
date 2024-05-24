@@ -7,6 +7,9 @@ import com.tenutz.storemngsim.web.api.dto.menu.MainMenuMappersResponse;
 import com.tenutz.storemngsim.web.api.dto.menu.MainMenuOptionGroupsResponse;
 import com.tenutz.storemngsim.web.api.dto.option.OptionMappersResponse;
 import com.tenutz.storemngsim.web.api.dto.option.OptionOptionGroupsResponse;
+import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupResponse;
+import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupsResponse;
+import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -102,5 +105,32 @@ public class OptionGroupService {
                 optionGroupOption.updatePriority(reqOptionGroupOption.getPriority());
             });
         });
+    }
+
+    public OptionGroupsResponse optionGroups(String strCd) {
+        return new OptionGroupsResponse(optionGroupRepository.optionGroups(strCd).stream().map(optionGroup ->
+                new OptionGroupsResponse.OptionGroup(
+                        optionGroup.getOptGrpCd(),
+                        optionGroup.getOptGrpKorNm(),
+                        optionGroup.toggleYn(),
+                        optionGroup.mustSelectYn()
+                )).collect(Collectors.toList()));
+    }
+
+    public OptionGroupResponse option(String strCd, String optionGroupCd) {
+        OptionGroup foundOptionGroup = optionGroupRepository.optionGroup(strCd, optionGroupCd).orElseThrow(CEntityNotFoundException.COptionGroupNotFoundException::new);
+        return new OptionGroupResponse(
+                foundOptionGroup.getStrCd(),
+                foundOptionGroup.getOptGrpCd(),
+                foundOptionGroup.getOptGrpKorNm(),
+                foundOptionGroup.toggleYn(),
+                foundOptionGroup.mustSelectYn(),
+                foundOptionGroup.useYn(),
+                foundOptionGroup.getSortNum(),
+                foundOptionGroup.getCreatedBy(),
+                foundOptionGroup.getCreatedAt(),
+                foundOptionGroup.getUpdatedBy(),
+                foundOptionGroup.getUpdatedAt()
+        );
     }
 }
