@@ -51,4 +51,6 @@ public class OptionGroupApiController {
     public void createOptionGroup(@PathVariable String strCd, @Valid @RequestBody OptionGroupCreateRequest request) {
         optionGroupService.create(strCd, request);
     }
+
+
 }
