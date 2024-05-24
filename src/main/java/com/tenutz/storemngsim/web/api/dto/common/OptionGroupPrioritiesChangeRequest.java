@@ -1,5 +1,6 @@
 package com.tenutz.storemngsim.web.api.dto.common;
 
+import com.tenutz.storemngsim.web.api.dto.category.CategoryPrioritiesChangeRequest;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;

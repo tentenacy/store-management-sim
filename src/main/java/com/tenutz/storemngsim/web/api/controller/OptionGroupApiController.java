@@ -1,14 +1,16 @@
 package com.tenutz.storemngsim.web.api.controller;
 
+import com.tenutz.storemngsim.web.api.dto.option.OptionsResponse;
+import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupCreateRequest;
 import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupResponse;
 import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupsResponse;
 import com.tenutz.storemngsim.web.service.OptionGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Slf4j
 @RestController
@@ -37,5 +39,16 @@ public class OptionGroupApiController {
     @GetMapping("/{optionGroupCd}")
     public OptionGroupResponse optionGroup(@PathVariable String strCd, @PathVariable String optionGroupCd) {
         return optionGroupService.option(strCd, optionGroupCd);
+    }
+
+    /**
+     * 옵션그룹추가
+     * @param strCd   가맹점코드
+     * @param request
+     */
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createOptionGroup(@PathVariable String strCd, @Valid @RequestBody OptionGroupCreateRequest request) {
+        optionGroupService.create(strCd, request);
     }
 }

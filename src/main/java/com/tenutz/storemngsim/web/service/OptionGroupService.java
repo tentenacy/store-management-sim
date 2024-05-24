@@ -1,12 +1,15 @@
 package com.tenutz.storemngsim.web.service;
 
 import com.tenutz.storemngsim.domain.menu.*;
+import com.tenutz.storemngsim.domain.store.StoreMaster;
+import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupPrioritiesChangeRequest;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsDeleteRequest;
 import com.tenutz.storemngsim.web.api.dto.menu.MainMenuMappersResponse;
 import com.tenutz.storemngsim.web.api.dto.menu.MainMenuOptionGroupsResponse;
 import com.tenutz.storemngsim.web.api.dto.option.OptionMappersResponse;
 import com.tenutz.storemngsim.web.api.dto.option.OptionOptionGroupsResponse;
+import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupCreateRequest;
 import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupResponse;
 import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupsResponse;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
@@ -15,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +32,7 @@ public class OptionGroupService {
     private final OptionGroupRepository optionGroupRepository;
     private final OptionGroupMainMenuRepository optionGroupMainMenuRepository;
     private final OptionGroupOptionRepository optionGroupOptionRepository;
+    private final StoreMasterRepository storeMasterRepository;
 
     public MainMenuOptionGroupsResponse mainMenuOptionGroups(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd) {
         return new MainMenuOptionGroupsResponse(
@@ -132,5 +137,28 @@ public class OptionGroupService {
                 foundOptionGroup.getUpdatedBy(),
                 foundOptionGroup.getUpdatedAt()
         );
+    }
+
+    @Transactional
+    public void create(String strCd, OptionGroupCreateRequest request) {
+        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
+        optionGroupRepository.optionGroup(strCd, request.getOptionGroupCode()).ifPresent(optionGroup -> {
+            throw new CInvalidValueException.CAlreadyOptionGroupCreatedException();
+        });
+        optionGroupRepository.save(
+                OptionGroup.create(
+                        foundStoreMaster.getSiteCd(),
+                        strCd,
+                        request.getOptionGroupCode(),
+                        request.getOptionGroupName(),
+                        request.getToggleSelect(),
+                        request.getRequired(),
+                        latestPriority(optionGroupRepository.latestPriorities(strCd)) + 1
+                )
+        );
+    }
+
+    private int latestPriority(List<Integer> latestPriorities) {
+        return latestPriorities.isEmpty() ? 0 : (ObjectUtils.isEmpty(latestPriorities.get(0)) ? 0 : latestPriorities.get(0));
     }
 }

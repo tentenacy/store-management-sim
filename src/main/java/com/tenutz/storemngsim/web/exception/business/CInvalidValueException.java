@@ -84,4 +84,10 @@ public class CInvalidValueException extends CBusinessException {
             super(ErrorCode.NON_EXISTENT_OPTION_GROUP_MAIN_MENU_INCLUDED);
         }
     }
+
+    public static class CAlreadyOptionGroupCreatedException extends CInvalidValueException {
+        public CAlreadyOptionGroupCreatedException() {
+            super(ErrorCode.ALREADY_OPTION_CREATED);
+        }
+    }
 }
