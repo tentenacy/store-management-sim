@@ -79,7 +79,18 @@ public class OptionApiController {
      */
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteOptions(@PathVariable String strCd, @Valid @RequestBody com.tenutz.storemngsim.web.api.dto.option.OptionsDeleteRequest request) {
+    public void deleteOptions(@PathVariable String strCd, @Valid @RequestBody OptionsDeleteRequest request) {
         optionService.deleteOptions(strCd, request);
+    }
+
+    /**
+     * 옵션옵션그룹조회
+     * @param strCd    가맹점코드
+     * @param optionCd 옵션코드
+     * @return
+     */
+    @GetMapping("/{optionCd}/option-groups")
+    public OptionOptionGroupsResponse optionOptionGroups(@PathVariable String strCd, @PathVariable String optionCd) {
+        return optionGroupService.optionOptionGroups(strCd, optionCd);
     }
 }

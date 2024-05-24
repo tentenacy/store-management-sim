@@ -1,6 +1,5 @@
 package com.tenutz.storemngsim.web.service;
 
-import com.tenutz.storemngsim.domain.menu.MainMenu;
 import com.tenutz.storemngsim.domain.menu.OptionGroupMainMenu;
 import com.tenutz.storemngsim.domain.menu.OptionGroupMainMenuRepository;
 import com.tenutz.storemngsim.domain.menu.OptionGroupRepository;
@@ -8,8 +7,7 @@ import com.tenutz.storemngsim.web.api.dto.common.OptionGroupPrioritiesChangeRequ
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsDeleteRequest;
 import com.tenutz.storemngsim.web.api.dto.menu.MainMenuMappersResponse;
 import com.tenutz.storemngsim.web.api.dto.menu.MainMenuOptionGroupsResponse;
-import com.tenutz.storemngsim.web.api.dto.menu.MenuPrioritiesChangeRequest;
-import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
+import com.tenutz.storemngsim.web.api.dto.option.OptionOptionGroupsResponse;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,5 +60,18 @@ public class OptionGroupService {
                 optionGroupMainMenu.updatePriority(reqOptionGroupMainMenu.getPriority());
             });
         });
+    }
+
+    public OptionOptionGroupsResponse optionOptionGroups(String strCd, String optionCd) {
+        return new OptionOptionGroupsResponse(
+                optionGroupRepository.optionOptionGroups(strCd, optionCd).stream().map(optionGroup ->
+                        new OptionOptionGroupsResponse.OptionOptionGroup(
+                                optionGroup.getOptGrpCd(),
+                                optionGroup.getOptGrpKorNm(),
+                                optionGroup.toggleYn(),
+                                optionGroup.mustSelectYn()
+                        )
+                ).collect(Collectors.toList())
+        );
     }
 }
