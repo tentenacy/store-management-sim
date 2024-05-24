@@ -90,4 +90,17 @@ public class OptionGroupService {
         }
         foundOptionMappers.forEach(OptionGroupOption::delete);
     }
+
+    @Transactional
+    public void changeOptionMapperPriorities(String strCd, String optionCd, OptionGroupPrioritiesChangeRequest request) {
+        List<OptionGroupOption> foundMappers = optionGroupMainMenuRepository.optionGroupOptions(strCd, optionCd, request.getOptionGroups().stream().map(OptionGroupPrioritiesChangeRequest.OptionGroup::getOptionGroupCode).collect(Collectors.toList()), "D");
+        if(request.getOptionGroups().size() != foundMappers.size()) {
+            throw new CInvalidValueException.CNonExistentOptionGroupOptionIncludedException();
+        }
+        foundMappers.forEach(optionGroupOption -> {
+            request.getOptionGroups().stream().filter(reqOptionGroupOption -> reqOptionGroupOption.getOptionGroupCode().equals(optionGroupOption.getOptGrpCd())).findAny().ifPresent(reqOptionGroupOption -> {
+                optionGroupOption.updatePriority(reqOptionGroupOption.getPriority());
+            });
+        });
+    }
 }
