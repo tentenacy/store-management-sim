@@ -169,6 +169,12 @@ public class OptionGroupService {
         );
     }
 
+    @Transactional
+    public void delete(String strCd, String optionGroupCd) {
+        OptionGroup foundOptionGroup = optionGroupRepository.optionGroup(strCd, optionGroupCd).orElseThrow(CEntityNotFoundException.COptionGroupNotFoundException::new);
+        foundOptionGroup.delete();
+    }
+
     private int latestPriority(List<Integer> latestPriorities) {
         return latestPriorities.isEmpty() ? 0 : (ObjectUtils.isEmpty(latestPriorities.get(0)) ? 0 : latestPriorities.get(0));
     }

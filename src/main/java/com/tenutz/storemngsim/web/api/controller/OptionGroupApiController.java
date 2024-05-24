@@ -64,4 +64,15 @@ public class OptionGroupApiController {
         optionGroupService.update(strCd, optionGroupCd, request);
     }
 
+    /**
+     * 옵션그룹삭제
+     * @param strCd         가맹점코드
+     * @param optionGroupCd 옵션그룹코드
+     */
+    @DeleteMapping("/{optionGroupCd}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteOptionGroup(@PathVariable String strCd, @PathVariable String optionGroupCd) {
+        optionGroupService.delete(strCd, optionGroupCd);
+    }
+
 }
