@@ -78,4 +78,10 @@ public class CInvalidValueException extends CBusinessException {
             super(ErrorCode.ALREADY_MAIN_MENU_MAPPED);
         }
     }
+
+    public static class CNonExistentOptionGroupOptionIncludedException extends CEntityNotFoundException {
+        public CNonExistentOptionGroupOptionIncludedException() {
+            super(ErrorCode.NON_EXISTENT_OPTION_GROUP_MAIN_MENU_INCLUDED);
+        }
+    }
 }

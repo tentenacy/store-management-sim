@@ -1,8 +1,6 @@
 package com.tenutz.storemngsim.web.service;
 
-import com.tenutz.storemngsim.domain.menu.OptionGroupMainMenu;
-import com.tenutz.storemngsim.domain.menu.OptionGroupMainMenuRepository;
-import com.tenutz.storemngsim.domain.menu.OptionGroupRepository;
+import com.tenutz.storemngsim.domain.menu.*;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupPrioritiesChangeRequest;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsDeleteRequest;
 import com.tenutz.storemngsim.web.api.dto.menu.MainMenuMappersResponse;
@@ -26,6 +24,7 @@ public class OptionGroupService {
 
     private final OptionGroupRepository optionGroupRepository;
     private final OptionGroupMainMenuRepository optionGroupMainMenuRepository;
+    private final OptionGroupOptionRepository optionGroupOptionRepository;
 
     public MainMenuOptionGroupsResponse mainMenuOptionGroups(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd) {
         return new MainMenuOptionGroupsResponse(
@@ -47,6 +46,9 @@ public class OptionGroupService {
     @Transactional
     public void deleteMainMenuMappers(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd, OptionGroupsDeleteRequest request) {
         List<OptionGroupMainMenu> foundMainMenuMappers = optionGroupMainMenuRepository.optionGroupMainMenus(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd, request.getOptionGroupCodes(), "X");
+        if(request.getOptionGroupCodes().size() != foundMainMenuMappers.size()) {
+            throw new CInvalidValueException.CNonExistentOptionGroupMainMenuIncludedException();
+        }
         foundMainMenuMappers.forEach(OptionGroupMainMenu::delete);
     }
 
@@ -78,5 +80,14 @@ public class OptionGroupService {
 
     public OptionMappersResponse optionMappers(String strCd, String optionCd) {
         return new OptionMappersResponse(optionGroupMainMenuRepository.optionMappers(strCd, optionCd));
+    }
+
+    @Transactional
+    public void deleteOptionMappers(String strCd, String optionCd, OptionGroupsDeleteRequest request) {
+        List<OptionGroupOption> foundOptionMappers = optionGroupOptionRepository.optionGroupOptions(strCd, optionCd, request.getOptionGroupCodes(), "X");
+        if(request.getOptionGroupCodes().size() != foundOptionMappers.size()) {
+            throw new CInvalidValueException.CNonExistentOptionGroupOptionIncludedException();
+        }
+        foundOptionMappers.forEach(OptionGroupOption::delete);
     }
 }

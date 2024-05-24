@@ -1,5 +1,6 @@
 package com.tenutz.storemngsim.web.api.controller;
 
+import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsDeleteRequest;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsMappedByRequest;
 import com.tenutz.storemngsim.web.api.dto.option.*;
 import com.tenutz.storemngsim.web.service.OptionGroupService;
@@ -120,5 +121,21 @@ public class OptionApiController {
             @Valid @RequestBody OptionGroupsMappedByRequest request
     ) {
         optionService.mapToOptionGroups(strCd, optionCd, request);
+    }
+
+    /**
+     * 옵션옵션그룹맵핑복수삭제
+     * @param strCd    가맹점코드
+     * @param optionCd 옵션코드
+     * @param request
+     */
+    @DeleteMapping("/{optionCd}/mappers")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteOptionMappers(
+            @PathVariable String strCd,
+            @PathVariable String optionCd,
+            @Valid @RequestBody OptionGroupsDeleteRequest request
+    ) {
+        optionGroupService.deleteOptionMappers(strCd, optionCd, request);
     }
 }

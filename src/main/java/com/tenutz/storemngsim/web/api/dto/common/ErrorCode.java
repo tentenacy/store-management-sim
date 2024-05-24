@@ -54,6 +54,7 @@ public enum ErrorCode {
     ALREADY_OPTION_CREATED(HttpStatus.BAD_REQUEST.value(), "MZS-1031", "이미 생성된 옵션입니다."),
     NON_EXISTENT_OPTION_INCLUDED(HttpStatus.BAD_REQUEST.value(), "MZS-1032", "요청에 존재하지 않는 옵션이 있습니다."),
     ALREADY_OPTION_MAPPED(HttpStatus.BAD_REQUEST.value(), "MZS-1033", "이미 옵션 그룹에 설정된 옵션입니다."),
+    NON_EXISTENT_OPTION_GROUP_OPTION_INCLUDED(HttpStatus.BAD_REQUEST.value(), "MZS-1034", "요청에 존재하지 않는 옵션 옵션 그룹 매핑이 있습니다."),
 
     /**
      * SOCIAL
