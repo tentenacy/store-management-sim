@@ -1,6 +1,8 @@
 package com.tenutz.storemngsim.web.service;
 
 import com.tenutz.storemngsim.domain.menu.*;
+import com.tenutz.storemngsim.domain.menu.id.OptionGroupMainMenuId;
+import com.tenutz.storemngsim.domain.menu.id.PartialOptionGroupMainMenuId;
 import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.web.api.dto.common.MainMenuSearchRequest;
@@ -204,9 +206,9 @@ public class OptionGroupService {
     public void mapToOptions(String strCd, String optionGroupCd, OptionsMappedByRequest request) {
         StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
         List<OptionGroupOption> foundOptionGroupOptions = optionGroupOptionRepository.optionGroupOptions2(strCd, optionGroupCd, request.getOptionCodes(), "D");
-        List<String> optionGroupCodes = foundOptionGroupOptions.stream().map(OptionGroupOption::getOptGrpCd).collect(Collectors.toList());
+        List<String> optionCodes = foundOptionGroupOptions.stream().map(OptionGroupOption::getOptCd).collect(Collectors.toList());
         request.getOptionCodes().forEach(code -> {
-            if(optionGroupCodes.contains(code)) {
+            if(optionCodes.contains(code)) {
                 foundOptionGroupOptions.stream()
                         .filter(optionGroupOption -> optionGroupOption.getOptCd().equals(code))
                         .findAny().ifPresent(OptionGroupOption::use);
@@ -262,6 +264,47 @@ public class OptionGroupService {
 
     public OptionGroupMainMenuMappersResponse optionGroupMainMenuMappers(String strCd, String optionGroupCd) {
         return new OptionGroupMainMenuMappersResponse(mainMenuRepository.optionGroupMainMenuMappers(strCd, optionGroupCd));
+    }
+
+    @Transactional
+    public void mapToMainMenus(String strCd, String optionGroupCd, MainMenusMappedByRequest request) {
+        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
+        //D
+        List<OptionGroupMainMenu> foundOptionGroupMainMenus = optionGroupMainMenuRepository.findByStrCdAndOptGrpCdAndPartialIdIn(
+                        optionGroupCd,
+                        strCd,
+                        request.getMainMenusMappedBy().stream().map(mainMenusMappedBy ->
+                                new PartialOptionGroupMainMenuId(
+                                        mainMenusMappedBy.getMainCategoryCode(),
+                                        mainMenusMappedBy.getMiddleCategoryCode(),
+                                        mainMenusMappedBy.getSubCategoryCode(),
+                                        mainMenusMappedBy.getMenuCode()
+                                )
+                        ).collect(Collectors.toList())
+                ).stream()
+                .filter(ogmm -> !ogmm.getUseYn().equals("D"))
+                .collect(Collectors.toList());
+        List<MainMenusMappedByRequest.MainMenuMappedBy> mainMenusMappedBy = foundOptionGroupMainMenus.stream().map(ogmm -> new MainMenusMappedByRequest.MainMenuMappedBy(ogmm.getCateCd1(), ogmm.getCateCd2(), ogmm.getCateCd3(), ogmm.getMenuCd())).collect(Collectors.toList());
+        request.getMainMenusMappedBy().forEach(mainMenuMappedBy -> {
+            if(mainMenusMappedBy.contains(mainMenuMappedBy)) {
+                foundOptionGroupMainMenus.stream()
+                        .filter(ogmm -> new MainMenusMappedByRequest.MainMenuMappedBy(ogmm.getCateCd1(), ogmm.getCateCd2(), ogmm.getCateCd3(), ogmm.getMenuCd()).equals(mainMenuMappedBy))
+                        .findAny().ifPresent(OptionGroupMainMenu::use);
+            } else {
+                optionGroupMainMenuRepository.save(
+                        OptionGroupMainMenu.create(
+                                foundStoreMaster.getSiteCd(),
+                                strCd,
+                                mainMenuMappedBy.getMainCategoryCode(),
+                                mainMenuMappedBy.getMiddleCategoryCode(),
+                                mainMenuMappedBy.getSubCategoryCode(),
+                                mainMenuMappedBy.getMenuCode(),
+                                optionGroupCd,
+                                latestPriority(optionGroupMainMenuRepository.latestPriorities2(strCd, optionGroupCd)) + 1
+                        )
+                );
+            }
+        });
     }
 
     private int latestPriority(List<Integer> latestPriorities) {

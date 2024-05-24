@@ -164,8 +164,25 @@ public class OptionGroupApiController {
         return optionGroupService.optionGroupMainMenus(strCd, optionGroupCd, request);
     }
 
+    /**
+     * 선택된옵션그룹메뉴조회
+     * @param strCd         가맹점코드
+     * @param optionGroupCd 옵션그룹코드
+     * @return
+     */
     @GetMapping("/{optionGroupCd}/main-menu-mappers")
     public OptionGroupMainMenuMappersResponse optionGroupMainMenuMappers(@PathVariable String strCd, @PathVariable String optionGroupCd) {
         return optionGroupService.optionGroupMainMenuMappers(strCd, optionGroupCd);
+    }
+
+    /**
+     * 옵션그룹메뉴맵핑추가
+     * @param strCd         가맹점코드
+     * @param optionGroupCd 옵션그룹코드
+     * @param request
+     */
+    @PostMapping("/{optionGroupCd}/mapped-by-main-menus")
+    public void mapToMainMenus(@PathVariable String strCd, @PathVariable String optionGroupCd, @Valid @RequestBody MainMenusMappedByRequest request) {
+        optionGroupService.mapToMainMenus(strCd, optionGroupCd, request);
     }
 }
