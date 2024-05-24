@@ -260,6 +260,10 @@ public class OptionGroupService {
         );
     }
 
+    public OptionGroupMainMenuMappersResponse optionGroupMainMenuMappers(String strCd, String optionGroupCd) {
+        return new OptionGroupMainMenuMappersResponse(mainMenuRepository.optionGroupMainMenuMappers(strCd, optionGroupCd));
+    }
+
     private int latestPriority(List<Integer> latestPriorities) {
         return latestPriorities.isEmpty() ? 0 : (ObjectUtils.isEmpty(latestPriorities.get(0)) ? 0 : latestPriorities.get(0));
     }

@@ -163,4 +163,9 @@ public class OptionGroupApiController {
     ) {
         return optionGroupService.optionGroupMainMenus(strCd, optionGroupCd, request);
     }
+
+    @GetMapping("/{optionGroupCd}/main-menu-mappers")
+    public OptionGroupMainMenuMappersResponse optionGroupMainMenuMappers(@PathVariable String strCd, @PathVariable String optionGroupCd) {
+        return optionGroupService.optionGroupMainMenuMappers(strCd, optionGroupCd);
+    }
 }
