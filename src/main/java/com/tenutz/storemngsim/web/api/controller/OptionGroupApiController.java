@@ -2,10 +2,7 @@ package com.tenutz.storemngsim.web.api.controller;
 
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsDeleteRequest;
 import com.tenutz.storemngsim.web.api.dto.option.OptionsResponse;
-import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupCreateRequest;
-import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupResponse;
-import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupUpdateRequest;
-import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupsResponse;
+import com.tenutz.storemngsim.web.api.dto.optiongroup.*;
 import com.tenutz.storemngsim.web.service.OptionGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -87,4 +84,14 @@ public class OptionGroupApiController {
         optionGroupService.deleteOptionGroups(strCd, request);
     }
 
+    /**
+     * 옵션그룹옵션조회
+     * @param strCd         가맹점코드
+     * @param optionGroupCd 옵션그룹코드
+     * @return
+     */
+    @GetMapping("/{optionGroupCd}/options")
+    public OptionGroupOptionsResponse optionGroupOptions(@PathVariable String strCd, @PathVariable String optionGroupCd) {
+        return optionGroupService.optionGroupOptions(strCd, optionGroupCd);
+    }
 }

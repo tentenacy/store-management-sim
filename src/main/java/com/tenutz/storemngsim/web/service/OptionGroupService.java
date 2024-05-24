@@ -9,10 +9,7 @@ import com.tenutz.storemngsim.web.api.dto.menu.MainMenuMappersResponse;
 import com.tenutz.storemngsim.web.api.dto.menu.MainMenuOptionGroupsResponse;
 import com.tenutz.storemngsim.web.api.dto.option.OptionMappersResponse;
 import com.tenutz.storemngsim.web.api.dto.option.OptionOptionGroupsResponse;
-import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupCreateRequest;
-import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupResponse;
-import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupUpdateRequest;
-import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupsResponse;
+import com.tenutz.storemngsim.web.api.dto.optiongroup.*;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +31,7 @@ public class OptionGroupService {
     private final OptionGroupMainMenuRepository optionGroupMainMenuRepository;
     private final OptionGroupOptionRepository optionGroupOptionRepository;
     private final StoreMasterRepository storeMasterRepository;
+    private final OptionRepository optionRepository;
 
     public MainMenuOptionGroupsResponse mainMenuOptionGroups(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd) {
         return new MainMenuOptionGroupsResponse(
@@ -182,6 +180,17 @@ public class OptionGroupService {
             throw new CInvalidValueException.CNonExistentOptionGroupIncludedException();
         }
         foundOptionGroups.forEach(OptionGroup::delete);
+    }
+
+    public OptionGroupOptionsResponse optionGroupOptions(String strCd, String optionGroupCd) {
+        return new OptionGroupOptionsResponse(optionRepository.optionGroupOptions(strCd, optionGroupCd).stream().map(option ->
+                new OptionGroupOptionsResponse.OptionGroupOption(
+                        strCd,
+                        option.getOptCd(),
+                        option.getOptNm(),
+                        option.getSellAmt()
+                )).collect(Collectors.toList())
+        );
     }
 
     private int latestPriority(List<Integer> latestPriorities) {
