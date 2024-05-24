@@ -1,5 +1,6 @@
 package com.tenutz.storemngsim.web.api.controller;
 
+import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsMappedByRequest;
 import com.tenutz.storemngsim.web.api.dto.option.*;
 import com.tenutz.storemngsim.web.service.OptionGroupService;
 import com.tenutz.storemngsim.web.service.OptionService;
@@ -103,5 +104,21 @@ public class OptionApiController {
     @GetMapping("/{optionCd}/mappers")
     public OptionMappersResponse optionMappers(@PathVariable String strCd, @PathVariable String optionCd) {
         return optionGroupService.optionMappers(strCd, optionCd);
+    }
+
+    /**
+     * 옵션옵션그룹맵핑추가
+     * @param strCd
+     * @param optionCd
+     * @param request
+     */
+    @PostMapping("/{optionCd}/mapped-by")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void mapToOptionGroups(
+            @PathVariable String strCd,
+            @PathVariable String optionCd,
+            @Valid @RequestBody OptionGroupsMappedByRequest request
+    ) {
+        optionService.mapToOptionGroups(strCd, optionCd, request);
     }
 }

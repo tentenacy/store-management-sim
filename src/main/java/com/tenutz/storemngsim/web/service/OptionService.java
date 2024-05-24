@@ -1,10 +1,9 @@
 package com.tenutz.storemngsim.web.service;
 
-import com.tenutz.storemngsim.domain.menu.MainMenu;
-import com.tenutz.storemngsim.domain.menu.Option;
-import com.tenutz.storemngsim.domain.menu.OptionRepository;
+import com.tenutz.storemngsim.domain.menu.*;
 import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
+import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsMappedByRequest;
 import com.tenutz.storemngsim.web.api.dto.option.*;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
@@ -25,6 +24,7 @@ public class OptionService {
 
     private final StoreMasterRepository storeMasterRepository;
     private final OptionRepository optionRepository;
+    private final OptionGroupOptionRepository optionGroupOptionRepository;
 
     public OptionsResponse options(String strCd) {
         return new OptionsResponse(optionRepository.options(strCd).stream().map(option ->
@@ -138,5 +138,30 @@ public class OptionService {
             throw new CInvalidValueException.CNonExistentOptionIncludedException();
         }
         foundOptions.forEach(Option::delete);
+    }
+
+    @Transactional
+    public void mapToOptionGroups(String strCd, String optionCd, OptionGroupsMappedByRequest request) {
+        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
+        List<OptionGroupOption> foundOptionGroupOptions = optionGroupOptionRepository.optionGroupOptions(strCd, optionCd, request.getOptionGroupCodes(), "D");
+        List<String> optionGroupCodes = foundOptionGroupOptions.stream().map(OptionGroupOption::getOptGrpCd).collect(Collectors.toList());
+        request.getOptionGroupCodes().forEach(code -> {
+            if(optionGroupCodes.contains(code)) {
+                throw new CInvalidValueException.CAlreadyOptionMappedException();
+            }
+            optionGroupOptionRepository.save(
+                    OptionGroupOption.create(
+                            foundStoreMaster.getSiteCd(),
+                            strCd,
+                            optionCd,
+                            code,
+                            latestPriority(optionGroupOptionRepository.latestPriorities(strCd, optionCd)) + 1
+                    )
+            );
+        });
+    }
+
+    private int latestPriority(List<Integer> latestPriorities) {
+        return latestPriorities.isEmpty() ? 0 : (ObjectUtils.isEmpty(latestPriorities.get(0)) ? 0 : latestPriorities.get(0));
     }
 }

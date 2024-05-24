@@ -72,4 +72,10 @@ public class CInvalidValueException extends CBusinessException {
             super(ErrorCode.NON_EXISTENT_OPTION_INCLUDED);
         }
     }
+
+    public static class CAlreadyOptionMappedException extends CInvalidValueException {
+        public CAlreadyOptionMappedException() {
+            super(ErrorCode.ALREADY_MAIN_MENU_MAPPED);
+        }
+    }
 }
