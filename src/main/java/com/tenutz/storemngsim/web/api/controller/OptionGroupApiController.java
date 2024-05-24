@@ -1,5 +1,6 @@
 package com.tenutz.storemngsim.web.api.controller;
 
+import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsDeleteRequest;
 import com.tenutz.storemngsim.web.api.dto.option.OptionsResponse;
 import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupCreateRequest;
 import com.tenutz.storemngsim.web.api.dto.optiongroup.OptionGroupResponse;
@@ -73,6 +74,17 @@ public class OptionGroupApiController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteOptionGroup(@PathVariable String strCd, @PathVariable String optionGroupCd) {
         optionGroupService.delete(strCd, optionGroupCd);
+    }
+
+    /**
+     * 옵션그룹복수삭제
+     * @param strCd   가맹점코드
+     * @param request
+     */
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteOptionGroups(@PathVariable String strCd, @Valid @RequestBody OptionGroupsDeleteRequest request) {
+        optionGroupService.deleteOptionGroups(strCd, request);
     }
 
 }

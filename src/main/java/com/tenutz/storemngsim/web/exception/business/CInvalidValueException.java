@@ -90,4 +90,10 @@ public class CInvalidValueException extends CBusinessException {
             super(ErrorCode.ALREADY_OPTION_GROUP_CREATED);
         }
     }
+
+    public static class CNonExistentOptionGroupIncludedException extends CEntityNotFoundException {
+        public CNonExistentOptionGroupIncludedException() {
+            super(ErrorCode.NON_EXISTENT_OPTION_GROUP_INCLUDED);
+        }
+    }
 }

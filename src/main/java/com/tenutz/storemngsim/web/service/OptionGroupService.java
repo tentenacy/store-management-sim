@@ -175,6 +175,15 @@ public class OptionGroupService {
         foundOptionGroup.delete();
     }
 
+    @Transactional
+    public void deleteOptionGroups(String strCd, OptionGroupsDeleteRequest request) {
+        List<OptionGroup> foundOptionGroups = optionGroupRepository.optionGroups(strCd, request.getOptionGroupCodes(), "X");
+        if(request.getOptionGroupCodes().size() != foundOptionGroups.size()) {
+            throw new CInvalidValueException.CNonExistentOptionGroupIncludedException();
+        }
+        foundOptionGroups.forEach(OptionGroup::delete);
+    }
+
     private int latestPriority(List<Integer> latestPriorities) {
         return latestPriorities.isEmpty() ? 0 : (ObjectUtils.isEmpty(latestPriorities.get(0)) ? 0 : latestPriorities.get(0));
     }
