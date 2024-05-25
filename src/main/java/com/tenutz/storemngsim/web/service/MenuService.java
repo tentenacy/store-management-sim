@@ -17,6 +17,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -48,7 +49,7 @@ public class MenuService {
     }
 
     public MainMenuResponse mainMenu(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd) {
-        MainMenu foundMainMenu = mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).orElseThrow(CEntityNotFoundException.CMainMenuNotFoundException::new);
+        com.tenutz.storemngsim.domain.menu.MainMenu foundMainMenu = mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).orElseThrow(CEntityNotFoundException.CMainMenuNotFoundException::new);
         return new MainMenuResponse(
                 foundMainMenu.getStrCd(),
                 foundMainMenu.getCateCd1(),
@@ -85,62 +86,92 @@ public class MenuService {
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)
     public void createMainMenu(String strCd, String mainCateCd, String middleCateCd, String subCateCd, MainMenuCreateRequest request) {
+
         StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
-        mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenuCode()).ifPresent(mainMenu -> {
-            throw new CInvalidValueException.CAlreadyMainMenuCreatedException();
-        });
+
         if(StringUtils.hasText(request.getIngredientDetails())) {
-            mainMenuDetailsRepository.details(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenuCode()).ifPresent(mainMenuDetails -> {
-                throw new CInvalidValueException.CAlreadyMainMenuDetailsCreatedException();
-            });
-            mainMenuDetailsRepository.save(MainMenuDetails.create(
-                    foundStoreMaster.getSiteCd(),
-                    strCd,
-                    mainCateCd,
-                    middleCateCd,
-                    subCateCd,
-                    request.getMenuCode(),
-                    request.getIngredientDetails()
-            ));
-        }
-        mainMenuRepository.save(
-                MainMenu.create(
+            mainMenuDetailsRepository.details(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenuCode()).orElseGet(() -> {
+                mainMenuDetailsRepository.save(MainMenuDetails.create(
                         foundStoreMaster.getSiteCd(),
                         strCd,
                         mainCateCd,
                         middleCateCd,
                         subCateCd,
                         request.getMenuCode(),
-                        request.getMenuName(),
-                        request.getPrice(),
-                        !ObjectUtils.isEmpty(request.getDiscountedPrice()) ? request.getDiscountedPrice() : 0,
-                        !ObjectUtils.isEmpty(request.getAdditionalPackagingPrice()) ? request.getAdditionalPackagingPrice() : 0,
-                        request.getPackaging(),
-                        request.getOutOfStock(),
-                        request.getUse(),
-                        request.getIngredientDisplay(),
-                        request.getImageName(),
-                        request.getMainMenuNameKor(),
-                        request.getHighlightType(),
-                        request.getShowDateFrom(),
-                        request.getShowDateTo(),
-                        request.getShowTimeFrom(),
-                        request.getShowTimeTo(),
-                        request.getShowDayOfWeek(),
-                        request.getEventDateFrom(),
-                        request.getEventDateTo(),
-                        request.getEventTimeFrom(),
-                        request.getEventTimeTo(),
-                        request.getEventDayOfWeek(),
-                        request.getMemoKor(),
-                        latestPriority(mainMenuRepository.latestPriorities(strCd, mainCateCd, middleCateCd, subCateCd)) + 1
-                )
-        );
+                        request.getIngredientDetails()
+                ));
+                return null;
+            });
+        }
+
+        Optional<com.tenutz.storemngsim.domain.menu.MainMenu> mainMenuOptional = mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenuCode());
+        if(mainMenuOptional.isPresent() && mainMenuOptional.get().getUseYn().equals("D")) {
+            mainMenuOptional.get().update(
+                    request.getMenuName(),
+                    request.getPrice(),
+                    !ObjectUtils.isEmpty(request.getDiscountedPrice()) ? request.getDiscountedPrice() : 0,
+                    !ObjectUtils.isEmpty(request.getAdditionalPackagingPrice()) ? request.getAdditionalPackagingPrice() : 0,
+                    request.getPackaging(),
+                    request.getOutOfStock(),
+                    request.getUse(),
+                    request.getIngredientDisplay(),
+                    request.getImageName(),
+                    request.getMainMenuNameKor(),
+                    request.getHighlightType(),
+                    request.getShowDateFrom(),
+                    request.getShowDateTo(),
+                    request.getShowTimeFrom(),
+                    request.getShowTimeTo(),
+                    request.getShowDayOfWeek(),
+                    request.getEventDateFrom(),
+                    request.getEventDateTo(),
+                    request.getEventTimeFrom(),
+                    request.getEventTimeTo(),
+                    request.getEventDayOfWeek(),
+                    request.getMemoKor()
+            );
+        } else if(mainMenuOptional.isPresent()) {
+            throw new CInvalidValueException.CAlreadyMainMenuCreatedException();
+        } else {
+            mainMenuRepository.save(
+                    com.tenutz.storemngsim.domain.menu.MainMenu.create(
+                            foundStoreMaster.getSiteCd(),
+                            strCd,
+                            mainCateCd,
+                            middleCateCd,
+                            subCateCd,
+                            request.getMenuCode(),
+                            request.getMenuName(),
+                            request.getPrice(),
+                            !ObjectUtils.isEmpty(request.getDiscountedPrice()) ? request.getDiscountedPrice() : 0,
+                            !ObjectUtils.isEmpty(request.getAdditionalPackagingPrice()) ? request.getAdditionalPackagingPrice() : 0,
+                            request.getPackaging(),
+                            request.getOutOfStock(),
+                            request.getUse(),
+                            request.getIngredientDisplay(),
+                            request.getImageName(),
+                            request.getMainMenuNameKor(),
+                            request.getHighlightType(),
+                            request.getShowDateFrom(),
+                            request.getShowDateTo(),
+                            request.getShowTimeFrom(),
+                            request.getShowTimeTo(),
+                            request.getShowDayOfWeek(),
+                            request.getEventDateFrom(),
+                            request.getEventDateTo(),
+                            request.getEventTimeFrom(),
+                            request.getEventTimeTo(),
+                            request.getEventDayOfWeek(),
+                            request.getMemoKor(),
+                            latestPriority(mainMenuRepository.latestPriorities(strCd, mainCateCd, middleCateCd, subCateCd)) + 1
+                    )
+            );
+        }
     }
 
     @Transactional
     public void updateMainMenu(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd, MainMenuUpdateRequest request) {
-        MainMenu foundMainMenu = mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).orElseThrow(CEntityNotFoundException.CMainMenuNotFoundException::new);
+        com.tenutz.storemngsim.domain.menu.MainMenu foundMainMenu = mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).orElseThrow(CEntityNotFoundException.CMainMenuNotFoundException::new);
         foundMainMenu.update(
                 request.getMenuName(),
                 request.getPrice(),
@@ -169,22 +200,22 @@ public class MenuService {
 
     @Transactional
     public void deleteMainMenu(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd) {
-        MainMenu foundMainMenu = mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).orElseThrow(CEntityNotFoundException.CMainMenuNotFoundException::new);
+        com.tenutz.storemngsim.domain.menu.MainMenu foundMainMenu = mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).orElseThrow(CEntityNotFoundException.CMainMenuNotFoundException::new);
         foundMainMenu.delete();
     }
 
     @Transactional
     public void deleteMainMenus(String strCd, String mainCateCd, String middleCateCd, String subCateCd, MenusDeleteRequest request) {
-        List<MainMenu> foundMenus = mainMenuRepository.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenuCodes(), "X");
+        List<com.tenutz.storemngsim.domain.menu.MainMenu> foundMenus = mainMenuRepository.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenuCodes(), "X");
         if(request.getMenuCodes().size() != foundMenus.size()) {
             throw new CInvalidValueException.CNonExistentMainMenuIncludedException();
         }
-        foundMenus.forEach(MainMenu::delete);
+        foundMenus.forEach(com.tenutz.storemngsim.domain.menu.MainMenu::delete);
     }
 
     @Transactional
     public void changeMainMenuPriorities(String strCd, String mainCateCd, String middleCateCd, String subCateCd, MenuPrioritiesChangeRequest request) {
-        List<MainMenu> foundMenus = mainMenuRepository.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenus().stream().map(MenuPrioritiesChangeRequest.MainCategory::getMenuCode).collect(Collectors.toList()), "D");
+        List<com.tenutz.storemngsim.domain.menu.MainMenu> foundMenus = mainMenuRepository.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenus().stream().map(MenuPrioritiesChangeRequest.MainCategory::getMenuCode).collect(Collectors.toList()), "D");
         if(request.getMenus().size() != foundMenus.size()) {
             throw new CInvalidValueException.CNonExistentMainMenuIncludedException();
         }
@@ -205,19 +236,20 @@ public class MenuService {
                 foundOptionGroupMainMenus.stream()
                         .filter(optionGroupOption -> optionGroupOption.getOptGrpCd().equals(code))
                         .findAny().ifPresent(OptionGroupMainMenu::use);
+            } else {
+                optionGroupMainMenuRepository.save(
+                        OptionGroupMainMenu.create(
+                                foundStoreMaster.getSiteCd(),
+                                strCd,
+                                mainCateCd,
+                                middleCateCd,
+                                subCateCd,
+                                mainMenuCd,
+                                code,
+                                latestPriority(optionGroupMainMenuRepository.latestPriorities(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd)) + 1
+                        )
+                );
             }
-            optionGroupMainMenuRepository.save(
-                    OptionGroupMainMenu.create(
-                            foundStoreMaster.getSiteCd(),
-                            strCd,
-                            mainCateCd,
-                            middleCateCd,
-                            subCateCd,
-                            mainMenuCd,
-                            code,
-                            latestPriority(optionGroupMainMenuRepository.latestPriorities(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd)) + 1
-                    )
-            );
         });
     }
 

@@ -23,6 +23,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -146,20 +147,29 @@ public class OptionGroupService {
     @Transactional
     public void create(String strCd, OptionGroupCreateRequest request) {
         StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
-        optionGroupRepository.optionGroup(strCd, request.getOptionGroupCode()).ifPresent(optionGroup -> {
+        Optional<OptionGroup> optionGroupOptional = optionGroupRepository.optionGroup(strCd, request.getOptionGroupCode());
+        if(optionGroupOptional.isPresent() && optionGroupOptional.get().getUseYn().equals("D")) {
+            optionGroupOptional.get().update(
+                    request.getOptionGroupName(),
+                    request.getToggleSelect(),
+                    request.getRequired()
+            );
+            optionGroupOptional.get().use();
+        } else if(optionGroupOptional.isPresent()) {
             throw new CInvalidValueException.CAlreadyOptionGroupCreatedException();
-        });
-        optionGroupRepository.save(
-                OptionGroup.create(
-                        foundStoreMaster.getSiteCd(),
-                        strCd,
-                        request.getOptionGroupCode(),
-                        request.getOptionGroupName(),
-                        request.getToggleSelect(),
-                        request.getRequired(),
-                        latestPriority(optionGroupRepository.latestPriorities(strCd)) + 1
-                )
-        );
+        } else {
+            optionGroupRepository.save(
+                    OptionGroup.create(
+                            foundStoreMaster.getSiteCd(),
+                            strCd,
+                            request.getOptionGroupCode(),
+                            request.getOptionGroupName(),
+                            request.getToggleSelect(),
+                            request.getRequired(),
+                            latestPriority(optionGroupRepository.latestPriorities(strCd)) + 1
+                    )
+            );
+        }
     }
 
     @Transactional
