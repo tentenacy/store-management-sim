@@ -128,22 +128,22 @@ public class CategoryApiController {
     @ResponseStatus(HttpStatus.CREATED)
     public void createMiddleCategory(@PathVariable String strCd, @PathVariable String mainCateCd, @Valid MiddleCategoryCreateRequest request) {
 
-        MenuImageArgs args = new MenuImageArgs(request.getImage(), strCd);
+//        MenuImageArgs args = new MenuImageArgs(request.getImage(), strCd);
 
-        if(!ObjectUtils.isEmpty(request.getImage())) {
-            String imageUrl = fileUploadService.uploadKioskMenuImage(args);
-            request.setImageName(imageUrl.substring(imageUrl.lastIndexOf("/") + 1));
-            request.setImageUrl(imageUrl.substring(imageUrl.indexOf("FILE_MANAGER")));
-        }
+//        if(!ObjectUtils.isEmpty(request.getImage())) {
+//            String imageUrl = fileUploadService.uploadKioskMenuImage(args);
+//            request.setImageName(imageUrl.substring(imageUrl.lastIndexOf("/") + 1));
+//            request.setImageUrl(imageUrl.substring(imageUrl.indexOf("FILE_MANAGER")));
+//        }
 
-        try {
-            categoryService.createMiddleCategory(strCd, mainCateCd, request);
-        } catch (Exception e) {
-            if(!ObjectUtils.isEmpty(request.getImage())) {
-                fileUploadService.deleteKioskMenuImage(request.getImageUrl(), args);
-            }
-            throw e;
-        }
+//        try {
+        categoryService.createMiddleCategory(strCd, mainCateCd, request);
+//        } catch (Exception e) {
+//            if(!ObjectUtils.isEmpty(request.getImage())) {
+//                fileUploadService.deleteKioskMenuImage(request.getImageUrl(), args);
+//            }
+//            throw e;
+//        }
     }
 
     /**
@@ -157,20 +157,20 @@ public class CategoryApiController {
     public void updateMiddleCategory(@PathVariable String strCd, @PathVariable String mainCateCd, @PathVariable String middleCateCd, @Valid MiddleCategoryUpdateRequest request) {
         MenuImageArgs args = new MenuImageArgs(request.getImage(), strCd);
 
-        if(!ObjectUtils.isEmpty(request.getImage())) {
-            String imageUrl = fileUploadService.uploadKioskMenuImage(args);
-            request.setImageName(imageUrl.substring(imageUrl.lastIndexOf("/") + 1));
-            request.setImageUrl(imageUrl.substring(imageUrl.indexOf("FILE_MANAGER")));
-        }
+//        if(!ObjectUtils.isEmpty(request.getImage())) {
+//            String imageUrl = fileUploadService.uploadKioskMenuImage(args);
+//            request.setImageName(imageUrl.substring(imageUrl.lastIndexOf("/") + 1));
+//            request.setImageUrl(imageUrl.substring(imageUrl.indexOf("FILE_MANAGER")));
+//        }
 
-        try {
-            categoryService.updateMiddleCategory(strCd, mainCateCd, middleCateCd, request);
-        } catch (Exception e) {
-            if(!ObjectUtils.isEmpty(request.getImage())) {
-                fileUploadService.deleteKioskMenuImage(request.getImageUrl(), args);
-            }
-            throw e;
-        }
+//        try {
+        categoryService.updateMiddleCategory(strCd, mainCateCd, middleCateCd, request);
+//        } catch (Exception e) {
+//            if(!ObjectUtils.isEmpty(request.getImage())) {
+//                fileUploadService.deleteKioskMenuImage(request.getImageUrl(), args);
+//            }
+//            throw e;
+//        }
     }
 
     /**
