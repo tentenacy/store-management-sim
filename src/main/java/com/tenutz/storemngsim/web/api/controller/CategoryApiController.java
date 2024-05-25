@@ -121,7 +121,7 @@ public class CategoryApiController {
      * @param request
      */
     @PostMapping("/main/{mainCateCd}/middle")
-    public void createMiddleCategory(@PathVariable String strCd, @PathVariable String mainCateCd, @Valid @RequestBody MiddleCategoryCreateRequest request) {
+    public void createMiddleCategory(@PathVariable String strCd, @PathVariable String mainCateCd, @Valid com.tenutz.storemngsim.web.api.dto.category.MiddleCategoryCreateRequest request) {
         categoryService.createMiddleCategory(strCd, mainCateCd, request);
     }
 
