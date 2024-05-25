@@ -1,5 +1,6 @@
 package com.tenutz.storemngsim.web.api.dto.menu;
 
+import com.tenutz.storemngsim.web.api.dto.common.ImageResponse;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,6 +25,7 @@ public class MainMenuResponse {
     private boolean use;
     private boolean ingredientDisplay;
     private String imageName;
+    private String imageUrl;
     private String mainMenuNameKor;
     private String highlightType;
     private String showDateFrom;

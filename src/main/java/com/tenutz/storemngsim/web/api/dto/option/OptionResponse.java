@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -20,6 +22,7 @@ public class OptionResponse {
     private boolean outOfStock;
     private boolean use;
     private String imageName;
+    private String imageUrl;
     private String optionNameKor;
     private String showDateFrom;
     private String showDateTo;

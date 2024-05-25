@@ -5,6 +5,7 @@ import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsMappedByRequest;
 import com.tenutz.storemngsim.web.api.dto.option.*;
+import com.tenutz.storemngsim.web.client.UploadClient;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,8 @@ public class OptionService {
     private final StoreMasterRepository storeMasterRepository;
     private final OptionRepository optionRepository;
     private final OptionGroupOptionRepository optionGroupOptionRepository;
+    private final MenuImageRepository menuImageRepository;
+    private final UploadClient s3Client;
 
     public OptionsResponse options(String strCd) {
         return new OptionsResponse(optionRepository.options(strCd).stream().map(option ->
@@ -40,7 +43,7 @@ public class OptionService {
     }
 
     public OptionResponse option(String strCd, String optionCd) {
-        com.tenutz.storemngsim.domain.menu.Option foundOption = optionRepository.option(strCd, optionCd).orElseThrow(CEntityNotFoundException.COptionNotFoundException::new);
+        Option foundOption = optionRepository.option(strCd, optionCd).orElseThrow(CEntityNotFoundException.COptionNotFoundException::new);
         return new OptionResponse(
                 foundOption.getStrCd(),
                 foundOption.getOptCd(),
@@ -52,6 +55,9 @@ public class OptionService {
                 foundOption.soldOutYn(),
                 foundOption.useYn(),
                 foundOption.getImgNm(),
+                menuImageRepository.findByStrCdAndEquTypeAndFileNm(strCd, "4", foundOption.getImgNm())
+                        .map(image -> s3Client.getFileUrl(image.getFilePath().substring(image.getFilePath().indexOf("FILE_MANAGER"))) + "/" + image.getFileNm())
+                        .orElse(null),
                 foundOption.getOptKorNm(),
                 foundOption.getShowSdate(),
                 foundOption.getShowEdate(),
@@ -71,7 +77,7 @@ public class OptionService {
 
         StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
 
-        Optional<com.tenutz.storemngsim.domain.menu.Option> optionOptional = optionRepository.option(strCd, request.getOptionCode());
+        Optional<Option> optionOptional = optionRepository.option(strCd, request.getOptionCode());
         if(optionOptional.isPresent() && optionOptional.get().getUseYn().equals("D")) {
             optionOptional.get().update(
                     request.getOptionName(),
@@ -98,7 +104,7 @@ public class OptionService {
             throw new CInvalidValueException.CAlreadyOptionCreatedException();
         } else {
             optionRepository.save(
-                    com.tenutz.storemngsim.domain.menu.Option.create(
+                    Option.create(
                             foundStoreMaster.getSiteCd(),
                             strCd,
                             request.getOptionCode(),
@@ -128,7 +134,7 @@ public class OptionService {
 
     @Transactional
     public void updateOption(String strCd, String optionCd, OptionUpdateRequest request) {
-        com.tenutz.storemngsim.domain.menu.Option foundOption = optionRepository.option(strCd, optionCd).orElseThrow(CEntityNotFoundException.COptionNotFoundException::new);
+        Option foundOption = optionRepository.option(strCd, optionCd).orElseThrow(CEntityNotFoundException.COptionNotFoundException::new);
         foundOption.update(
                 request.getOptionName(),
                 request.getPrice(),
@@ -154,17 +160,17 @@ public class OptionService {
 
     @Transactional
     public void deleteOption(String strCd, String optionCd) {
-        com.tenutz.storemngsim.domain.menu.Option foundOption = optionRepository.option(strCd, optionCd).orElseThrow(CEntityNotFoundException.COptionNotFoundException::new);
+        Option foundOption = optionRepository.option(strCd, optionCd).orElseThrow(CEntityNotFoundException.COptionNotFoundException::new);
         foundOption.delete();
     }
 
     @Transactional
     public void deleteOptions(String strCd, OptionsDeleteRequest request) {
-        List<com.tenutz.storemngsim.domain.menu.Option> foundOptions = optionRepository.options(strCd, request.getOptionCodes(), "X");
+        List<Option> foundOptions = optionRepository.options(strCd, request.getOptionCodes(), "X");
         if(request.getOptionCodes().size() != foundOptions.size()) {
             throw new CInvalidValueException.CNonExistentOptionIncludedException();
         }
-        foundOptions.forEach(com.tenutz.storemngsim.domain.menu.Option::delete);
+        foundOptions.forEach(Option::delete);
     }
 
     @Transactional

@@ -1,14 +1,17 @@
 package com.tenutz.storemngsim.web.api.controller;
 
+import com.tenutz.storemngsim.web.api.dto.common.MenuImageArgs;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupPrioritiesChangeRequest;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsDeleteRequest;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsMappedByRequest;
 import com.tenutz.storemngsim.web.api.dto.menu.*;
 import com.tenutz.storemngsim.web.service.MenuService;
 import com.tenutz.storemngsim.web.service.OptionGroupService;
+import com.tenutz.storemngsim.web.service.cloud.FileUploadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,6 +24,7 @@ public class MenuApiController {
 
     private final MenuService menuService;
     private final OptionGroupService optionGroupService;
+    private final FileUploadService fileUploadService;
 
     /**
      * 메뉴조회
@@ -70,9 +74,25 @@ public class MenuApiController {
             @PathVariable String mainCateCd,
             @PathVariable String middleCateCd,
             @PathVariable String subCateCd,
-            @Valid @RequestBody MainMenuCreateRequest request
+            @Valid MainMenuCreateRequest request
     ) {
-        menuService.createMainMenu(strCd, mainCateCd, middleCateCd, subCateCd, request);
+
+        MenuImageArgs args = new MenuImageArgs(request.getImage(), strCd);
+
+        if(!ObjectUtils.isEmpty(request.getImage())) {
+            String imageUrl = fileUploadService.uploadKioskMenuImage(args);
+            request.setImageName(imageUrl.substring(imageUrl.lastIndexOf("/") + 1));
+            request.setImageUrl(imageUrl.substring(imageUrl.indexOf("FILE_MANAGER")));
+        }
+
+        try {
+            menuService.createMainMenu(strCd, mainCateCd, middleCateCd, subCateCd, request);
+        } catch (Exception e) {
+            if(!ObjectUtils.isEmpty(request.getImage())) {
+                fileUploadService.deleteKioskMenuImage(request.getImageUrl(), args);
+            }
+            throw e;
+        }
     }
 
     /**
@@ -91,9 +111,24 @@ public class MenuApiController {
             @PathVariable String middleCateCd,
             @PathVariable String subCateCd,
             @PathVariable String mainMenuCd,
-            @Valid @RequestBody MainMenuUpdateRequest request
+            @Valid MainMenuUpdateRequest request
     ) {
-        menuService.updateMainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd, request);
+        MenuImageArgs args = new MenuImageArgs(request.getImage(), strCd);
+
+        if(!ObjectUtils.isEmpty(request.getImage())) {
+            String imageUrl = fileUploadService.uploadKioskMenuImage(args);
+            request.setImageName(imageUrl.substring(imageUrl.lastIndexOf("/") + 1));
+            request.setImageUrl(imageUrl.substring(imageUrl.indexOf("FILE_MANAGER")));
+        }
+
+        try {
+            menuService.updateMainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd, request);
+        } catch (Exception e) {
+            if(!ObjectUtils.isEmpty(request.getImage())) {
+                fileUploadService.deleteKioskMenuImage(request.getImageUrl(), args);
+            }
+            throw e;
+        }
     }
 
     /**

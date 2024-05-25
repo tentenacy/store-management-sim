@@ -1,10 +1,14 @@
 package com.tenutz.storemngsim.web.api.controller;
 
 import com.tenutz.storemngsim.web.api.dto.category.*;
+import com.tenutz.storemngsim.web.api.dto.common.MenuImageArgs;
 import com.tenutz.storemngsim.web.service.CategoryService;
+import com.tenutz.storemngsim.web.service.cloud.FileUploadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -16,6 +20,7 @@ import javax.validation.Valid;
 public class CategoryApiController {
 
     private final CategoryService categoryService;
+    private final FileUploadService fileUploadService;
 
     /**
      * 대분류조회
@@ -118,11 +123,27 @@ public class CategoryApiController {
      * 중분류추가
      * @param strCd 가맹점코드
      * @param mainCateCd 대분류코드
-     * @param request
      */
     @PostMapping("/main/{mainCateCd}/middle")
-    public void createMiddleCategory(@PathVariable String strCd, @PathVariable String mainCateCd, @Valid com.tenutz.storemngsim.web.api.dto.category.MiddleCategoryCreateRequest request) {
-        categoryService.createMiddleCategory(strCd, mainCateCd, request);
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createMiddleCategory(@PathVariable String strCd, @PathVariable String mainCateCd, @Valid MiddleCategoryCreateRequest request) {
+
+        MenuImageArgs args = new MenuImageArgs(request.getImage(), strCd);
+
+        if(!ObjectUtils.isEmpty(request.getImage())) {
+            String imageUrl = fileUploadService.uploadKioskMenuImage(args);
+            request.setImageName(imageUrl.substring(imageUrl.lastIndexOf("/") + 1));
+            request.setImageUrl(imageUrl.substring(imageUrl.indexOf("FILE_MANAGER")));
+        }
+
+        try {
+            categoryService.createMiddleCategory(strCd, mainCateCd, request);
+        } catch (Exception e) {
+            if(!ObjectUtils.isEmpty(request.getImage())) {
+                fileUploadService.deleteKioskMenuImage(request.getImageUrl(), args);
+            }
+            throw e;
+        }
     }
 
     /**
@@ -133,8 +154,23 @@ public class CategoryApiController {
      * @param request
      */
     @PutMapping("/main/{mainCateCd}/middle/{middleCateCd}")
-    public void updateMiddleCategory(@PathVariable String strCd, @PathVariable String mainCateCd, @PathVariable String middleCateCd, @Valid @RequestBody MiddleCategoryUpdateRequest request) {
-        categoryService.updateMiddleCategory(strCd, mainCateCd, middleCateCd, request);
+    public void updateMiddleCategory(@PathVariable String strCd, @PathVariable String mainCateCd, @PathVariable String middleCateCd, @Valid MiddleCategoryUpdateRequest request) {
+        MenuImageArgs args = new MenuImageArgs(request.getImage(), strCd);
+
+        if(!ObjectUtils.isEmpty(request.getImage())) {
+            String imageUrl = fileUploadService.uploadKioskMenuImage(args);
+            request.setImageName(imageUrl.substring(imageUrl.lastIndexOf("/") + 1));
+            request.setImageUrl(imageUrl.substring(imageUrl.indexOf("FILE_MANAGER")));
+        }
+
+        try {
+            categoryService.updateMiddleCategory(strCd, mainCateCd, middleCateCd, request);
+        } catch (Exception e) {
+            if(!ObjectUtils.isEmpty(request.getImage())) {
+                fileUploadService.deleteKioskMenuImage(request.getImageUrl(), args);
+            }
+            throw e;
+        }
     }
 
     /**

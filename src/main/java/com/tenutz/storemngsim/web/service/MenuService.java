@@ -5,6 +5,7 @@ import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsMappedByRequest;
 import com.tenutz.storemngsim.web.api.dto.menu.*;
+import com.tenutz.storemngsim.web.client.UploadClient;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,8 @@ public class MenuService {
     private final MainMenuDetailsRepository mainMenuDetailsRepository;
     private final StoreMasterRepository storeMasterRepository;
     private final OptionGroupMainMenuRepository optionGroupMainMenuRepository;
+    private final MenuImageRepository menuImageRepository;
+    private final UploadClient s3Client;
 
     public MainMenusResponse mainMenus(String strCd, String mainCateCd, String middleCateCd, String subCateCd) {
         return new MainMenusResponse(mainMenuRepository.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd).stream().map(menu ->
@@ -49,7 +52,7 @@ public class MenuService {
     }
 
     public MainMenuResponse mainMenu(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd) {
-        com.tenutz.storemngsim.domain.menu.MainMenu foundMainMenu = mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).orElseThrow(CEntityNotFoundException.CMainMenuNotFoundException::new);
+        MainMenu foundMainMenu = mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).orElseThrow(CEntityNotFoundException.CMainMenuNotFoundException::new);
         return new MainMenuResponse(
                 foundMainMenu.getStrCd(),
                 foundMainMenu.getCateCd1(),
@@ -65,6 +68,9 @@ public class MenuService {
                 foundMainMenu.useYn(),
                 foundMainMenu.showDetailYn(),
                 foundMainMenu.getImgNm(),
+                menuImageRepository.findByStrCdAndEquTypeAndFileNm(strCd, "4", foundMainMenu.getImgNm())
+                        .map(image -> s3Client.getFileUrl(image.getFilePath().substring(image.getFilePath().indexOf("FILE_MANAGER"))) + "/" + image.getFileNm())
+                        .orElse(null),
                 foundMainMenu.getMenuKorNm(),
                 foundMainMenu.getHighlightType(),
                 foundMainMenu.getShowSdate(),
@@ -104,7 +110,7 @@ public class MenuService {
             });
         }
 
-        Optional<com.tenutz.storemngsim.domain.menu.MainMenu> mainMenuOptional = mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenuCode());
+        Optional<MainMenu> mainMenuOptional = mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenuCode());
         if(mainMenuOptional.isPresent() && mainMenuOptional.get().getUseYn().equals("D")) {
             mainMenuOptional.get().update(
                     request.getMenuName(),
@@ -134,7 +140,7 @@ public class MenuService {
             throw new CInvalidValueException.CAlreadyMainMenuCreatedException();
         } else {
             mainMenuRepository.save(
-                    com.tenutz.storemngsim.domain.menu.MainMenu.create(
+                    MainMenu.create(
                             foundStoreMaster.getSiteCd(),
                             strCd,
                             mainCateCd,
@@ -171,7 +177,7 @@ public class MenuService {
 
     @Transactional
     public void updateMainMenu(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd, MainMenuUpdateRequest request) {
-        com.tenutz.storemngsim.domain.menu.MainMenu foundMainMenu = mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).orElseThrow(CEntityNotFoundException.CMainMenuNotFoundException::new);
+        MainMenu foundMainMenu = mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).orElseThrow(CEntityNotFoundException.CMainMenuNotFoundException::new);
         foundMainMenu.update(
                 request.getMenuName(),
                 request.getPrice(),
@@ -200,22 +206,22 @@ public class MenuService {
 
     @Transactional
     public void deleteMainMenu(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd) {
-        com.tenutz.storemngsim.domain.menu.MainMenu foundMainMenu = mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).orElseThrow(CEntityNotFoundException.CMainMenuNotFoundException::new);
+        MainMenu foundMainMenu = mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).orElseThrow(CEntityNotFoundException.CMainMenuNotFoundException::new);
         foundMainMenu.delete();
     }
 
     @Transactional
     public void deleteMainMenus(String strCd, String mainCateCd, String middleCateCd, String subCateCd, MenusDeleteRequest request) {
-        List<com.tenutz.storemngsim.domain.menu.MainMenu> foundMenus = mainMenuRepository.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenuCodes(), "X");
+        List<MainMenu> foundMenus = mainMenuRepository.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenuCodes(), "X");
         if(request.getMenuCodes().size() != foundMenus.size()) {
             throw new CInvalidValueException.CNonExistentMainMenuIncludedException();
         }
-        foundMenus.forEach(com.tenutz.storemngsim.domain.menu.MainMenu::delete);
+        foundMenus.forEach(MainMenu::delete);
     }
 
     @Transactional
     public void changeMainMenuPriorities(String strCd, String mainCateCd, String middleCateCd, String subCateCd, MenuPrioritiesChangeRequest request) {
-        List<com.tenutz.storemngsim.domain.menu.MainMenu> foundMenus = mainMenuRepository.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenus().stream().map(MenuPrioritiesChangeRequest.MainCategory::getMenuCode).collect(Collectors.toList()), "D");
+        List<MainMenu> foundMenus = mainMenuRepository.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenus().stream().map(MenuPrioritiesChangeRequest.MainCategory::getMenuCode).collect(Collectors.toList()), "D");
         if(request.getMenus().size() != foundMenus.size()) {
             throw new CInvalidValueException.CNonExistentMainMenuIncludedException();
         }

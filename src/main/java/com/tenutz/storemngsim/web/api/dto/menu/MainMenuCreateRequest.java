@@ -1,9 +1,11 @@
 package com.tenutz.storemngsim.web.api.dto.menu;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -13,6 +15,8 @@ import javax.validation.constraints.Size;
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MainMenuCreateRequest {
+
+    private MultipartFile image;
 
     @NotEmpty
     private String menuCode;
@@ -30,7 +34,6 @@ public class MainMenuCreateRequest {
     private Boolean use;
     @NotNull
     private Boolean ingredientDisplay;
-    private String imageName;
     private String mainMenuNameKor;
     @NotEmpty
     private String highlightType;
@@ -46,4 +49,10 @@ public class MainMenuCreateRequest {
     private String eventDayOfWeek;
     private String memoKor;
     private String ingredientDetails;
+
+    @JsonIgnore
+    private String imageName;
+
+    @JsonIgnore
+    private String imageUrl;
 }

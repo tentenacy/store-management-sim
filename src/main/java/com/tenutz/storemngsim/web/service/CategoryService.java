@@ -5,6 +5,7 @@ import com.tenutz.storemngsim.domain.menu.CategoryRepository;
 import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.web.api.dto.category.*;
+import com.tenutz.storemngsim.web.client.UploadClient;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +26,7 @@ public class CategoryService {
 
     private final StoreMasterRepository storeMasterRepository;
     private final CategoryRepository categoryRepository;
+    private final UploadClient s3Client;
 
     public MainCategoriesResponse mainCategories(String strCd) {
         return new MainCategoriesResponse(
@@ -51,7 +53,7 @@ public class CategoryService {
                                 cat.getCateName(),
                                 cat.getBlCdBoolean(),
                                 cat.getImgName(),
-                                cat.getImgUrl(),
+                                StringUtils.hasText(cat.getImgUrl()) ? s3Client.getFileUrl(cat.getImgUrl()) : null,
                                 cat.getPriority(),
                                 cat.getCreatedAt(),
                                 cat.getUpdatedAt()
@@ -100,7 +102,7 @@ public class CategoryService {
                 foundMainCategory.getCateName(),
                 foundMainCategory.getBlCdBoolean(),
                 foundMainCategory.getImgName(),
-                foundMainCategory.getImgUrl(),
+                StringUtils.hasText(foundMainCategory.getImgUrl()) ? s3Client.getFileUrl(foundMainCategory.getImgUrl()) : null,
                 foundMainCategory.getPriority(),
                 foundMainCategory.getBizNo(),
                 foundMainCategory.getOwnerName(),
@@ -189,7 +191,7 @@ public class CategoryService {
     }
 
     @Transactional
-    public void createMiddleCategory(String strCd, String mainCateCd, MiddleCategoryCreateRequest request) {
+    public void createMiddleCategory(String strCd, String mainCateCd, com.tenutz.storemngsim.web.api.dto.category.MiddleCategoryCreateRequest request) {
         StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
         categoryRepository.middleCategory(strCd, mainCateCd, request.getCategoryCode()).ifPresent(cat -> {
             throw new CInvalidValueException.CAlreadyCategoryCreatedException();
@@ -203,8 +205,8 @@ public class CategoryService {
                         request.getCategoryName(),
                         request.getUse(),
                         latestPriority(categoryRepository.latestMiddleCategoryPriorities(strCd, mainCateCd)) + 1,
-                        /*!ObjectUtils.isEmpty(request.getImage()) ? request.getImage().getImageName() : null*/null,
-                        /*!ObjectUtils.isEmpty(request.getImage()) ? request.getImage().getImageUrl() : null*/null,
+                        request.getImageName(),
+                        request.getImageUrl(),
                         request.getBusinessNumber(),
                         request.getRepresentativeName(),
                         request.getTel(),
@@ -215,13 +217,13 @@ public class CategoryService {
     }
 
     @Transactional
-    public void updateMiddleCategory(String strCd, String mainCateCd, String middleCateCd, MiddleCategoryUpdateRequest request) {
+    public void updateMiddleCategory(String strCd, String mainCateCd, String middleCateCd, com.tenutz.storemngsim.web.api.dto.category.MiddleCategoryUpdateRequest request) {
         Category foundMainCategory = categoryRepository.middleCategory(strCd, mainCateCd, middleCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
         foundMainCategory.updateMiddleCategory(
                 request.getCategoryName(),
                 request.getUse(),
-                !ObjectUtils.isEmpty(request.getImage()) ? request.getImage().getImageName() : null,
-                !ObjectUtils.isEmpty(request.getImage()) ? request.getImage().getImageUrl() : null,
+                request.getImageName(),
+                request.getImageUrl(),
                 request.getBusinessNumber(),
                 request.getRepresentativeName(),
                 request.getTel(),

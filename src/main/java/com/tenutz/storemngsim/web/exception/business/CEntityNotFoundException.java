@@ -54,4 +54,10 @@ public class CEntityNotFoundException extends CBusinessException {
             super(ErrorCode.OPTION_GROUP_NOT_FOUND);
         }
     }
+
+    public static class CMenuImageNotFoundException extends CEntityNotFoundException {
+        public CMenuImageNotFoundException() {
+            super(ErrorCode.MENU_IMAGE_NOT_FOUND);
+        }
+    }
 }

@@ -1,14 +1,17 @@
 package com.tenutz.storemngsim.web.api.controller;
 
+import com.tenutz.storemngsim.web.api.dto.common.MenuImageArgs;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupPrioritiesChangeRequest;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsDeleteRequest;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsMappedByRequest;
 import com.tenutz.storemngsim.web.api.dto.option.*;
 import com.tenutz.storemngsim.web.service.OptionGroupService;
 import com.tenutz.storemngsim.web.service.OptionService;
+import com.tenutz.storemngsim.web.service.cloud.FileUploadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,6 +24,7 @@ public class OptionApiController {
 
     private final OptionService optionService;
     private final OptionGroupService optionGroupService;
+    private final FileUploadService fileUploadService;
 
     /**
      * 옵션조회
@@ -49,8 +53,24 @@ public class OptionApiController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createOption(@PathVariable String strCd, @Valid @RequestBody OptionCreateRequest request) {
-        optionService.createOption(strCd, request);
+    public void createOption(@PathVariable String strCd, @Valid OptionCreateRequest request) {
+
+        MenuImageArgs args = new MenuImageArgs(request.getImage(), strCd);
+
+        if(!ObjectUtils.isEmpty(request.getImage())) {
+            String imageUrl = fileUploadService.uploadKioskMenuImage(args);
+            request.setImageName(imageUrl.substring(imageUrl.lastIndexOf("/") + 1));
+            request.setImageUrl(imageUrl.substring(imageUrl.indexOf("FILE_MANAGER")));
+        }
+
+        try {
+            optionService.createOption(strCd, request);
+        } catch (Exception e) {
+            if(!ObjectUtils.isEmpty(request.getImage())) {
+                fileUploadService.deleteKioskMenuImage(request.getImageUrl(), args);
+            }
+            throw e;
+        }
     }
 
     /**
@@ -60,8 +80,23 @@ public class OptionApiController {
      * @param request
      */
     @PutMapping("/{optionCd}")
-    public void updateOption(@PathVariable String strCd, @PathVariable String optionCd, @Valid @RequestBody OptionUpdateRequest request) {
-        optionService.updateOption(strCd, optionCd, request);
+    public void updateOption(@PathVariable String strCd, @PathVariable String optionCd, @Valid OptionUpdateRequest request) {
+        MenuImageArgs args = new MenuImageArgs(request.getImage(), strCd);
+
+        if(!ObjectUtils.isEmpty(request.getImage())) {
+            String imageUrl = fileUploadService.uploadKioskMenuImage(args);
+            request.setImageName(imageUrl.substring(imageUrl.lastIndexOf("/") + 1));
+            request.setImageUrl(imageUrl.substring(imageUrl.indexOf("FILE_MANAGER")));
+        }
+
+        try {
+            optionService.updateOption(strCd, optionCd, request);
+        } catch (Exception e) {
+            if(!ObjectUtils.isEmpty(request.getImage())) {
+                fileUploadService.deleteKioskMenuImage(request.getImageUrl(), args);
+            }
+            throw e;
+        }
     }
 
     /**
