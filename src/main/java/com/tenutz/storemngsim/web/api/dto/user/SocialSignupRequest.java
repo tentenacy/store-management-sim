@@ -13,4 +13,12 @@ import javax.validation.constraints.NotEmpty;
 public class SocialSignupRequest {
     @NotEmpty
     private String accessToken;
+    @NotEmpty
+    private String businessNumber;
+    @NotEmpty
+    private String password;
+    @NotEmpty
+    private String phoneNumber;
+    @NotEmpty
+    private String ownerName;
 }

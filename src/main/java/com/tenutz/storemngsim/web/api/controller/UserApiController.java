@@ -9,6 +9,7 @@ import com.tenutz.storemngsim.web.api.dto.user.SocialLoginRequest;
 import com.tenutz.storemngsim.web.api.dto.user.SocialSignupRequest;
 import com.tenutz.storemngsim.web.client.dto.SocialProfile;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException.CUserNotFoundException;
+import com.tenutz.storemngsim.web.exception.social.CSocialException.CSocialAgreementException;
 import com.tenutz.storemngsim.web.service.AuthService;
 import com.tenutz.storemngsim.web.service.social.OAuthService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,10 +43,10 @@ public class UserApiController {
     public void socialSignup(@PathVariable(name = "socialType") SocialType socialType,
                              @RequestBody @Validated SocialSignupRequest request) {
 
-        //구글은 access_token 대신 id_token 값으로 요청
+        //구글은 access_token 대신 id_token 값으로
         SocialProfile socialProfile = oauthService.profile(socialType, request.getAccessToken());
 
-        //소셜 프로필이 없는 경우 에러
+        //소셜 프로필이 없는 경우 에러                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             a
         if (ObjectUtils.isEmpty(socialProfile)) throw new CUserNotFoundException();
 
 /*
@@ -54,7 +56,9 @@ public class UserApiController {
         }
 */
 
-        authService.socialSignup(socialProfile, socialType);
+        request.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        authService.socialSignup(socialProfile, socialType, request);
     }
 
     @PostMapping("/token")

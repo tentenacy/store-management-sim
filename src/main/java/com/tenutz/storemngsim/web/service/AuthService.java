@@ -4,6 +4,8 @@ import com.tenutz.storemngsim.config.security.JwtProvider;
 import com.tenutz.storemngsim.domain.common.enums.Role;
 import com.tenutz.storemngsim.domain.refreshtoken.RefreshToken;
 import com.tenutz.storemngsim.domain.refreshtoken.RefreshTokenRepository;
+import com.tenutz.storemngsim.domain.store.StoreMaster;
+import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.domain.user.User;
 import com.tenutz.storemngsim.domain.user.UserRepository;
 import com.tenutz.storemngsim.utils.EntityUtils;
@@ -12,6 +14,7 @@ import com.tenutz.storemngsim.web.api.dto.common.TokenRequest;
 import com.tenutz.storemngsim.web.api.dto.common.TokenResponse;
 import com.tenutz.storemngsim.web.api.dto.user.LoginRequest;
 import com.tenutz.storemngsim.web.api.dto.user.SignupRequest;
+import com.tenutz.storemngsim.web.api.dto.user.SocialSignupRequest;
 import com.tenutz.storemngsim.web.client.dto.SocialProfile;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
@@ -41,7 +44,7 @@ public class AuthService {
 
     @Transactional
     public User signup(SignupRequest req) {
-        User user = User.create(req.getId(), req.getPassword(), req.getProvider());
+        User user = User.create(req.getBusinessNumber(), req.getPassword(), req.getOwnerName(), req.getBusinessNumber(), req.getPhoneNumber());
         if(userRepository.existsByUserId(user.getUserId())) {
             throw new CAlreadySignedupException();
         }
@@ -49,18 +52,20 @@ public class AuthService {
     }
 
     @Transactional
-    public void socialSignup(SocialProfile socialProfile, SocialType socialType) {
+    public void socialSignup(SocialProfile socialProfile, SocialType socialType, SocialSignupRequest request) {
         userRepository.findBySnsIdAndProvider(socialProfile.getSnsId(), socialType.name().toLowerCase())
                 .ifPresent(user -> {
                     throw new CAlreadySignedupException();
                 });
         userRepository.save(
                 User.createSocial(
-                        socialType.name().toLowerCase() + RandomStringUtils.random(15, true, true),
-                        passwordEncoder.encode(UUID.randomUUID().toString()),
+                        request.getBusinessNumber(),
+                        request.getPassword(),
                         socialType.name().toLowerCase(),
                         socialProfile.getSnsId(),
-                        socialProfile.getUsername()
+                        request.getOwnerName(),
+                        request.getBusinessNumber(),
+                        request.getPhoneNumber()
                 )
         );
     }
