@@ -20,5 +20,5 @@ public class CommonCondition {
     private Date dateTo;
 
     private String query;
-
+    private String queryType;
 }
