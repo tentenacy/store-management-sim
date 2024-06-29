@@ -9,12 +9,14 @@ import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.domain.user.User;
 import com.tenutz.storemngsim.domain.user.UserRepository;
 import com.tenutz.storemngsim.utils.EntityUtils;
+import com.tenutz.storemngsim.utils.SecurityUtils;
 import com.tenutz.storemngsim.utils.enums.SocialType;
 import com.tenutz.storemngsim.web.api.dto.common.TokenRequest;
 import com.tenutz.storemngsim.web.api.dto.common.TokenResponse;
 import com.tenutz.storemngsim.web.api.dto.user.LoginRequest;
 import com.tenutz.storemngsim.web.api.dto.user.SignupRequest;
 import com.tenutz.storemngsim.web.api.dto.user.SocialSignupRequest;
+import com.tenutz.storemngsim.web.api.dto.user.UserDetailsResponse;
 import com.tenutz.storemngsim.web.client.dto.SocialProfile;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
@@ -31,6 +33,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException.*;
+
 @Slf4j
 @Service
 @Transactional(readOnly = true)
@@ -41,6 +45,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final StoreMasterRepository storeMasterRepository;
 
     @Transactional
     public User signup(SignupRequest req) {
@@ -85,7 +90,7 @@ public class AuthService {
     @Transactional
     public TokenResponse socialLogin(LoginRequest request) {
         User user = userRepository.findBySnsIdAndProvider(request.getId(), request.getProvider())
-                .orElseThrow(CEntityNotFoundException.CUserNotFoundException::new);
+                .orElseThrow(CUserNotFoundException::new);
         refreshTokenRepository.findByKey(user.getSeq().toString()).ifPresent(refreshTokenRepository::delete);
         TokenResponse tokenResponse = jwtProvider.createToken(user.getSeq().toString(), user.getRoles().stream().map(Role::getValue).collect(Collectors.toList()));
         refreshTokenRepository.save(RefreshToken.create(user.getSeq().toString(), tokenResponse.getRefreshToken()));
@@ -121,5 +126,22 @@ public class AuthService {
         refreshToken.update(newCreatedToken.getRefreshToken());
 
         return newCreatedToken;
+    }
+
+    public UserDetailsResponse userDetails() {
+        User user = SecurityUtils.user().orElseThrow(CUserNotFoundException::new);
+        StoreMaster foundStoreMaster = storeMasterRepository.findByBusinessNumber(user.getBusinessNo()).orElseThrow(CStoreMasterNotFoundException::new);
+        return new UserDetailsResponse(
+                user.getSeq().toString(),
+                foundStoreMaster.getSiteCd(),
+                foundStoreMaster.getStrCd(),
+                user.getUsername(),
+                user.getBusinessNo(),
+                user.getContact(),
+                user.getUserId(),
+                user.getProvider(),
+                user.getRegisteredAt(),
+                user.getReceiveYn()
+        );
     }
 }

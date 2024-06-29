@@ -1,13 +1,12 @@
 package com.tenutz.storemngsim.web.api.controller;
 
+import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.utils.enums.SocialType;
 import com.tenutz.storemngsim.web.api.dto.common.TokenRequest;
 import com.tenutz.storemngsim.web.api.dto.common.TokenResponse;
-import com.tenutz.storemngsim.web.api.dto.user.LoginRequest;
-import com.tenutz.storemngsim.web.api.dto.user.SignupRequest;
-import com.tenutz.storemngsim.web.api.dto.user.SocialLoginRequest;
-import com.tenutz.storemngsim.web.api.dto.user.SocialSignupRequest;
+import com.tenutz.storemngsim.web.api.dto.user.*;
 import com.tenutz.storemngsim.web.client.dto.SocialProfile;
+import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException.CUserNotFoundException;
 import com.tenutz.storemngsim.web.exception.social.CSocialException.CSocialAgreementException;
 import com.tenutz.storemngsim.web.service.AuthService;
@@ -84,6 +83,11 @@ public class UserApiController {
     @ResponseStatus(HttpStatus.CREATED)
     public TokenResponse reissue(@RequestBody @Validated TokenRequest request) {
         return authService.reissue(request);
+    }
+
+    @GetMapping("/details")
+    public UserDetailsResponse userDetails() {
+        return authService.userDetails();
     }
 
 }
