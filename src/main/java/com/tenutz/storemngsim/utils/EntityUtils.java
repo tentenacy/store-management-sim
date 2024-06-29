@@ -6,8 +6,8 @@ import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException.CU
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class EntityUtils {
-    public static User userThrowable(UserRepository userRepository) {
-        return userRepository.findById(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getSeq())
+    public static User userThrowable() {
+        return SecurityUtils.user()
                 .orElseThrow(CUserNotFoundException::new);
     }
     public static User userThrowable(UserRepository userRepository, Integer seq) {

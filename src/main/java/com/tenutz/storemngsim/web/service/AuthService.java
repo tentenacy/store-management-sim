@@ -129,7 +129,7 @@ public class AuthService {
     }
 
     public UserDetailsResponse userDetails() {
-        User user = SecurityUtils.user().orElseThrow(CUserNotFoundException::new);
+        User user = EntityUtils.userThrowable();
         StoreMaster foundStoreMaster = storeMasterRepository.findByBusinessNumber(user.getBusinessNo()).orElseThrow(CStoreMasterNotFoundException::new);
         return new UserDetailsResponse(
                 user.getSeq().toString(),
