@@ -32,8 +32,13 @@ public class SalesService {
         return salesMasterRepository.totalSales(foundStoreMaster.getSiteCd(), strCd, commonCond, request);
     }
 
-    public Page<StatisticsSaleByMenusResponse> statisticsSalesByMenu(String strCd, Pageable pageable, CommonCondition commonCond, StatisticsSaleByMenusRequest cond) {
+    public Page<StatisticsSalesByMenusResponse> statisticsSalesByMenu(String strCd, Pageable pageable, CommonCondition commonCond, StatisticsSaleByMenusRequest cond) {
         StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
         return salesMasterRepository.statisticsSalesByMenu(foundStoreMaster.getSiteCd(), strCd, pageable, commonCond, cond);
+    }
+
+    public StatisticsSalesTotalByMenusResponse statisticsSalesTotalByMenu(String strCd, Pageable pageable, CommonCondition commonCond, StatisticsSaleByMenusRequest cond) {
+        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
+        return salesMasterRepository.statisticsSalesTotalByMenu(foundStoreMaster.getSiteCd(), strCd, pageable, commonCond, cond);
     }
 }

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class StatisticsSaleByMenusResponse {
+public class StatisticsSalesByMenusResponse {
 
     private String soldAt;
     private String menuName;
