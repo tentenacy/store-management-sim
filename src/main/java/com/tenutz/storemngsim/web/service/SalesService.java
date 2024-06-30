@@ -51,4 +51,9 @@ public class SalesService {
         StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
         return salesMasterRepository.statisticsSalesTotalByCreditCard(foundStoreMaster.getSiteCd(), strCd, commonCond);
     }
+
+    public Page<StatisticsSalesByTimeResponse> statisticsSalesByTime(String strCd, Pageable pageable, CommonCondition commonCond) {
+        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
+        return salesMasterRepository.statisticsSalesByTime(foundStoreMaster.getSiteCd(), strCd, pageable, commonCond);
+    }
 }
