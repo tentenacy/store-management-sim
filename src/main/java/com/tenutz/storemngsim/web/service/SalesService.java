@@ -41,4 +41,14 @@ public class SalesService {
         StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
         return salesMasterRepository.statisticsSalesTotalByMenu(foundStoreMaster.getSiteCd(), strCd, pageable, commonCond, cond);
     }
+
+    public StatisticsSalesByCreditCardResponse statisticsSalesByCreditCard(String strCd, CommonCondition commonCond) {
+        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
+        return salesMasterRepository.statisticsSalesByCreditCard(foundStoreMaster.getSiteCd(), strCd, commonCond);
+    }
+
+    public StatisticsSalesTotalByCreditCardResponse statisticsSalesTotalByCreditCard(String strCd, CommonCondition commonCond) {
+        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
+        return salesMasterRepository.statisticsSalesTotalByCreditCard(foundStoreMaster.getSiteCd(), strCd, commonCond);
+    }
 }
