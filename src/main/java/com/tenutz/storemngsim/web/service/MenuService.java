@@ -34,8 +34,8 @@ public class MenuService {
     private final MenuImageRepository menuImageRepository;
     private final UploadClient s3Client;
 
-    public MainMenusResponse mainMenus(String strCd, String mainCateCd, String middleCateCd, String subCateCd) {
-        return new MainMenusResponse(mainMenuRepository.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd).stream().map(menu ->
+    public MainMenusResponse mainMenus(String siteCd, String strCd, String mainCateCd, String middleCateCd, String subCateCd) {
+        return new MainMenusResponse(mainMenuRepository.mainMenus(siteCd, strCd, mainCateCd, middleCateCd, subCateCd).stream().map(menu ->
                 new MainMenusResponse.MainMenu(
                         menu.getStrCd(),
                         menu.getCateCd1(),
@@ -51,8 +51,8 @@ public class MenuService {
         ).collect(Collectors.toList()));
     }
 
-    public MainMenuResponse mainMenu(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd) {
-        MainMenu foundMainMenu = mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).orElseThrow(CEntityNotFoundException.CMainMenuNotFoundException::new);
+    public MainMenuResponse mainMenu(String siteCd, String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd) {
+        MainMenu foundMainMenu = mainMenuRepository.mainMenu(siteCd, strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).orElseThrow(CEntityNotFoundException.CMainMenuNotFoundException::new);
         return new MainMenuResponse(
                 foundMainMenu.getStrCd(),
                 foundMainMenu.getCateCd1(),
@@ -68,7 +68,7 @@ public class MenuService {
                 foundMainMenu.useYn(),
                 foundMainMenu.showDetailYn(),
                 foundMainMenu.getImgNm(),
-                menuImageRepository.findByStrCdAndEquTypeAndFileNm(strCd, "4", foundMainMenu.getImgNm())
+                menuImageRepository.findBySiteCdAndStrCdAndEquTypeAndFileNm(siteCd, strCd, "4", foundMainMenu.getImgNm())
                         .map(image -> s3Client.getFileUrl(image.getFilePath().substring(image.getFilePath().indexOf("FILE_MANAGER"))) + "/" + image.getFileNm())
                         .orElse(null),
                 foundMainMenu.getMenuKorNm(),
@@ -85,18 +85,18 @@ public class MenuService {
                 foundMainMenu.getEvtWeekday(),
                 foundMainMenu.getMemoKor(),
                 foundMainMenu.getSortNum(),
-                mainMenuDetailsRepository.details(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).map(MainMenuDetails::getDetails).orElse(null)
+                mainMenuDetailsRepository.details(siteCd, strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).map(MainMenuDetails::getDetails).orElse(null)
         );
     }
 
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)
-    public void createMainMenu(String strCd, String mainCateCd, String middleCateCd, String subCateCd, MainMenuCreateRequest request) {
+    public void createMainMenu(String siteCd, String strCd, String mainCateCd, String middleCateCd, String subCateCd, MainMenuCreateRequest request) {
 
         StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
 
         if(StringUtils.hasText(request.getIngredientDetails())) {
-            mainMenuDetailsRepository.details(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenuCode()).orElseGet(() -> {
+            mainMenuDetailsRepository.details(siteCd, strCd, mainCateCd, middleCateCd, subCateCd, request.getMenuCode()).orElseGet(() -> {
                 mainMenuDetailsRepository.save(MainMenuDetails.create(
                         foundStoreMaster.getSiteCd(),
                         strCd,
@@ -110,7 +110,7 @@ public class MenuService {
             });
         }
 
-        Optional<MainMenu> mainMenuOptional = mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenuCode());
+        Optional<MainMenu> mainMenuOptional = mainMenuRepository.mainMenu(siteCd, strCd, mainCateCd, middleCateCd, subCateCd, request.getMenuCode());
         if(mainMenuOptional.isPresent() && mainMenuOptional.get().getUseYn().equals("D")) {
             mainMenuOptional.get().update(
                     request.getMenuName(),
@@ -169,15 +169,15 @@ public class MenuService {
                             request.getEventTimeTo(),
                             request.getEventDayOfWeek(),
                             request.getMemoKor(),
-                            latestPriority(mainMenuRepository.latestPriorities(strCd, mainCateCd, middleCateCd, subCateCd)) + 1
+                            latestPriority(mainMenuRepository.latestPriorities(siteCd, strCd, mainCateCd, middleCateCd, subCateCd)) + 1
                     )
             );
         }
     }
 
     @Transactional
-    public void updateMainMenu(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd, MainMenuUpdateRequest request) {
-        MainMenu foundMainMenu = mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).orElseThrow(CEntityNotFoundException.CMainMenuNotFoundException::new);
+    public void updateMainMenu(String siteCd, String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd, MainMenuUpdateRequest request) {
+        MainMenu foundMainMenu = mainMenuRepository.mainMenu(siteCd, strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).orElseThrow(CEntityNotFoundException.CMainMenuNotFoundException::new);
         foundMainMenu.update(
                 request.getMenuName(),
                 request.getPrice(),
@@ -205,14 +205,14 @@ public class MenuService {
     }
 
     @Transactional
-    public void deleteMainMenu(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd) {
-        MainMenu foundMainMenu = mainMenuRepository.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).orElseThrow(CEntityNotFoundException.CMainMenuNotFoundException::new);
+    public void deleteMainMenu(String siteCd, String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd) {
+        MainMenu foundMainMenu = mainMenuRepository.mainMenu(siteCd, strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).orElseThrow(CEntityNotFoundException.CMainMenuNotFoundException::new);
         foundMainMenu.delete();
     }
 
     @Transactional
-    public void deleteMainMenus(String strCd, String mainCateCd, String middleCateCd, String subCateCd, MenusDeleteRequest request) {
-        List<MainMenu> foundMenus = mainMenuRepository.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenuCodes(), "X");
+    public void deleteMainMenus(String siteCd, String strCd, String mainCateCd, String middleCateCd, String subCateCd, MenusDeleteRequest request) {
+        List<MainMenu> foundMenus = mainMenuRepository.mainMenus(siteCd, strCd, mainCateCd, middleCateCd, subCateCd, request.getMenuCodes(), "X");
         if(request.getMenuCodes().size() != foundMenus.size()) {
             throw new CInvalidValueException.CNonExistentMainMenuIncludedException();
         }
@@ -220,8 +220,8 @@ public class MenuService {
     }
 
     @Transactional
-    public void changeMainMenuPriorities(String strCd, String mainCateCd, String middleCateCd, String subCateCd, MenuPrioritiesChangeRequest request) {
-        List<MainMenu> foundMenus = mainMenuRepository.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd, request.getMenus().stream().map(MenuPrioritiesChangeRequest.MainCategory::getMenuCode).collect(Collectors.toList()), "D");
+    public void changeMainMenuPriorities(String siteCd, String strCd, String mainCateCd, String middleCateCd, String subCateCd, MenuPrioritiesChangeRequest request) {
+        List<MainMenu> foundMenus = mainMenuRepository.mainMenus(siteCd, strCd, mainCateCd, middleCateCd, subCateCd, request.getMenus().stream().map(MenuPrioritiesChangeRequest.MainCategory::getMenuCode).collect(Collectors.toList()), "D");
         if(request.getMenus().size() != foundMenus.size()) {
             throw new CInvalidValueException.CNonExistentMainMenuIncludedException();
         }
@@ -233,9 +233,8 @@ public class MenuService {
     }
 
     @Transactional
-    public void mapToOptionGroups(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd, OptionGroupsMappedByRequest request) {
-        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
-        List<OptionGroupMainMenu> foundOptionGroupMainMenus = optionGroupMainMenuRepository.optionGroupMainMenus(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd, request.getOptionGroupCodes(), "D");
+    public void mapToOptionGroups(String siteCd, String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd, OptionGroupsMappedByRequest request) {
+        List<OptionGroupMainMenu> foundOptionGroupMainMenus = optionGroupMainMenuRepository.optionGroupMainMenus(siteCd, strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd, request.getOptionGroupCodes(), "D");
         List<String> optionGroupCodes = foundOptionGroupMainMenus.stream().map(OptionGroupMainMenu::getOptGrpCd).collect(Collectors.toList());
         request.getOptionGroupCodes().forEach(code -> {
             if(optionGroupCodes.contains(code)) {
@@ -245,14 +244,14 @@ public class MenuService {
             } else {
                 optionGroupMainMenuRepository.save(
                         OptionGroupMainMenu.create(
-                                foundStoreMaster.getSiteCd(),
+                                siteCd,
                                 strCd,
                                 mainCateCd,
                                 middleCateCd,
                                 subCateCd,
                                 mainMenuCd,
                                 code,
-                                latestPriority(optionGroupMainMenuRepository.latestPriorities(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd)) + 1
+                                latestPriority(optionGroupMainMenuRepository.latestPriorities(siteCd, strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd)) + 1
                         )
                 );
             }

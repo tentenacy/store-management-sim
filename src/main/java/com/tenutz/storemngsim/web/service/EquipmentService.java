@@ -17,8 +17,8 @@ public class EquipmentService {
 
     private final EquipmentMasterRepository equipmentMasterRepository;
 
-    public EquipmentsResponse equipments(String strCd) {
-        return new EquipmentsResponse(equipmentMasterRepository.equipments(strCd).stream().map(em ->
+    public EquipmentsResponse equipments(String siteCd, String strCd) {
+        return new EquipmentsResponse(equipmentMasterRepository.equipments(siteCd, strCd).stream().map(em ->
             new EquipmentsResponse.Equipment(
                     em.getStrCd(),
                     em.getEquCd(),

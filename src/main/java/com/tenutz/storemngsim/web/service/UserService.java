@@ -1,7 +1,9 @@
 package com.tenutz.storemngsim.web.service;
 
+import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.utils.EntityUtils;
+import com.tenutz.storemngsim.web.api.dto.user.StoreArgs;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +18,21 @@ public class UserService {
 
     private final StoreMasterRepository storeMasterRepository;
 
-    public String storeCode() {
-        return storeMasterRepository.findByBusinessNumber(EntityUtils.userThrowable().getBusinessNo())
-                .orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new).getStrCd();
+    public StoreArgs storeArgs() {
+        StoreMaster foundStoreMaster = storeMasterRepository.findByBusinessNumber(EntityUtils.userThrowable().getBusinessNo())
+                .orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
+        return new StoreArgs(
+                foundStoreMaster.getSiteCd(),
+                foundStoreMaster.getStrCd()
+        );
+    }
+
+    public StoreArgs storeArgs(String businessNumber) {
+        StoreMaster foundStoreMaster = storeMasterRepository.findByBusinessNumber(businessNumber)
+                .orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
+        return new StoreArgs(
+                foundStoreMaster.getSiteCd(),
+                foundStoreMaster.getStrCd()
+        );
     }
 }

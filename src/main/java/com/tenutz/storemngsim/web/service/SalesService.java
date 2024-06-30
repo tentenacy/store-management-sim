@@ -1,11 +1,10 @@
 package com.tenutz.storemngsim.web.service;
 
+import com.tenutz.storemngsim.domain.customer.StoreReviewRepository;
 import com.tenutz.storemngsim.domain.sales.SalesMasterRepository;
-import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.web.api.dto.common.CommonCondition;
 import com.tenutz.storemngsim.web.api.dto.store.*;
-import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,44 +20,45 @@ public class SalesService {
 
     private final SalesMasterRepository salesMasterRepository;
     private final StoreMasterRepository storeMasterRepository;
+    private final StoreReviewRepository storeReviewRepository;
 
-    public Page<SalesResponse> sales(String strCd, Pageable pageable, CommonCondition commonCond, SalesRequest request) {
-        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
-        return salesMasterRepository.sales(foundStoreMaster.getSiteCd(), strCd, pageable, commonCond, request);
+    public Page<SalesResponse> sales(String siteCd, String strCd, Pageable pageable, CommonCondition commonCond, SalesRequest request) {
+        return salesMasterRepository.sales(siteCd, strCd, pageable, commonCond, request);
     }
 
-    public SalesTotalResponse salesTotal(String strCd, CommonCondition commonCond, SalesRequest request) {
-        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
-        return salesMasterRepository.totalSales(foundStoreMaster.getSiteCd(), strCd, commonCond, request);
+    public SalesTotalResponse salesTotal(String siteCd, String strCd, CommonCondition commonCond, SalesRequest request) {
+        return salesMasterRepository.totalSales(siteCd, strCd, commonCond, request);
     }
 
-    public Page<StatisticsSalesByMenusResponse> statisticsSalesByMenu(String strCd, Pageable pageable, CommonCondition commonCond, StatisticsSaleByMenusRequest cond) {
-        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
-        return salesMasterRepository.statisticsSalesByMenu(foundStoreMaster.getSiteCd(), strCd, pageable, commonCond, cond);
+    public Page<StatisticsSalesByMenusResponse> statisticsSalesByMenu(String siteCd, String strCd, Pageable pageable, CommonCondition commonCond, StatisticsSaleByMenusRequest cond) {
+        return salesMasterRepository.statisticsSalesByMenu(siteCd, strCd, pageable, commonCond, cond);
     }
 
-    public StatisticsSalesTotalByMenusResponse statisticsSalesTotalByMenu(String strCd, Pageable pageable, CommonCondition commonCond, StatisticsSaleByMenusRequest cond) {
-        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
-        return salesMasterRepository.statisticsSalesTotalByMenu(foundStoreMaster.getSiteCd(), strCd, pageable, commonCond, cond);
+    public StatisticsSalesTotalByMenusResponse statisticsSalesTotalByMenu(String siteCd, String strCd, Pageable pageable, CommonCondition commonCond, StatisticsSaleByMenusRequest cond) {
+        return salesMasterRepository.statisticsSalesTotalByMenu(siteCd, strCd, pageable, commonCond, cond);
     }
 
-    public StatisticsSalesByCreditCardResponse statisticsSalesByCreditCard(String strCd, CommonCondition commonCond) {
-        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
-        return salesMasterRepository.statisticsSalesByCreditCard(foundStoreMaster.getSiteCd(), strCd, commonCond);
+    public StatisticsSalesByCreditCardResponse statisticsSalesByCreditCard(String siteCd, String strCd, CommonCondition commonCond) {
+        return salesMasterRepository.statisticsSalesByCreditCard(siteCd, strCd, commonCond);
     }
 
-    public StatisticsSalesTotalByCreditCardResponse statisticsSalesTotalByCreditCard(String strCd, CommonCondition commonCond) {
-        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
-        return salesMasterRepository.statisticsSalesTotalByCreditCard(foundStoreMaster.getSiteCd(), strCd, commonCond);
+    public StatisticsSalesTotalByCreditCardResponse statisticsSalesTotalByCreditCard(String siteCd, String strCd, CommonCondition commonCond) {
+        return salesMasterRepository.statisticsSalesTotalByCreditCard(siteCd, strCd, commonCond);
     }
 
-    public Page<StatisticsSalesByTimeResponse> statisticsSalesByTime(String strCd, Pageable pageable, CommonCondition commonCond) {
-        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
-        return salesMasterRepository.statisticsSalesByTime(foundStoreMaster.getSiteCd(), strCd, pageable, commonCond);
+    public Page<StatisticsSalesByTimeResponse> statisticsSalesByTime(String siteCd, String strCd, Pageable pageable, CommonCondition commonCond) {
+        return salesMasterRepository.statisticsSalesByTime(siteCd, strCd, pageable, commonCond);
     }
 
-    public StatisticsSalesTotalByTimeResponse statisticsSalesTotalByTime(String strCd, CommonCondition commonCond) {
-        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
-        return salesMasterRepository.statisticsSalesTotalByTime(foundStoreMaster.getSiteCd(), strCd, commonCond);
+    public StatisticsSalesTotalByTimeResponse statisticsSalesTotalByTime(String siteCd, String strCd, CommonCondition commonCond) {
+        return salesMasterRepository.statisticsSalesTotalByTime(siteCd, strCd, commonCond);
+    }
+
+    public Page<StoreReviewsResponse> storeReviews(String siteCd, String strCd, Pageable pageable, CommonCondition commonCond) {
+        return storeReviewRepository.reviews(siteCd, strCd, pageable, commonCond);
+    }
+
+    public Page<MenuReviewsResponse> menuReviews(String siteCd, String strCd, Pageable pageable, CommonCondition commonCond) {
+        return storeReviewRepository.menuReviews(siteCd, strCd, pageable, commonCond);
     }
 }

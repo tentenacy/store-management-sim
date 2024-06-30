@@ -3,6 +3,7 @@ package com.tenutz.storemngsim.web.api.controller;
 import com.tenutz.storemngsim.web.api.dto.common.MainMenuSearchRequest;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsDeleteRequest;
 import com.tenutz.storemngsim.web.api.dto.optiongroup.*;
+import com.tenutz.storemngsim.web.api.dto.user.StoreArgs;
 import com.tenutz.storemngsim.web.service.OptionGroupService;
 import com.tenutz.storemngsim.web.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +28,8 @@ public class OptionGroupApiController {
      */
     @GetMapping
     public OptionGroupsResponse optionGroups() {
-        String strCd = userService.storeCode();
-        return optionGroupService.optionGroups(strCd);
+        StoreArgs storeArgs = userService.storeArgs();
+        return optionGroupService.optionGroups(storeArgs.getSiteCd(), storeArgs.getStrCd());
     }
 
     /**
@@ -38,8 +39,8 @@ public class OptionGroupApiController {
      */
     @GetMapping("/{optionGroupCd}")
     public OptionGroupResponse optionGroup(@PathVariable String optionGroupCd) {
-        String strCd = userService.storeCode();
-        return optionGroupService.option(strCd, optionGroupCd);
+        StoreArgs storeArgs = userService.storeArgs();
+        return optionGroupService.option(storeArgs.getSiteCd(), storeArgs.getStrCd(), optionGroupCd);
     }
 
     /**
@@ -49,8 +50,8 @@ public class OptionGroupApiController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void createOptionGroup(@Valid @RequestBody OptionGroupCreateRequest request) {
-        String strCd = userService.storeCode();
-        optionGroupService.create(strCd, request);
+        StoreArgs storeArgs = userService.storeArgs();
+        optionGroupService.create(storeArgs.getSiteCd(), storeArgs.getStrCd(), request);
     }
 
     /**
@@ -60,8 +61,8 @@ public class OptionGroupApiController {
      */
     @PutMapping("/{optionGroupCd}")
     public void updateOptionGroup(@PathVariable String optionGroupCd, @Valid @RequestBody OptionGroupUpdateRequest request) {
-        String strCd = userService.storeCode();
-        optionGroupService.update(strCd, optionGroupCd, request);
+        StoreArgs storeArgs = userService.storeArgs();
+        optionGroupService.update(storeArgs.getSiteCd(), storeArgs.getStrCd(), optionGroupCd, request);
     }
 
     /**
@@ -71,8 +72,8 @@ public class OptionGroupApiController {
     @DeleteMapping("/{optionGroupCd}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteOptionGroup(@PathVariable String optionGroupCd) {
-        String strCd = userService.storeCode();
-        optionGroupService.delete(strCd, optionGroupCd);
+        StoreArgs storeArgs = userService.storeArgs();
+        optionGroupService.delete(storeArgs.getSiteCd(), storeArgs.getStrCd(), optionGroupCd);
     }
 
     /**
@@ -82,8 +83,8 @@ public class OptionGroupApiController {
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteOptionGroups(@Valid @RequestBody OptionGroupsDeleteRequest request) {
-        String strCd = userService.storeCode();
-        optionGroupService.deleteOptionGroups(strCd, request);
+        StoreArgs storeArgs = userService.storeArgs();
+        optionGroupService.deleteOptionGroups(storeArgs.getSiteCd(), storeArgs.getStrCd(), request);
     }
 
     /**
@@ -93,8 +94,8 @@ public class OptionGroupApiController {
      */
     @GetMapping("/{optionGroupCd}/options")
     public OptionGroupOptionsResponse optionGroupOptions(@PathVariable String optionGroupCd) {
-        String strCd = userService.storeCode();
-        return optionGroupService.optionGroupOptions(strCd, optionGroupCd);
+        StoreArgs storeArgs = userService.storeArgs();
+        return optionGroupService.optionGroupOptions(storeArgs.getSiteCd(), storeArgs.getStrCd(), optionGroupCd);
     }
 
     /**
@@ -104,8 +105,8 @@ public class OptionGroupApiController {
      */
     @GetMapping("/{optionGroupCd}/option-mappers")
     public OptionGroupOptionMappersResponse optionGroupOptionMappers(@PathVariable String optionGroupCd) {
-        String strCd = userService.storeCode();
-        return optionGroupService.optionGroupOptionMappers(strCd, optionGroupCd);
+        StoreArgs storeArgs = userService.storeArgs();
+        return optionGroupService.optionGroupOptionMappers(storeArgs.getSiteCd(), storeArgs.getStrCd(), optionGroupCd);
     }
 
     /**
@@ -115,8 +116,8 @@ public class OptionGroupApiController {
      */
     @PostMapping("/{optionGroupCd}/mapped-by-option")
     public void mapToOptions(@PathVariable String optionGroupCd, @Valid @RequestBody OptionsMappedByRequest request) {
-        String strCd = userService.storeCode();
-        optionGroupService.mapToOptions(strCd, optionGroupCd, request);
+        StoreArgs storeArgs = userService.storeArgs();
+        optionGroupService.mapToOptions(storeArgs.getSiteCd(), storeArgs.getStrCd(), optionGroupCd, request);
     }
 
     /**
@@ -129,8 +130,8 @@ public class OptionGroupApiController {
             @PathVariable String optionGroupCd,
             @Valid @RequestBody OptionGroupOptionMapperPrioritiesChangeRequest request
     ) {
-        String strCd = userService.storeCode();
-        optionGroupService.changeOptionGroupOptionMapperPriorities(strCd, optionGroupCd, request);
+        StoreArgs storeArgs = userService.storeArgs();
+        optionGroupService.changeOptionGroupOptionMapperPriorities(storeArgs.getSiteCd(), storeArgs.getStrCd(), optionGroupCd, request);
     }
 
     /**
@@ -144,8 +145,8 @@ public class OptionGroupApiController {
             @PathVariable String optionGroupCd,
             @Valid @RequestBody OptionGroupOptionMappersDeleteRequest request
     ) {
-        String strCd = userService.storeCode();
-        optionGroupService.deleteOptionGroupOptionMappers(strCd, optionGroupCd, request);
+        StoreArgs storeArgs = userService.storeArgs();
+        optionGroupService.deleteOptionGroupOptionMappers(storeArgs.getSiteCd(), storeArgs.getStrCd(), optionGroupCd, request);
     }
 
     /**
@@ -159,8 +160,8 @@ public class OptionGroupApiController {
             @PathVariable String optionGroupCd,
             @Valid MainMenuSearchRequest request
     ) {
-        String strCd = userService.storeCode();
-        return optionGroupService.optionGroupMainMenus(strCd, optionGroupCd, request);
+        StoreArgs storeArgs = userService.storeArgs();
+        return optionGroupService.optionGroupMainMenus(storeArgs.getSiteCd(), storeArgs.getStrCd(), optionGroupCd, request);
     }
 
     /**
@@ -170,8 +171,8 @@ public class OptionGroupApiController {
      */
     @GetMapping("/{optionGroupCd}/main-menu-mappers")
     public OptionGroupMainMenuMappersResponse optionGroupMainMenuMappers(@PathVariable String optionGroupCd) {
-        String strCd = userService.storeCode();
-        return optionGroupService.optionGroupMainMenuMappers(strCd, optionGroupCd);
+        StoreArgs storeArgs = userService.storeArgs();
+        return optionGroupService.optionGroupMainMenuMappers(storeArgs.getSiteCd(), storeArgs.getStrCd(), optionGroupCd);
     }
 
     /**
@@ -181,8 +182,8 @@ public class OptionGroupApiController {
      */
     @PostMapping("/{optionGroupCd}/mapped-by-main-menus")
     public void mapToMainMenus(@PathVariable String optionGroupCd, @Valid @RequestBody MainMenusMappedByRequest request) {
-        String strCd = userService.storeCode();
-        optionGroupService.mapToMainMenus(strCd, optionGroupCd, request);
+        StoreArgs storeArgs = userService.storeArgs();
+        optionGroupService.mapToMainMenus(storeArgs.getSiteCd(), storeArgs.getStrCd(), optionGroupCd, request);
     }
 
     /**
@@ -195,8 +196,8 @@ public class OptionGroupApiController {
             @PathVariable String optionGroupCd,
             @Valid @RequestBody OptionGroupMainMenuMapperPrioritiesChangeRequest request
     ) {
-        String strCd = userService.storeCode();
-        optionGroupService.changeOptionGroupMainMenuMapperPriorities(strCd, optionGroupCd, request);
+        StoreArgs storeArgs = userService.storeArgs();
+        optionGroupService.changeOptionGroupMainMenuMapperPriorities(storeArgs.getSiteCd(), storeArgs.getStrCd(), optionGroupCd, request);
     }
 
     /**
@@ -210,7 +211,7 @@ public class OptionGroupApiController {
             @PathVariable String optionGroupCd,
             @Valid @RequestBody OptionGroupMainMenuMappersDeleteRequest request
     ) {
-        String strCd = userService.storeCode();
-        optionGroupService.deleteOptionGroupMainMenuMappers(strCd, optionGroupCd, request);
+        StoreArgs storeArgs = userService.storeArgs();
+        optionGroupService.deleteOptionGroupMainMenuMappers(storeArgs.getSiteCd(), storeArgs.getStrCd(), optionGroupCd, request);
     }
 }

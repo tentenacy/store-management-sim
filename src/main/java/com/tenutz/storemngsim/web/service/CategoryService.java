@@ -2,7 +2,6 @@ package com.tenutz.storemngsim.web.service;
 
 import com.tenutz.storemngsim.domain.menu.Category;
 import com.tenutz.storemngsim.domain.menu.CategoryRepository;
-import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.web.api.dto.category.*;
 import com.tenutz.storemngsim.web.client.UploadClient;
@@ -28,9 +27,9 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final UploadClient s3Client;
 
-    public MainCategoriesResponse mainCategories(String strCd) {
+    public MainCategoriesResponse mainCategories(String siteCd, String strCd) {
         return new MainCategoriesResponse(
-                categoryRepository.mainCategories(strCd).stream()
+                categoryRepository.mainCategories(siteCd, strCd).stream()
                         .map(cat -> new MainCategoriesResponse.MainCategory(
                                 cat.getStrCd(),
                                 cat.getCateCd1(),
@@ -43,9 +42,9 @@ public class CategoryService {
         );
     }
 
-    public MiddleCategoriesResponse middleCategories(String strCd, String mainCateCd) {
+    public MiddleCategoriesResponse middleCategories(String siteCd, String strCd, String mainCateCd) {
         return new MiddleCategoriesResponse(
-                categoryRepository.middleCategories(strCd, mainCateCd).stream()
+                categoryRepository.middleCategories(siteCd, strCd, mainCateCd).stream()
                         .map(cat -> new MiddleCategoriesResponse.MiddleCategory(
                                 cat.getStrCd(),
                                 cat.getCateCd1(),
@@ -61,9 +60,9 @@ public class CategoryService {
         );
     }
 
-    public SubCategoriesResponse subCategories(String strCd, String mainCateCd, String middleCateCd) {
+    public SubCategoriesResponse subCategories(String siteCd, String strCd, String mainCateCd, String middleCateCd) {
         return new SubCategoriesResponse(
-                categoryRepository.subCategories(strCd, mainCateCd, middleCateCd).stream()
+                categoryRepository.subCategories(siteCd, strCd, mainCateCd, middleCateCd).stream()
                         .map(cat -> new SubCategoriesResponse.SubCategory(
                                 cat.getStrCd(),
                                 cat.getCateCd1(),
@@ -78,8 +77,8 @@ public class CategoryService {
         );
     }
 
-    public MainCategoryResponse mainCategory(String strCd, String mainCateCd) {
-        Category foundMainCategory = categoryRepository.mainCategory(strCd, mainCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
+    public MainCategoryResponse mainCategory(String siteCd, String strCd, String mainCateCd) {
+        Category foundMainCategory = categoryRepository.mainCategory(siteCd, strCd, mainCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
         return new MainCategoryResponse(
                 foundMainCategory.getStrCd(),
                 foundMainCategory.getCateCd1(),
@@ -93,8 +92,8 @@ public class CategoryService {
         );
     }
 
-    public MiddleCategoryResponse middleCategory(String strCd, String mainCateCd, String middleCateCd) {
-        Category foundMainCategory = categoryRepository.middleCategory(strCd, mainCateCd, middleCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
+    public MiddleCategoryResponse middleCategory(String siteCd, String strCd, String mainCateCd, String middleCateCd) {
+        Category foundMainCategory = categoryRepository.middleCategory(siteCd, strCd, mainCateCd, middleCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
         return new MiddleCategoryResponse(
                 foundMainCategory.getStrCd(),
                 foundMainCategory.getCateCd1(),
@@ -116,8 +115,8 @@ public class CategoryService {
         );
     }
 
-    public SubCategoryResponse subCategory(String strCd, String mainCateCd, String middleCateCd, String subCateCd) {
-        Category foundMainCategory = categoryRepository.subCategory(strCd, mainCateCd, middleCateCd, subCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
+    public SubCategoryResponse subCategory(String siteCd, String strCd, String mainCateCd, String middleCateCd, String subCateCd) {
+        Category foundMainCategory = categoryRepository.subCategory(siteCd, strCd, mainCateCd, middleCateCd, subCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
         return new SubCategoryResponse(
                 foundMainCategory.getStrCd(),
                 foundMainCategory.getCateCd1(),
@@ -134,26 +133,25 @@ public class CategoryService {
     }
 
     @Transactional
-    public void createMainCategory(String strCd, MainCategoryCreateRequest request) {
-        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
-        categoryRepository.mainCategory(strCd, request.getCategoryCode()).ifPresent(cat -> {
+    public void createMainCategory(String siteCd, String strCd, MainCategoryCreateRequest request) {
+        categoryRepository.mainCategory(siteCd, strCd, request.getCategoryCode()).ifPresent(cat -> {
             throw new CInvalidValueException.CAlreadyCategoryCreatedException();
         });
         categoryRepository.save(
                 Category.createMainCategory(
-                        foundStoreMaster.getSiteCd(),
-                        foundStoreMaster.getStrCd(),
+                        siteCd,
+                        strCd,
                         request.getCategoryCode(),
                         request.getCategoryName(),
                         request.getUse(),
-                        latestPriority(categoryRepository.latestMainCategoryPriorities(strCd)) + 1
+                        latestPriority(categoryRepository.latestMainCategoryPriorities(siteCd, strCd)) + 1
                 )
         );
     }
 
     @Transactional
-    public void updateMainCategory(String strCd, String mainCateCd, MainCategoryUpdateRequest request) {
-        Category foundMainCategory = categoryRepository.mainCategory(strCd, mainCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
+    public void updateMainCategory(String siteCd, String strCd, String mainCateCd, MainCategoryUpdateRequest request) {
+        Category foundMainCategory = categoryRepository.mainCategory(siteCd, strCd, mainCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
         foundMainCategory.updateMainCategory(
                 request.getCategoryName(),
                 request.getUse()
@@ -161,16 +159,16 @@ public class CategoryService {
     }
 
     @Transactional
-    public void deleteMainCategory(String strCd, String mainCateCd) {
-        Category foundMainCategory = categoryRepository.mainCategory(strCd, mainCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
+    public void deleteMainCategory(String siteCd, String strCd, String mainCateCd) {
+        Category foundMainCategory = categoryRepository.mainCategory(siteCd, strCd, mainCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
 //        categoryRepository.delete(foundMainCategory);
         foundMainCategory.doesNotUse();
     }
 
     @Transactional
-    public void deleteMainCategories(String strCd, CategoriesDeleteRequest request) {
-//        categoryRepository.deleteMainCategories(strCd, request.getCategoryCodes());
-        List<Category> foundCategories = categoryRepository.mainCategories(strCd, request.getCategoryCodes());
+    public void deleteMainCategories(String siteCd, String strCd, CategoriesDeleteRequest request) {
+//        categoryRepository.deleteMainCategories(siteCd, strCd, request.getCategoryCodes());
+        List<Category> foundCategories = categoryRepository.mainCategories(siteCd, strCd, request.getCategoryCodes());
         if(request.getCategoryCodes().size() != foundCategories.size()) {
             throw new CInvalidValueException.CNonExistentCategoryIncludedException();
         }
@@ -178,8 +176,8 @@ public class CategoryService {
     }
 
     @Transactional
-    public void changeMainCategoryPriorities(String strCd, CategoryPrioritiesChangeRequest request) {
-        List<Category> foundCategories = categoryRepository.mainCategories(strCd, request.getCategories().stream().map(CategoryPrioritiesChangeRequest.MainCategory::getCategoryCode).collect(Collectors.toList()));
+    public void changeMainCategoryPriorities(String siteCd, String strCd, CategoryPrioritiesChangeRequest request) {
+        List<Category> foundCategories = categoryRepository.mainCategories(siteCd, strCd, request.getCategories().stream().map(CategoryPrioritiesChangeRequest.MainCategory::getCategoryCode).collect(Collectors.toList()));
         if(request.getCategories().size() != foundCategories.size()) {
             throw new CInvalidValueException.CNonExistentCategoryIncludedException();
         }
@@ -191,20 +189,19 @@ public class CategoryService {
     }
 
     @Transactional
-    public void createMiddleCategory(String strCd, String mainCateCd, com.tenutz.storemngsim.web.api.dto.category.MiddleCategoryCreateRequest request) {
-        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
-        categoryRepository.middleCategory(strCd, mainCateCd, request.getCategoryCode()).ifPresent(cat -> {
+    public void createMiddleCategory(String siteCd, String strCd, String mainCateCd, MiddleCategoryCreateRequest request) {
+        categoryRepository.middleCategory(siteCd, strCd, mainCateCd, request.getCategoryCode()).ifPresent(cat -> {
             throw new CInvalidValueException.CAlreadyCategoryCreatedException();
         });
         categoryRepository.save(
                 Category.createMiddleCategory(
-                        foundStoreMaster.getSiteCd(),
-                        foundStoreMaster.getStrCd(),
+                        siteCd,
+                        strCd,
                         mainCateCd,
                         request.getCategoryCode(),
                         request.getCategoryName(),
                         request.getUse(),
-                        latestPriority(categoryRepository.latestMiddleCategoryPriorities(strCd, mainCateCd)) + 1,
+                        latestPriority(categoryRepository.latestMiddleCategoryPriorities(siteCd, strCd, mainCateCd)) + 1,
                         request.getImageName(),
                         request.getImageUrl(),
                         request.getBusinessNumber(),
@@ -217,8 +214,8 @@ public class CategoryService {
     }
 
     @Transactional
-    public void updateMiddleCategory(String strCd, String mainCateCd, String middleCateCd, com.tenutz.storemngsim.web.api.dto.category.MiddleCategoryUpdateRequest request) {
-        Category foundMainCategory = categoryRepository.middleCategory(strCd, mainCateCd, middleCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
+    public void updateMiddleCategory(String siteCd, String strCd, String mainCateCd, String middleCateCd, MiddleCategoryUpdateRequest request) {
+        Category foundMainCategory = categoryRepository.middleCategory(siteCd, strCd, mainCateCd, middleCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
         foundMainCategory.updateMiddleCategory(
                 request.getCategoryName(),
                 request.getUse(),
@@ -233,16 +230,16 @@ public class CategoryService {
     }
 
     @Transactional
-    public void deleteMiddleCategory(String strCd, String mainCateCd, String middleCateCd) {
-        Category foundMiddleCategory = categoryRepository.middleCategory(strCd, mainCateCd, middleCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
+    public void deleteMiddleCategory(String siteCd, String strCd, String mainCateCd, String middleCateCd) {
+        Category foundMiddleCategory = categoryRepository.middleCategory(siteCd, strCd, mainCateCd, middleCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
 //        categoryRepository.delete(foundMiddleCategory);
         foundMiddleCategory.doesNotUse();
     }
 
     @Transactional
-    public void deleteMiddleCategories(String strCd, String mainCateCd, CategoriesDeleteRequest request) {
-//        categoryRepository.deleteMiddleCategories(strCd, mainCateCd, request.getCategoryCodes());
-        List<Category> foundCategories = categoryRepository.middleCategories(strCd, mainCateCd, request.getCategoryCodes());
+    public void deleteMiddleCategories(String siteCd, String strCd, String mainCateCd, CategoriesDeleteRequest request) {
+//        categoryRepository.deleteMiddleCategories(siteCd, strCd, mainCateCd, request.getCategoryCodes());
+        List<Category> foundCategories = categoryRepository.middleCategories(siteCd, strCd, mainCateCd, request.getCategoryCodes());
         if(request.getCategoryCodes().size() != foundCategories.size()) {
             throw new CInvalidValueException.CNonExistentCategoryIncludedException();
         }
@@ -250,8 +247,8 @@ public class CategoryService {
     }
 
     @Transactional
-    public void changeMiddleCategoryPriorities(String strCd, String mainCateCd, CategoryPrioritiesChangeRequest request) {
-        List<Category> foundCategories = categoryRepository.middleCategories(strCd, mainCateCd, request.getCategories().stream().map(CategoryPrioritiesChangeRequest.MainCategory::getCategoryCode).collect(Collectors.toList()));
+    public void changeMiddleCategoryPriorities(String siteCd, String strCd, String mainCateCd, CategoryPrioritiesChangeRequest request) {
+        List<Category> foundCategories = categoryRepository.middleCategories(siteCd, strCd, mainCateCd, request.getCategories().stream().map(CategoryPrioritiesChangeRequest.MainCategory::getCategoryCode).collect(Collectors.toList()));
         if(request.getCategories().size() != foundCategories.size()) {
             throw new CInvalidValueException.CNonExistentCategoryIncludedException();
         }
@@ -263,28 +260,27 @@ public class CategoryService {
     }
 
     @Transactional
-    public void createSubCategory(String strCd, String mainCateCd, String middleCateCd, SubCategoryCreateRequest request) {
-        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
-        categoryRepository.subCategory(strCd, mainCateCd, middleCateCd, request.getCategoryCode()).ifPresent(cat -> {
+    public void createSubCategory(String siteCd, String strCd, String mainCateCd, String middleCateCd, SubCategoryCreateRequest request) {
+        categoryRepository.subCategory(siteCd, strCd, mainCateCd, middleCateCd, request.getCategoryCode()).ifPresent(cat -> {
             throw new CInvalidValueException.CAlreadyCategoryCreatedException();
         });
         categoryRepository.save(
                 Category.createSubCategory(
-                        foundStoreMaster.getSiteCd(),
-                        foundStoreMaster.getStrCd(),
+                        siteCd,
+                        strCd,
                         mainCateCd,
                         middleCateCd,
                         request.getCategoryCode(),
                         request.getCategoryName(),
                         request.getUse(),
-                        latestPriority(categoryRepository.latestSubCategoryPriorities(strCd, mainCateCd, middleCateCd)) + 1
+                        latestPriority(categoryRepository.latestSubCategoryPriorities(siteCd, strCd, mainCateCd, middleCateCd)) + 1
                 )
         );
     }
 
     @Transactional
-    public void updateSubCategory(String strCd, String mainCateCd, String middleCateCd, String subCateCd, SubCategoryUpdateRequest request) {
-        Category foundMainCategory = categoryRepository.subCategory(strCd, mainCateCd, middleCateCd, subCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
+    public void updateSubCategory(String siteCd, String strCd, String mainCateCd, String middleCateCd, String subCateCd, SubCategoryUpdateRequest request) {
+        Category foundMainCategory = categoryRepository.subCategory(siteCd, strCd, mainCateCd, middleCateCd, subCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
         foundMainCategory.updateSubCategory(
                 request.getCategoryName(),
                 request.getUse()
@@ -292,16 +288,16 @@ public class CategoryService {
     }
 
     @Transactional
-    public void deleteSubCategory(String strCd, String mainCateCd, String middleCateCd, String subCateCd) {
-        Category foundSubCategory = categoryRepository.subCategory(strCd, mainCateCd, middleCateCd, subCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
+    public void deleteSubCategory(String siteCd, String strCd, String mainCateCd, String middleCateCd, String subCateCd) {
+        Category foundSubCategory = categoryRepository.subCategory(siteCd, strCd, mainCateCd, middleCateCd, subCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
 //        categoryRepository.delete(foundSubCategory);
         foundSubCategory.doesNotUse();
     }
 
     @Transactional
-    public void deleteSubCategories(String strCd, String mainCateCd, String middleCateCd, CategoriesDeleteRequest request) {
-//        categoryRepository.deleteSubCategories(strCd, mainCateCd, middleCateCd, request.getCategoryCodes());
-        List<Category> foundCategories = categoryRepository.subCategories(strCd, mainCateCd, middleCateCd, request.getCategoryCodes());
+    public void deleteSubCategories(String siteCd, String strCd, String mainCateCd, String middleCateCd, CategoriesDeleteRequest request) {
+//        categoryRepository.deleteSubCategories(siteCd, strCd, mainCateCd, middleCateCd, request.getCategoryCodes());
+        List<Category> foundCategories = categoryRepository.subCategories(siteCd, strCd, mainCateCd, middleCateCd, request.getCategoryCodes());
         if(request.getCategoryCodes().size() != foundCategories.size()) {
             throw new CInvalidValueException.CNonExistentCategoryIncludedException();
         }
@@ -309,8 +305,8 @@ public class CategoryService {
     }
 
     @Transactional
-    public void changeSubCategoryPriorities(String strCd, String mainCateCd, String middleCateCd, CategoryPrioritiesChangeRequest request) {
-        List<Category> foundCategories = categoryRepository.subCategories(strCd, mainCateCd, middleCateCd, request.getCategories().stream().map(CategoryPrioritiesChangeRequest.MainCategory::getCategoryCode).collect(Collectors.toList()));
+    public void changeSubCategoryPriorities(String siteCd, String strCd, String mainCateCd, String middleCateCd, CategoryPrioritiesChangeRequest request) {
+        List<Category> foundCategories = categoryRepository.subCategories(siteCd, strCd, mainCateCd, middleCateCd, request.getCategories().stream().map(CategoryPrioritiesChangeRequest.MainCategory::getCategoryCode).collect(Collectors.toList()));
         if(request.getCategories().size() != foundCategories.size()) {
             throw new CInvalidValueException.CNonExistentCategoryIncludedException();
         }

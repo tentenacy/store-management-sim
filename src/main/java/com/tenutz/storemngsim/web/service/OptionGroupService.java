@@ -1,9 +1,7 @@
 package com.tenutz.storemngsim.web.service;
 
 import com.tenutz.storemngsim.domain.menu.*;
-import com.tenutz.storemngsim.domain.menu.id.OptionGroupMainMenuId;
 import com.tenutz.storemngsim.domain.menu.id.PartialOptionGroupMainMenuId;
-import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.web.api.dto.common.MainMenuSearchRequest;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupPrioritiesChangeRequest;
@@ -20,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,9 +36,9 @@ public class OptionGroupService {
     private final OptionRepository optionRepository;
     private final MainMenuRepository mainMenuRepository;
 
-    public MainMenuOptionGroupsResponse mainMenuOptionGroups(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd) {
+    public MainMenuOptionGroupsResponse mainMenuOptionGroups(String siteCd, String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd) {
         return new MainMenuOptionGroupsResponse(
-                optionGroupRepository.mainMenuOptionGroups(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).stream().map(optionGroup ->
+                optionGroupRepository.mainMenuOptionGroups(siteCd, strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).stream().map(optionGroup ->
                         new MainMenuOptionGroupsResponse.MainMenuOptionGroup(
                                 optionGroup.getOptGrpCd(),
                                 optionGroup.getOptGrpKorNm(),
@@ -52,13 +49,13 @@ public class OptionGroupService {
         );
     }
 
-    public MainMenuMappersResponse mainMenuMappers(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd) {
-        return new MainMenuMappersResponse(optionGroupMainMenuRepository.mainMenuMappers(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd));
+    public MainMenuMappersResponse mainMenuMappers(String siteCd, String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd) {
+        return new MainMenuMappersResponse(optionGroupMainMenuRepository.mainMenuMappers(siteCd, strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd));
     }
 
     @Transactional
-    public void deleteMainMenuMappers(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd, OptionGroupsDeleteRequest request) {
-        List<OptionGroupMainMenu> foundMainMenuMappers = optionGroupMainMenuRepository.optionGroupMainMenus(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd, request.getOptionGroupCodes(), "X");
+    public void deleteMainMenuMappers(String siteCd, String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd, OptionGroupsDeleteRequest request) {
+        List<OptionGroupMainMenu> foundMainMenuMappers = optionGroupMainMenuRepository.optionGroupMainMenus(siteCd, strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd, request.getOptionGroupCodes(), "X");
         if(request.getOptionGroupCodes().size() != foundMainMenuMappers.size()) {
             throw new CInvalidValueException.CNonExistentOptionGroupMainMenuIncludedException();
         }
@@ -66,8 +63,8 @@ public class OptionGroupService {
     }
 
     @Transactional
-    public void changeMainMenuMapperPriorities(String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd, OptionGroupPrioritiesChangeRequest request) {
-        List<OptionGroupMainMenu> foundMappers = optionGroupMainMenuRepository.optionGroupMainMenus(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd, request.getOptionGroups().stream().map(OptionGroupPrioritiesChangeRequest.OptionGroup::getOptionGroupCode).collect(Collectors.toList()), "D");
+    public void changeMainMenuMapperPriorities(String siteCd, String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd, OptionGroupPrioritiesChangeRequest request) {
+        List<OptionGroupMainMenu> foundMappers = optionGroupMainMenuRepository.optionGroupMainMenus(siteCd, strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd, request.getOptionGroups().stream().map(OptionGroupPrioritiesChangeRequest.OptionGroup::getOptionGroupCode).collect(Collectors.toList()), "D");
         if(request.getOptionGroups().size() != foundMappers.size()) {
             throw new CInvalidValueException.CNonExistentOptionGroupMainMenuIncludedException();
         }
@@ -78,9 +75,9 @@ public class OptionGroupService {
         });
     }
 
-    public OptionOptionGroupsResponse optionOptionGroups(String strCd, String optionCd) {
+    public OptionOptionGroupsResponse optionOptionGroups(String siteCd, String strCd, String optionCd) {
         return new OptionOptionGroupsResponse(
-                optionGroupRepository.optionOptionGroups(strCd, optionCd).stream().map(optionGroup ->
+                optionGroupRepository.optionOptionGroups(siteCd, strCd, optionCd).stream().map(optionGroup ->
                         new OptionOptionGroupsResponse.OptionOptionGroup(
                                 optionGroup.getOptGrpCd(),
                                 optionGroup.getOptGrpKorNm(),
@@ -91,13 +88,13 @@ public class OptionGroupService {
         );
     }
 
-    public OptionMappersResponse optionMappers(String strCd, String optionCd) {
-        return new OptionMappersResponse(optionGroupMainMenuRepository.optionMappers(strCd, optionCd));
+    public OptionMappersResponse optionMappers(String siteCd, String strCd, String optionCd) {
+        return new OptionMappersResponse(optionGroupMainMenuRepository.optionMappers(siteCd, strCd, optionCd));
     }
 
     @Transactional
-    public void deleteOptionMappers(String strCd, String optionCd, OptionGroupsDeleteRequest request) {
-        List<OptionGroupOption> foundOptionMappers = optionGroupOptionRepository.optionGroupOptions(strCd, optionCd, request.getOptionGroupCodes(), "X");
+    public void deleteOptionMappers(String siteCd, String strCd, String optionCd, OptionGroupsDeleteRequest request) {
+        List<OptionGroupOption> foundOptionMappers = optionGroupOptionRepository.optionGroupOptions(siteCd, strCd, optionCd, request.getOptionGroupCodes(), "X");
         if(request.getOptionGroupCodes().size() != foundOptionMappers.size()) {
             throw new CInvalidValueException.CNonExistentOptionGroupOptionIncludedException();
         }
@@ -105,8 +102,8 @@ public class OptionGroupService {
     }
 
     @Transactional
-    public void changeOptionMapperPriorities(String strCd, String optionCd, OptionGroupPrioritiesChangeRequest request) {
-        List<OptionGroupOption> foundMappers = optionGroupOptionRepository.optionGroupOptions(strCd, optionCd, request.getOptionGroups().stream().map(OptionGroupPrioritiesChangeRequest.OptionGroup::getOptionGroupCode).collect(Collectors.toList()), "D");
+    public void changeOptionMapperPriorities(String siteCd, String strCd, String optionCd, OptionGroupPrioritiesChangeRequest request) {
+        List<OptionGroupOption> foundMappers = optionGroupOptionRepository.optionGroupOptions(siteCd, strCd, optionCd, request.getOptionGroups().stream().map(OptionGroupPrioritiesChangeRequest.OptionGroup::getOptionGroupCode).collect(Collectors.toList()), "D");
         if(request.getOptionGroups().size() != foundMappers.size()) {
             throw new CInvalidValueException.CNonExistentOptionGroupOptionIncludedException();
         }
@@ -117,8 +114,8 @@ public class OptionGroupService {
         });
     }
 
-    public OptionGroupsResponse optionGroups(String strCd) {
-        return new OptionGroupsResponse(optionGroupRepository.optionGroups(strCd).stream().map(optionGroup ->
+    public OptionGroupsResponse optionGroups(String siteCd, String strCd) {
+        return new OptionGroupsResponse(optionGroupRepository.optionGroups(siteCd, strCd).stream().map(optionGroup ->
                 new OptionGroupsResponse.OptionGroup(
                         optionGroup.getOptGrpCd(),
                         optionGroup.getOptGrpKorNm(),
@@ -127,8 +124,8 @@ public class OptionGroupService {
                 )).collect(Collectors.toList()));
     }
 
-    public OptionGroupResponse option(String strCd, String optionGroupCd) {
-        OptionGroup foundOptionGroup = optionGroupRepository.optionGroup(strCd, optionGroupCd).orElseThrow(CEntityNotFoundException.COptionGroupNotFoundException::new);
+    public OptionGroupResponse option(String siteCd, String strCd, String optionGroupCd) {
+        OptionGroup foundOptionGroup = optionGroupRepository.optionGroup(siteCd, strCd, optionGroupCd).orElseThrow(CEntityNotFoundException.COptionGroupNotFoundException::new);
         return new OptionGroupResponse(
                 foundOptionGroup.getStrCd(),
                 foundOptionGroup.getOptGrpCd(),
@@ -145,9 +142,8 @@ public class OptionGroupService {
     }
 
     @Transactional
-    public void create(String strCd, OptionGroupCreateRequest request) {
-        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
-        Optional<OptionGroup> optionGroupOptional = optionGroupRepository.optionGroup(strCd, request.getOptionGroupCode());
+    public void create(String siteCd, String strCd, OptionGroupCreateRequest request) {
+        Optional<OptionGroup> optionGroupOptional = optionGroupRepository.optionGroup(siteCd, strCd, request.getOptionGroupCode());
         if(optionGroupOptional.isPresent() && optionGroupOptional.get().getUseYn().equals("D")) {
             optionGroupOptional.get().update(
                     request.getOptionGroupName(),
@@ -160,21 +156,21 @@ public class OptionGroupService {
         } else {
             optionGroupRepository.save(
                     OptionGroup.create(
-                            foundStoreMaster.getSiteCd(),
+                            siteCd,
                             strCd,
                             request.getOptionGroupCode(),
                             request.getOptionGroupName(),
                             request.getToggleSelect(),
                             request.getRequired(),
-                            latestPriority(optionGroupRepository.latestPriorities(strCd)) + 1
+                            latestPriority(optionGroupRepository.latestPriorities(siteCd, strCd)) + 1
                     )
             );
         }
     }
 
     @Transactional
-    public void update(String strCd, String optionGroupCd, OptionGroupUpdateRequest request) {
-        OptionGroup foundOptionGroup = optionGroupRepository.optionGroup(strCd, optionGroupCd).orElseThrow(CEntityNotFoundException.COptionGroupNotFoundException::new);
+    public void update(String siteCd, String strCd, String optionGroupCd, OptionGroupUpdateRequest request) {
+        OptionGroup foundOptionGroup = optionGroupRepository.optionGroup(siteCd, strCd, optionGroupCd).orElseThrow(CEntityNotFoundException.COptionGroupNotFoundException::new);
         foundOptionGroup.update(
                 request.getOptionGroupName(),
                 request.getToggleSelect(),
@@ -183,22 +179,22 @@ public class OptionGroupService {
     }
 
     @Transactional
-    public void delete(String strCd, String optionGroupCd) {
-        OptionGroup foundOptionGroup = optionGroupRepository.optionGroup(strCd, optionGroupCd).orElseThrow(CEntityNotFoundException.COptionGroupNotFoundException::new);
+    public void delete(String siteCd, String strCd, String optionGroupCd) {
+        OptionGroup foundOptionGroup = optionGroupRepository.optionGroup(siteCd, strCd, optionGroupCd).orElseThrow(CEntityNotFoundException.COptionGroupNotFoundException::new);
         foundOptionGroup.delete();
     }
 
     @Transactional
-    public void deleteOptionGroups(String strCd, OptionGroupsDeleteRequest request) {
-        List<OptionGroup> foundOptionGroups = optionGroupRepository.optionGroups(strCd, request.getOptionGroupCodes(), "X");
+    public void deleteOptionGroups(String siteCd, String strCd, OptionGroupsDeleteRequest request) {
+        List<OptionGroup> foundOptionGroups = optionGroupRepository.optionGroups(siteCd, strCd, request.getOptionGroupCodes(), "X");
         if(request.getOptionGroupCodes().size() != foundOptionGroups.size()) {
             throw new CInvalidValueException.CNonExistentOptionGroupIncludedException();
         }
         foundOptionGroups.forEach(OptionGroup::delete);
     }
 
-    public OptionGroupOptionsResponse optionGroupOptions(String strCd, String optionGroupCd) {
-        return new OptionGroupOptionsResponse(optionRepository.optionGroupOptions(strCd, optionGroupCd).stream().map(option ->
+    public OptionGroupOptionsResponse optionGroupOptions(String siteCd, String strCd, String optionGroupCd) {
+        return new OptionGroupOptionsResponse(optionRepository.optionGroupOptions(siteCd, strCd, optionGroupCd).stream().map(option ->
                 new OptionGroupOptionsResponse.OptionGroupOption(
                         strCd,
                         option.getOptCd(),
@@ -208,14 +204,13 @@ public class OptionGroupService {
         );
     }
 
-    public OptionGroupOptionMappersResponse optionGroupOptionMappers(String strCd, String optionGroupCd) {
-        return new OptionGroupOptionMappersResponse(optionRepository.optionGroupOptionMappers(strCd, optionGroupCd));
+    public OptionGroupOptionMappersResponse optionGroupOptionMappers(String siteCd, String strCd, String optionGroupCd) {
+        return new OptionGroupOptionMappersResponse(optionRepository.optionGroupOptionMappers(siteCd, strCd, optionGroupCd));
     }
 
     @Transactional
-    public void mapToOptions(String strCd, String optionGroupCd, OptionsMappedByRequest request) {
-        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
-        List<OptionGroupOption> foundOptionGroupOptions = optionGroupOptionRepository.optionGroupOptions2(strCd, optionGroupCd, request.getOptionCodes(), "D");
+    public void mapToOptions(String siteCd, String strCd, String optionGroupCd, OptionsMappedByRequest request) {
+        List<OptionGroupOption> foundOptionGroupOptions = optionGroupOptionRepository.optionGroupOptions2(siteCd, strCd, optionGroupCd, request.getOptionCodes(), "D");
         List<String> optionCodes = foundOptionGroupOptions.stream().map(OptionGroupOption::getOptCd).collect(Collectors.toList());
         request.getOptionCodes().forEach(code -> {
             if(optionCodes.contains(code)) {
@@ -225,11 +220,11 @@ public class OptionGroupService {
             } else {
                 optionGroupOptionRepository.save(
                         OptionGroupOption.create(
-                                foundStoreMaster.getSiteCd(),
+                                siteCd,
                                 strCd,
                                 code,
                                 optionGroupCd,
-                                latestPriority(optionGroupOptionRepository.latestPriorities2(strCd, optionGroupCd)) + 1
+                                latestPriority(optionGroupOptionRepository.latestPriorities2(siteCd, strCd, optionGroupCd)) + 1
                         )
                 );
             }
@@ -237,8 +232,8 @@ public class OptionGroupService {
     }
 
     @Transactional
-    public void changeOptionGroupOptionMapperPriorities(String strCd, String optionGroupCd, OptionGroupOptionMapperPrioritiesChangeRequest request) {
-        List<OptionGroupOption> foundMappers = optionGroupOptionRepository.optionGroupOptions2(strCd, optionGroupCd, request.getOptionGroupOptions().stream().map(OptionGroupOptionMapperPrioritiesChangeRequest.OptionGroupOption::getOptionCode).collect(Collectors.toList()), "D");
+    public void changeOptionGroupOptionMapperPriorities(String siteCd, String strCd, String optionGroupCd, OptionGroupOptionMapperPrioritiesChangeRequest request) {
+        List<OptionGroupOption> foundMappers = optionGroupOptionRepository.optionGroupOptions2(siteCd, strCd, optionGroupCd, request.getOptionGroupOptions().stream().map(OptionGroupOptionMapperPrioritiesChangeRequest.OptionGroupOption::getOptionCode).collect(Collectors.toList()), "D");
         if(request.getOptionGroupOptions().size() != foundMappers.size()) {
             throw new CInvalidValueException.CNonExistentOptionGroupOptionIncludedException();
         }
@@ -250,16 +245,16 @@ public class OptionGroupService {
     }
 
     @Transactional
-    public void deleteOptionGroupOptionMappers(String strCd, String optionGroupCd, OptionGroupOptionMappersDeleteRequest request) {
-        List<OptionGroupOption> foundOptionGroups = optionGroupOptionRepository.optionGroupOptions2(strCd, optionGroupCd, request.getOptionGroupOptionCodes(), "X");
+    public void deleteOptionGroupOptionMappers(String siteCd, String strCd, String optionGroupCd, OptionGroupOptionMappersDeleteRequest request) {
+        List<OptionGroupOption> foundOptionGroups = optionGroupOptionRepository.optionGroupOptions2(siteCd, strCd, optionGroupCd, request.getOptionGroupOptionCodes(), "X");
         if(request.getOptionGroupOptionCodes().size() != foundOptionGroups.size()) {
             throw new CInvalidValueException.CNonExistentOptionGroupIncludedException();
         }
         foundOptionGroups.forEach(OptionGroupOption::delete);
     }
 
-    public OptionGroupMainMenusResponse optionGroupMainMenus(String strCd, String optionGroupCd, MainMenuSearchRequest request) {
-        return new OptionGroupMainMenusResponse(mainMenuRepository.optionGroupMainMenus(strCd, optionGroupCd, request.getMainCateCd(), request.getMiddleCateCd(), request.getSubCateCd()).stream().map(mainMenu ->
+    public OptionGroupMainMenusResponse optionGroupMainMenus(String siteCd, String strCd, String optionGroupCd, MainMenuSearchRequest request) {
+        return new OptionGroupMainMenusResponse(mainMenuRepository.optionGroupMainMenus(siteCd, strCd, optionGroupCd, request.getMainCateCd(), request.getMiddleCateCd(), request.getSubCateCd()).stream().map(mainMenu ->
                 new OptionGroupMainMenusResponse.OptionGroupMainMenu(
                         strCd,
                         mainMenu.getMenuCd(),
@@ -272,25 +267,25 @@ public class OptionGroupService {
         );
     }
 
-    public OptionGroupMainMenuMappersResponse optionGroupMainMenuMappers(String strCd, String optionGroupCd) {
-        return new OptionGroupMainMenuMappersResponse(mainMenuRepository.optionGroupMainMenuMappers(strCd, optionGroupCd));
+    public OptionGroupMainMenuMappersResponse optionGroupMainMenuMappers(String siteCd, String strCd, String optionGroupCd) {
+        return new OptionGroupMainMenuMappersResponse(mainMenuRepository.optionGroupMainMenuMappers(siteCd, strCd, optionGroupCd));
     }
 
     @Transactional
-    public void mapToMainMenus(String strCd, String optionGroupCd, MainMenusMappedByRequest request) {
-        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
-        List<OptionGroupMainMenu> foundOptionGroupMainMenus = optionGroupMainMenuRepository.findByStrCdAndOptGrpCdAndPartialIdIn(
-                        strCd,
-                        optionGroupCd,
-                        request.getMainMenusMappedBy().stream().map(mainMenusMappedBy ->
-                                new PartialOptionGroupMainMenuId(
-                                        mainMenusMappedBy.getMainCategoryCode(),
-                                        mainMenusMappedBy.getMiddleCategoryCode(),
-                                        mainMenusMappedBy.getSubCategoryCode(),
-                                        mainMenusMappedBy.getMenuCode()
-                                )
-                        ).collect(Collectors.toList())
-                ).stream()
+    public void mapToMainMenus(String siteCd, String strCd, String optionGroupCd, MainMenusMappedByRequest request) {
+        List<OptionGroupMainMenu> foundOptionGroupMainMenus = optionGroupMainMenuRepository.findBySiteCdAndStrCdAndOptGrpCdAndPartialIdIn(
+                siteCd,
+                strCd,
+                optionGroupCd,
+                request.getMainMenusMappedBy().stream().map(mainMenusMappedBy ->
+                        new PartialOptionGroupMainMenuId(
+                                mainMenusMappedBy.getMainCategoryCode(),
+                                mainMenusMappedBy.getMiddleCategoryCode(),
+                                mainMenusMappedBy.getSubCategoryCode(),
+                                mainMenusMappedBy.getMenuCode()
+                        )
+                ).collect(Collectors.toList())
+        ).stream()
                 .filter(ogmm -> !ogmm.getUseYn().equals("D"))
                 .collect(Collectors.toList());
         List<MainMenusMappedByRequest.MainMenuMappedBy> mainMenusMappedBy = foundOptionGroupMainMenus.stream().map(ogmm -> new MainMenusMappedByRequest.MainMenuMappedBy(ogmm.getCateCd1(), ogmm.getCateCd2(), ogmm.getCateCd3(), ogmm.getMenuCd())).collect(Collectors.toList());
@@ -302,14 +297,14 @@ public class OptionGroupService {
             } else {
                 optionGroupMainMenuRepository.save(
                         OptionGroupMainMenu.create(
-                                foundStoreMaster.getSiteCd(),
+                                siteCd,
                                 strCd,
                                 mainMenuMappedBy.getMainCategoryCode(),
                                 mainMenuMappedBy.getMiddleCategoryCode(),
                                 mainMenuMappedBy.getSubCategoryCode(),
                                 mainMenuMappedBy.getMenuCode(),
                                 optionGroupCd,
-                                latestPriority(optionGroupMainMenuRepository.latestPriorities2(strCd, optionGroupCd)) + 1
+                                latestPriority(optionGroupMainMenuRepository.latestPriorities2(siteCd, strCd, optionGroupCd)) + 1
                         )
                 );
             }
@@ -317,8 +312,9 @@ public class OptionGroupService {
     }
 
     @Transactional
-    public void changeOptionGroupMainMenuMapperPriorities(String strCd, String optionGroupCd, OptionGroupMainMenuMapperPrioritiesChangeRequest request) {
-        List<OptionGroupMainMenu> foundMappers = optionGroupMainMenuRepository.findByStrCdAndOptGrpCdAndPartialIdIn(
+    public void changeOptionGroupMainMenuMapperPriorities(String siteCd, String strCd, String optionGroupCd, OptionGroupMainMenuMapperPrioritiesChangeRequest request) {
+        List<OptionGroupMainMenu> foundMappers = optionGroupMainMenuRepository.findBySiteCdAndStrCdAndOptGrpCdAndPartialIdIn(
+                        siteCd,
                         strCd,
                         optionGroupCd,
                         request.getOptionGroupMainMenus().stream().map(mainMenusMappedBy ->
@@ -343,14 +339,15 @@ public class OptionGroupService {
                             reqOptionGroupMainMenu.getSubCategoryCode(),
                             reqOptionGroupMainMenu.getMenuCode()
                     ).equals(optionGroupMainMenu.getPartialId())).findAny().ifPresent(reqOptionGroupMainMenu -> {
-                optionGroupMainMenu.updatePriority(reqOptionGroupMainMenu.getPriority());
+                        optionGroupMainMenu.updatePriority(reqOptionGroupMainMenu.getPriority());
             });
         });
     }
 
     @Transactional
-    public void deleteOptionGroupMainMenuMappers(String strCd, String optionGroupCd, OptionGroupMainMenuMappersDeleteRequest request) {
-        List<OptionGroupMainMenu> foundOptionGroupMainMenus = optionGroupMainMenuRepository.findByStrCdAndOptGrpCdAndPartialIdIn(
+    public void deleteOptionGroupMainMenuMappers(String siteCd, String strCd, String optionGroupCd, OptionGroupMainMenuMappersDeleteRequest request) {
+        List<OptionGroupMainMenu> foundOptionGroupMainMenus = optionGroupMainMenuRepository.findBySiteCdAndStrCdAndOptGrpCdAndPartialIdIn(
+                siteCd,
                 strCd,
                 optionGroupCd,
                 request.getOptionGroupMainMenus().stream().map(mainMenusMappedBy ->

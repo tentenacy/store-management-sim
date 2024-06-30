@@ -5,6 +5,7 @@ import com.tenutz.storemngsim.web.api.dto.common.OptionGroupPrioritiesChangeRequ
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsDeleteRequest;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsMappedByRequest;
 import com.tenutz.storemngsim.web.api.dto.menu.*;
+import com.tenutz.storemngsim.web.api.dto.user.StoreArgs;
 import com.tenutz.storemngsim.web.service.MenuService;
 import com.tenutz.storemngsim.web.service.OptionGroupService;
 import com.tenutz.storemngsim.web.service.UserService;
@@ -37,8 +38,8 @@ public class MenuApiController {
      */
     @GetMapping("/main-menus")
     public MainMenusResponse mainMenus(@PathVariable String mainCateCd, @PathVariable String middleCateCd, @PathVariable String subCateCd) {
-        String strCd = userService.storeCode();
-        return menuService.mainMenus(strCd, mainCateCd, middleCateCd, subCateCd);
+        StoreArgs storeArgs = userService.storeArgs();
+        return menuService.mainMenus(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, subCateCd);
     }
 
     /**
@@ -56,8 +57,8 @@ public class MenuApiController {
             @PathVariable String subCateCd,
             @PathVariable String mainMenuCd
     ) {
-        String strCd = userService.storeCode();
-        return menuService.mainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd);
+        StoreArgs storeArgs = userService.storeArgs();
+        return menuService.mainMenu(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, subCateCd, mainMenuCd);
     }
 
     /**
@@ -75,9 +76,9 @@ public class MenuApiController {
             @PathVariable String subCateCd,
             @Valid MainMenuCreateRequest request
     ) {
-        String strCd = userService.storeCode();
+        StoreArgs storeArgs = userService.storeArgs();
 
-        MenuImageArgs args = new MenuImageArgs(request.getImage(), strCd);
+        MenuImageArgs args = new MenuImageArgs(request.getImage(), storeArgs.getSiteCd(), storeArgs.getStrCd());
 
         if(!ObjectUtils.isEmpty(request.getImage())) {
             String imageUrl = fileUploadService.uploadKioskMenuImage(args);
@@ -86,7 +87,7 @@ public class MenuApiController {
         }
 
         try {
-            menuService.createMainMenu(strCd, mainCateCd, middleCateCd, subCateCd, request);
+            menuService.createMainMenu(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, subCateCd, request);
         } catch (Exception e) {
             if(!ObjectUtils.isEmpty(request.getImage())) {
                 fileUploadService.deleteKioskMenuImage(request.getImageUrl(), args);
@@ -111,8 +112,8 @@ public class MenuApiController {
             @PathVariable String mainMenuCd,
             @Valid MainMenuUpdateRequest request
     ) {
-        String strCd = userService.storeCode();
-        MenuImageArgs args = new MenuImageArgs(request.getImage(), strCd);
+        StoreArgs storeArgs = userService.storeArgs();
+        MenuImageArgs args = new MenuImageArgs(request.getImage(), storeArgs.getSiteCd(), storeArgs.getStrCd());
 
         if(!ObjectUtils.isEmpty(request.getImage())) {
             String imageUrl = fileUploadService.uploadKioskMenuImage(args);
@@ -121,7 +122,7 @@ public class MenuApiController {
         }
 
         try {
-            menuService.updateMainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd, request);
+            menuService.updateMainMenu(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, subCateCd, mainMenuCd, request);
         } catch (Exception e) {
             if(!ObjectUtils.isEmpty(request.getImage())) {
                 fileUploadService.deleteKioskMenuImage(request.getImageUrl(), args);
@@ -145,8 +146,8 @@ public class MenuApiController {
             @PathVariable String subCateCd,
             @PathVariable String mainMenuCd
     ) {
-        String strCd = userService.storeCode();
-        menuService.deleteMainMenu(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd);
+        StoreArgs storeArgs = userService.storeArgs();
+        menuService.deleteMainMenu(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, subCateCd, mainMenuCd);
     }
 
     /**
@@ -164,8 +165,8 @@ public class MenuApiController {
             @PathVariable String subCateCd,
             @Valid @RequestBody MenusDeleteRequest request
     ) {
-        String strCd = userService.storeCode();
-        menuService.deleteMainMenus(strCd, mainCateCd, middleCateCd, subCateCd, request);
+        StoreArgs storeArgs = userService.storeArgs();
+        menuService.deleteMainMenus(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, subCateCd, request);
     }
 
     /**
@@ -182,8 +183,8 @@ public class MenuApiController {
             @PathVariable String subCateCd,
             @Valid @RequestBody MenuPrioritiesChangeRequest request
     ) {
-        String strCd = userService.storeCode();
-        menuService.changeMainMenuPriorities(strCd, mainCateCd, middleCateCd, subCateCd, request);
+        StoreArgs storeArgs = userService.storeArgs();
+        menuService.changeMainMenuPriorities(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, subCateCd, request);
     }
 
     /**
@@ -201,8 +202,8 @@ public class MenuApiController {
             @PathVariable String subCateCd,
             @PathVariable String mainMenuCd
     ) {
-        String strCd = userService.storeCode();
-        return optionGroupService.mainMenuOptionGroups(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd);
+        StoreArgs storeArgs = userService.storeArgs();
+        return optionGroupService.mainMenuOptionGroups(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, subCateCd, mainMenuCd);
     }
 
     /**
@@ -220,8 +221,8 @@ public class MenuApiController {
             @PathVariable String subCateCd,
             @PathVariable String mainMenuCd
     ) {
-        String strCd = userService.storeCode();
-        return optionGroupService.mainMenuMappers(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd);
+        StoreArgs storeArgs = userService.storeArgs();
+        return optionGroupService.mainMenuMappers(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, subCateCd, mainMenuCd);
     }
 
     /**
@@ -241,8 +242,8 @@ public class MenuApiController {
             @PathVariable String mainMenuCd,
             @Valid @RequestBody OptionGroupsMappedByRequest request
     ) {
-        String strCd = userService.storeCode();
-        menuService.mapToOptionGroups(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd, request);
+        StoreArgs storeArgs = userService.storeArgs();
+        menuService.mapToOptionGroups(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, subCateCd, mainMenuCd, request);
     }
 
     /**
@@ -262,8 +263,8 @@ public class MenuApiController {
             @PathVariable String mainMenuCd,
             @Valid @RequestBody OptionGroupsDeleteRequest request
     ) {
-        String strCd = userService.storeCode();
-        optionGroupService.deleteMainMenuMappers(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd, request);
+        StoreArgs storeArgs = userService.storeArgs();
+        optionGroupService.deleteMainMenuMappers(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, subCateCd, mainMenuCd, request);
     }
 
     /**
@@ -282,8 +283,8 @@ public class MenuApiController {
             @PathVariable String mainMenuCd,
             @Valid @RequestBody OptionGroupPrioritiesChangeRequest request
     ) {
-        String strCd = userService.storeCode();
-        optionGroupService.changeMainMenuMapperPriorities(strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd, request);
+        StoreArgs storeArgs = userService.storeArgs();
+        optionGroupService.changeMainMenuMapperPriorities(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, subCateCd, mainMenuCd, request);
     }
 
 }

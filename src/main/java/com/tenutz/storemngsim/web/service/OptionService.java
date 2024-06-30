@@ -30,8 +30,8 @@ public class OptionService {
     private final MenuImageRepository menuImageRepository;
     private final UploadClient s3Client;
 
-    public OptionsResponse options(String strCd) {
-        return new OptionsResponse(optionRepository.options(strCd).stream().map(option ->
+    public OptionsResponse options(String siteCd, String strCd) {
+        return new OptionsResponse(optionRepository.options(siteCd, strCd).stream().map(option ->
                 new OptionsResponse.Option(
                         option.getStrCd(),
                         option.getOptCd(),
@@ -42,8 +42,8 @@ public class OptionService {
         );
     }
 
-    public OptionResponse option(String strCd, String optionCd) {
-        Option foundOption = optionRepository.option(strCd, optionCd).orElseThrow(CEntityNotFoundException.COptionNotFoundException::new);
+    public OptionResponse option(String siteCd, String strCd, String optionCd) {
+        Option foundOption = optionRepository.option(siteCd, strCd, optionCd).orElseThrow(CEntityNotFoundException.COptionNotFoundException::new);
         return new OptionResponse(
                 foundOption.getStrCd(),
                 foundOption.getOptCd(),
@@ -55,7 +55,7 @@ public class OptionService {
                 foundOption.soldOutYn(),
                 foundOption.useYn(),
                 foundOption.getImgNm(),
-                menuImageRepository.findByStrCdAndEquTypeAndFileNm(strCd, "4", foundOption.getImgNm())
+                menuImageRepository.findBySiteCdAndStrCdAndEquTypeAndFileNm(siteCd, strCd, "4", foundOption.getImgNm())
                         .map(image -> s3Client.getFileUrl(image.getFilePath().substring(image.getFilePath().indexOf("FILE_MANAGER"))) + "/" + image.getFileNm())
                         .orElse(null),
                 foundOption.getOptKorNm(),
@@ -73,11 +73,11 @@ public class OptionService {
     }
 
     @Transactional
-    public void createOption(String strCd, OptionCreateRequest request) {
+    public void createOption(String siteCd, String strCd, OptionCreateRequest request) {
 
         StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
 
-        Optional<Option> optionOptional = optionRepository.option(strCd, request.getOptionCode());
+        Optional<Option> optionOptional = optionRepository.option(siteCd, strCd, request.getOptionCode());
         if(optionOptional.isPresent() && optionOptional.get().getUseYn().equals("D")) {
             optionOptional.get().update(
                     request.getOptionName(),
@@ -133,8 +133,8 @@ public class OptionService {
     }
 
     @Transactional
-    public void updateOption(String strCd, String optionCd, OptionUpdateRequest request) {
-        Option foundOption = optionRepository.option(strCd, optionCd).orElseThrow(CEntityNotFoundException.COptionNotFoundException::new);
+    public void updateOption(String siteCd, String strCd, String optionCd, OptionUpdateRequest request) {
+        Option foundOption = optionRepository.option(siteCd, strCd, optionCd).orElseThrow(CEntityNotFoundException.COptionNotFoundException::new);
         foundOption.update(
                 request.getOptionName(),
                 request.getPrice(),
@@ -159,14 +159,14 @@ public class OptionService {
     }
 
     @Transactional
-    public void deleteOption(String strCd, String optionCd) {
-        Option foundOption = optionRepository.option(strCd, optionCd).orElseThrow(CEntityNotFoundException.COptionNotFoundException::new);
+    public void deleteOption(String siteCd, String strCd, String optionCd) {
+        Option foundOption = optionRepository.option(siteCd, strCd, optionCd).orElseThrow(CEntityNotFoundException.COptionNotFoundException::new);
         foundOption.delete();
     }
 
     @Transactional
-    public void deleteOptions(String strCd, OptionsDeleteRequest request) {
-        List<Option> foundOptions = optionRepository.options(strCd, request.getOptionCodes(), "X");
+    public void deleteOptions(String siteCd, String strCd, OptionsDeleteRequest request) {
+        List<Option> foundOptions = optionRepository.options(siteCd, strCd, request.getOptionCodes(), "X");
         if(request.getOptionCodes().size() != foundOptions.size()) {
             throw new CInvalidValueException.CNonExistentOptionIncludedException();
         }
@@ -174,9 +174,8 @@ public class OptionService {
     }
 
     @Transactional
-    public void mapToOptionGroups(String strCd, String optionCd, OptionGroupsMappedByRequest request) {
-        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
-        List<OptionGroupOption> foundOptionGroupOptions = optionGroupOptionRepository.optionGroupOptions(strCd, optionCd, request.getOptionGroupCodes(), "D");
+    public void mapToOptionGroups(String siteCd, String strCd, String optionCd, OptionGroupsMappedByRequest request) {
+        List<OptionGroupOption> foundOptionGroupOptions = optionGroupOptionRepository.optionGroupOptions(siteCd, strCd, optionCd, request.getOptionGroupCodes(), "D");
         List<String> optionGroupCodes = foundOptionGroupOptions.stream().map(OptionGroupOption::getOptGrpCd).collect(Collectors.toList());
         request.getOptionGroupCodes().forEach(code -> {
             if(optionGroupCodes.contains(code)) {
@@ -186,11 +185,11 @@ public class OptionService {
             } else {
                 optionGroupOptionRepository.save(
                         OptionGroupOption.create(
-                                foundStoreMaster.getSiteCd(),
+                                siteCd,
                                 strCd,
                                 optionCd,
                                 code,
-                                latestPriority(optionGroupOptionRepository.latestPriorities(strCd, optionCd)) + 1
+                                latestPriority(optionGroupOptionRepository.latestPriorities(siteCd, strCd, optionCd)) + 1
                         )
                 );
             }

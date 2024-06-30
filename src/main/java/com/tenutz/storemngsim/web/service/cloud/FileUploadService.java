@@ -4,11 +4,9 @@ import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.tenutz.storemngsim.domain.menu.MenuImage;
 import com.tenutz.storemngsim.domain.menu.MenuImageRepository;
-import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.web.api.dto.common.MenuImageArgs;
 import com.tenutz.storemngsim.web.client.UploadClient;
-import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,12 +36,11 @@ public class FileUploadService {
         final int EQU_TYPE = 4;
 
         String newFileName = createFileName(args.getFileToUpload().getOriginalFilename());
-        StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(args.getStoreCd()).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
-        String filePath = "FILE_MANAGER/" + foundStoreMaster.getSiteCd() + "/" + foundStoreMaster.getStrCd() + "/" + EQU_TYPE;
+        String filePath = "FILE_MANAGER/" + args.getSiteCd() + "/" + args.getStoreCd() + "/" + EQU_TYPE;
         menuImageRepository.save(
                 MenuImage.createKioskMenu(
-                        foundStoreMaster.getSiteCd(),
-                        foundStoreMaster.getStrCd(),
+                        args.getSiteCd(),
+                        args.getStoreCd(),
                         newFileName,
                         null,
                         (int) args.getFileToUpload().getSize(),
@@ -85,7 +82,7 @@ public class FileUploadService {
 
     @Transactional
     public void deleteKioskMenuImage(String imageUrl, MenuImageArgs args) {
-        menuImageRepository.deleteByStrCdAndEquTypeAndFileNm(args.getStoreCd(), "4", args.getNewFileName());
+        menuImageRepository.deleteBySiteCdAndStrCdAndEquTypeAndFileNm(args.getSiteCd(), args.getStoreCd(), "4", args.getNewFileName());
         delete(imageUrl);
     }
 

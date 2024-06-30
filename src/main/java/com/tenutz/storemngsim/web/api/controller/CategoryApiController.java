@@ -1,15 +1,13 @@
 package com.tenutz.storemngsim.web.api.controller;
 
 import com.tenutz.storemngsim.web.api.dto.category.*;
-import com.tenutz.storemngsim.web.api.dto.common.MenuImageArgs;
+import com.tenutz.storemngsim.web.api.dto.user.StoreArgs;
 import com.tenutz.storemngsim.web.service.CategoryService;
 import com.tenutz.storemngsim.web.service.UserService;
 import com.tenutz.storemngsim.web.service.cloud.FileUploadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -30,8 +28,8 @@ public class CategoryApiController {
      */
     @GetMapping("/main")
     public MainCategoriesResponse mainCategories() {
-        String strCd = userService.storeCode();
-        return categoryService.mainCategories(strCd);
+        StoreArgs storeArgs = userService.storeArgs();
+        return categoryService.mainCategories(storeArgs.getSiteCd(), storeArgs.getStrCd());
     }
 
     /**
@@ -41,8 +39,8 @@ public class CategoryApiController {
      */
     @GetMapping("/main/{mainCateCd}")
     public MainCategoryResponse mainCategory(@PathVariable String mainCateCd) {
-        String strCd = userService.storeCode();
-        return categoryService.mainCategory(strCd, mainCateCd);
+        StoreArgs storeArgs = userService.storeArgs();
+        return categoryService.mainCategory(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd);
     }
 
     /**
@@ -51,8 +49,8 @@ public class CategoryApiController {
      */
     @PostMapping("/main")
     public void createMainCategory(@Valid @RequestBody MainCategoryCreateRequest request) {
-        String strCd = userService.storeCode();
-        categoryService.createMainCategory(strCd, request);
+        StoreArgs storeArgs = userService.storeArgs();
+        categoryService.createMainCategory(storeArgs.getSiteCd(), storeArgs.getStrCd(), request);
     }
 
     /**
@@ -62,8 +60,8 @@ public class CategoryApiController {
      */
     @PutMapping("/main/{mainCateCd}")
     public void updateMainCategory(@PathVariable String mainCateCd, @Valid @RequestBody MainCategoryUpdateRequest request) {
-        String strCd = userService.storeCode();
-        categoryService.updateMainCategory(strCd, mainCateCd, request);
+        StoreArgs storeArgs = userService.storeArgs();
+        categoryService.updateMainCategory(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, request);
     }
 
     /**
@@ -73,8 +71,8 @@ public class CategoryApiController {
     @DeleteMapping("/main/{mainCateCd}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteMainCategory(@PathVariable String mainCateCd) {
-        String strCd = userService.storeCode();
-        categoryService.deleteMainCategory(strCd, mainCateCd);
+        StoreArgs storeArgs = userService.storeArgs();
+        categoryService.deleteMainCategory(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd);
     }
 
     /**
@@ -84,8 +82,8 @@ public class CategoryApiController {
     @DeleteMapping("/main")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteMainCategories(@Valid @RequestBody CategoriesDeleteRequest request) {
-        String strCd = userService.storeCode();
-        categoryService.deleteMainCategories(strCd, request);
+        StoreArgs storeArgs = userService.storeArgs();
+        categoryService.deleteMainCategories(storeArgs.getSiteCd(), storeArgs.getStrCd(), request);
     }
 
     /**
@@ -94,8 +92,8 @@ public class CategoryApiController {
      */
     @PostMapping("/main/priorities")
     public void changeMainCategoryPriorities(@Valid @RequestBody CategoryPrioritiesChangeRequest request) {
-        String strCd = userService.storeCode();
-        categoryService.changeMainCategoryPriorities(strCd, request);
+        StoreArgs storeArgs = userService.storeArgs();
+        categoryService.changeMainCategoryPriorities(storeArgs.getSiteCd(), storeArgs.getStrCd(), request);
     }
 
     /**
@@ -105,8 +103,8 @@ public class CategoryApiController {
      */
     @GetMapping("/main/{mainCateCd}/middle")
     public MiddleCategoriesResponse middleCategories(@PathVariable String mainCateCd) {
-        String strCd = userService.storeCode();
-        return categoryService.middleCategories(strCd, mainCateCd);
+        StoreArgs storeArgs = userService.storeArgs();
+        return categoryService.middleCategories(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd);
     }
 
     /**
@@ -117,8 +115,8 @@ public class CategoryApiController {
      */
     @GetMapping("/main/{mainCateCd}/middle/{middleCateCd}")
     public MiddleCategoryResponse middleCategory(@PathVariable String mainCateCd, @PathVariable String middleCateCd) {
-        String strCd = userService.storeCode();
-        return categoryService.middleCategory(strCd, mainCateCd, middleCateCd);
+        StoreArgs storeArgs = userService.storeArgs();
+        return categoryService.middleCategory(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd);
     }
 
     /**
@@ -128,7 +126,7 @@ public class CategoryApiController {
     @PostMapping("/main/{mainCateCd}/middle")
     @ResponseStatus(HttpStatus.CREATED)
     public void createMiddleCategory(@PathVariable String mainCateCd, @Valid MiddleCategoryCreateRequest request) {
-        String strCd = userService.storeCode();
+        StoreArgs storeArgs = userService.storeArgs();
 
 //        MenuImageArgs args = new MenuImageArgs(request.getImage(), strCd);
 
@@ -139,7 +137,7 @@ public class CategoryApiController {
 //        }
 
 //        try {
-        categoryService.createMiddleCategory(strCd, mainCateCd, request);
+        categoryService.createMiddleCategory(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, request);
 //        } catch (Exception e) {
 //            if(!ObjectUtils.isEmpty(request.getImage())) {
 //                fileUploadService.deleteKioskMenuImage(request.getImageUrl(), args);
@@ -156,8 +154,8 @@ public class CategoryApiController {
      */
     @PutMapping("/main/{mainCateCd}/middle/{middleCateCd}")
     public void updateMiddleCategory(@PathVariable String mainCateCd, @PathVariable String middleCateCd, @Valid MiddleCategoryUpdateRequest request) {
-        String strCd = userService.storeCode();
-        MenuImageArgs args = new MenuImageArgs(request.getImage(), strCd);
+        StoreArgs storeArgs = userService.storeArgs();
+//        MenuImageArgs args = new MenuImageArgs(request.getImage(), strCd);
 
 //        if(!ObjectUtils.isEmpty(request.getImage())) {
 //            String imageUrl = fileUploadService.uploadKioskMenuImage(args);
@@ -166,7 +164,7 @@ public class CategoryApiController {
 //        }
 
 //        try {
-        categoryService.updateMiddleCategory(strCd, mainCateCd, middleCateCd, request);
+        categoryService.updateMiddleCategory(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, request);
 //        } catch (Exception e) {
 //            if(!ObjectUtils.isEmpty(request.getImage())) {
 //                fileUploadService.deleteKioskMenuImage(request.getImageUrl(), args);
@@ -183,8 +181,8 @@ public class CategoryApiController {
     @DeleteMapping("/main/{mainCateCd}/middle/{middleCateCd}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteMiddleCategory(@PathVariable String mainCateCd, @PathVariable String middleCateCd) {
-        String strCd = userService.storeCode();
-        categoryService.deleteMiddleCategory(strCd, mainCateCd, middleCateCd);
+        StoreArgs storeArgs = userService.storeArgs();
+        categoryService.deleteMiddleCategory(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd);
     }
 
     /**
@@ -195,8 +193,8 @@ public class CategoryApiController {
     @DeleteMapping("/main/{mainCateCd}/middle")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteMiddleCategories(@PathVariable String mainCateCd, @Valid @RequestBody CategoriesDeleteRequest request) {
-        String strCd = userService.storeCode();
-        categoryService.deleteMiddleCategories(strCd, mainCateCd, request);
+        StoreArgs storeArgs = userService.storeArgs();
+        categoryService.deleteMiddleCategories(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, request);
     }
 
     /**
@@ -206,8 +204,8 @@ public class CategoryApiController {
      */
     @PostMapping("/main/{mainCateCd}/middle/priorities")
     public void changeMiddleCategoryPriorities(@PathVariable String mainCateCd, @Valid @RequestBody CategoryPrioritiesChangeRequest request) {
-        String strCd = userService.storeCode();
-        categoryService.changeMiddleCategoryPriorities(strCd, mainCateCd, request);
+        StoreArgs storeArgs = userService.storeArgs();
+        categoryService.changeMiddleCategoryPriorities(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, request);
     }
 
     /**
@@ -218,8 +216,8 @@ public class CategoryApiController {
      */
     @GetMapping("/main/{mainCateCd}/middle/{middleCateCd}/sub")
     public SubCategoriesResponse subCategories(@PathVariable String mainCateCd, @PathVariable String middleCateCd) {
-        String strCd = userService.storeCode();
-        return categoryService.subCategories(strCd, mainCateCd, middleCateCd);
+        StoreArgs storeArgs = userService.storeArgs();
+        return categoryService.subCategories(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd);
     }
 
     /**
@@ -231,8 +229,8 @@ public class CategoryApiController {
      */
     @GetMapping("/main/{mainCateCd}/middle/{middleCateCd}/sub/{subCateCd}")
     public SubCategoryResponse subCategory(@PathVariable String mainCateCd, @PathVariable String middleCateCd, @PathVariable String subCateCd) {
-        String strCd = userService.storeCode();
-        return categoryService.subCategory(strCd, mainCateCd, middleCateCd, subCateCd);
+        StoreArgs storeArgs = userService.storeArgs();
+        return categoryService.subCategory(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, subCateCd);
     }
 
     /**
@@ -243,8 +241,8 @@ public class CategoryApiController {
      */
     @PostMapping("/main/{mainCateCd}/middle/{middleCateCd}/sub")
     public void createSubCategory(@PathVariable String mainCateCd, @PathVariable String middleCateCd, @Valid @RequestBody SubCategoryCreateRequest request) {
-        String strCd = userService.storeCode();
-        categoryService.createSubCategory(strCd, mainCateCd, middleCateCd, request);
+        StoreArgs storeArgs = userService.storeArgs();
+        categoryService.createSubCategory(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, request);
     }
 
     /**
@@ -256,8 +254,8 @@ public class CategoryApiController {
      */
     @PutMapping("/main/{mainCateCd}/middle/{middleCateCd}/sub/{subCateCd}")
     public void updateSubCategory(@PathVariable String mainCateCd, @PathVariable String middleCateCd, @PathVariable String subCateCd, @Valid @RequestBody SubCategoryUpdateRequest request) {
-        String strCd = userService.storeCode();
-        categoryService.updateSubCategory(strCd, mainCateCd, middleCateCd, subCateCd, request);
+        StoreArgs storeArgs = userService.storeArgs();
+        categoryService.updateSubCategory(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, subCateCd, request);
     }
 
     /**
@@ -269,8 +267,8 @@ public class CategoryApiController {
     @DeleteMapping("/main/{mainCateCd}/middle/{middleCateCd}/sub/{subCateCd}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteSubCategory(@PathVariable String mainCateCd, @PathVariable String middleCateCd, @PathVariable String subCateCd) {
-        String strCd = userService.storeCode();
-        categoryService.deleteSubCategory(strCd, mainCateCd, middleCateCd, subCateCd);
+        StoreArgs storeArgs = userService.storeArgs();
+        categoryService.deleteSubCategory(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, subCateCd);
     }
 
     /**
@@ -282,8 +280,8 @@ public class CategoryApiController {
     @DeleteMapping("/main/{mainCateCd}/middle/{middleCateCd}/sub")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteSubCategories(@PathVariable String mainCateCd, @PathVariable String middleCateCd, @Valid @RequestBody CategoriesDeleteRequest request) {
-        String strCd = userService.storeCode();
-        categoryService.deleteSubCategories(strCd, mainCateCd, middleCateCd, request);
+        StoreArgs storeArgs = userService.storeArgs();
+        categoryService.deleteSubCategories(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, request);
     }
 
     /**
@@ -294,7 +292,7 @@ public class CategoryApiController {
      */
     @PostMapping("/main/{mainCateCd}/middle/{middleCateCd}/sub/priorities")
     public void changeSubCategoryPriorities(@PathVariable String mainCateCd, @PathVariable String middleCateCd, @Valid @RequestBody CategoryPrioritiesChangeRequest request) {
-        String strCd = userService.storeCode();
-        categoryService.changeSubCategoryPriorities(strCd, mainCateCd, middleCateCd, request);
+        StoreArgs storeArgs = userService.storeArgs();
+        categoryService.changeSubCategoryPriorities(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, request);
     }
 }
