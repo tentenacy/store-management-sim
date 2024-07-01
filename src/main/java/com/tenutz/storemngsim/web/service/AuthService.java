@@ -6,9 +6,10 @@ import com.tenutz.storemngsim.domain.refreshtoken.RefreshToken;
 import com.tenutz.storemngsim.domain.refreshtoken.RefreshTokenRepository;
 import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
-import com.tenutz.storemngsim.domain.user.User;
-import com.tenutz.storemngsim.domain.user.UserRepository;
+import com.tenutz.storemngsim.domain.user.*;
+import com.tenutz.storemngsim.domain.user.id.ManagerId;
 import com.tenutz.storemngsim.utils.EntityUtils;
+import com.tenutz.storemngsim.utils.HttpReqRespUtils;
 import com.tenutz.storemngsim.utils.SecurityUtils;
 import com.tenutz.storemngsim.utils.enums.SocialType;
 import com.tenutz.storemngsim.web.api.dto.common.TokenRequest;
@@ -30,6 +31,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -46,35 +49,62 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final RefreshTokenRepository refreshTokenRepository;
     private final StoreMasterRepository storeMasterRepository;
+    private final ManagerRepository managerRepository;
+    private final TermsAgreementRepository termsAgreementRepository;
 
+/*
     @Transactional
     public User signup(SignupRequest req) {
-        User user = User.create(req.getBusinessNumber(), req.getPassword(), req.getOwnerName(), req.getBusinessNumber(), req.getPhoneNumber());
+        User user = User.create(req.getBusinessNumber(), req.getBusinessNumber(), req.getPhoneNumber());
         if(userRepository.existsByUserId(user.getUserId())) {
             throw new CAlreadySignedupException();
         }
         return userRepository.save(user);
     }
+*/
 
     @Transactional
     public void socialSignup(SocialProfile socialProfile, SocialType socialType, SocialSignupRequest request) {
+
         userRepository.findBySnsIdAndProvider(socialProfile.getSnsId(), socialType.name().toLowerCase())
                 .ifPresent(user -> {
                     throw new CAlreadySignedupException();
                 });
-        userRepository.save(
+
+        StoreMaster foundStoreMaster = storeMasterRepository.findByBusinessNumber(request.getBusinessNumber()).orElseThrow(CStoreMasterNotFoundException::new);
+        Manager foundManager = managerRepository.findById(new ManagerId(foundStoreMaster.getSiteCd(), foundStoreMaster.getStrCd(), request.getPhoneNumber())).orElseThrow(CManagerNotFoundException::new);
+
+        User createdUser = userRepository.saveAndFlush(
                 User.createSocial(
-                        request.getBusinessNumber(),
-                        request.getPassword(),
+                        socialType.name().toLowerCase() + RandomStringUtils.random(15, true, true),
+                        passwordEncoder.encode(UUID.randomUUID().toString()),
                         socialType.name().toLowerCase(),
                         socialProfile.getSnsId(),
-                        request.getOwnerName(),
+                        foundManager.getManagerName(),
                         request.getBusinessNumber(),
                         request.getPhoneNumber()
                 )
         );
+
+        termsAgreementRepository.save(
+                TermsAgreement.create(
+                        "1",
+                        createdUser.getSeq(),
+                        HttpReqRespUtils.getClientIpAddressIfServletRequestExist()
+                )
+        );
+
+        termsAgreementRepository.save(
+                TermsAgreement.create(
+                        "2",
+                        createdUser.getSeq(),
+                        HttpReqRespUtils.getClientIpAddressIfServletRequestExist()
+                )
+        );
+
     }
 
+/*
     @Transactional
     public TokenResponse login(LoginRequest request) {
         User user = userRepository.findByUserId(request.getId()).orElseThrow(CInvalidValueException.CLoginFailedException::new);
@@ -86,6 +116,7 @@ public class AuthService {
         refreshTokenRepository.save(RefreshToken.create(user.getSeq().toString(), tokenResponse.getRefreshToken()));
         return tokenResponse;
     }
+*/
 
     @Transactional
     public TokenResponse socialLogin(LoginRequest request) {

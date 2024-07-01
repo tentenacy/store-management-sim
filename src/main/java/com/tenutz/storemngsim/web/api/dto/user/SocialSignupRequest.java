@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Data
 @AllArgsConstructor
@@ -16,9 +17,5 @@ public class SocialSignupRequest {
     @NotEmpty
     private String businessNumber;
     @NotEmpty
-    private String password;
-    @NotEmpty
     private String phoneNumber;
-    @NotEmpty
-    private String ownerName;
 }

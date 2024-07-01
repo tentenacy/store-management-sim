@@ -72,4 +72,10 @@ public class CEntityNotFoundException extends CBusinessException {
             super(ErrorCode.MENU_REVIEW_NOT_FOUND);
         }
     }
+
+    public static class CManagerNotFoundException extends CEntityNotFoundException {
+        public CManagerNotFoundException() {
+            super(ErrorCode.MANAGER_NOT_FOUND);
+        }
+    }
 }

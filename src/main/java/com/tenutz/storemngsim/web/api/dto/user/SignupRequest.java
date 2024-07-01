@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Data
@@ -17,17 +18,12 @@ public class SignupRequest {
     @NotEmpty
     private String businessNumber;
 
-    @Length(min = 8, max = 64)
-    @Pattern(regexp = "(?=.*[a-zA-Z])(?=.*[\\d]).+")
-    @NotEmpty
-    private String password;
-
     @NotEmpty
     private String phoneNumber;
-    @NotEmpty
-    private String ownerName;
 
-    /*@Size(min = 2, max = 12)
-    @NotEmpty
-    private String username;*/
+    @NotNull
+    private Boolean type1Agreement;
+    @NotNull
+    private Boolean type2Agreement;
+
 }

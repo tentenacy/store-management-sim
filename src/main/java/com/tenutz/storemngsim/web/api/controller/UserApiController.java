@@ -30,17 +30,20 @@ public class UserApiController {
     private final PasswordEncoder passwordEncoder;
     private final OAuthService oauthService;
 
+
+/*
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void signup(@RequestBody @Validated SignupRequest signupRequest) {
         signupRequest.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         authService.signup(signupRequest);
     }
+*/
 
     @PostMapping("/social/{socialType}")
     @ResponseStatus(HttpStatus.CREATED)
     public void socialSignup(@PathVariable(name = "socialType") SocialType socialType,
-                             @RequestBody @Validated SocialSignupRequest request) {
+                             @RequestBody @Validated com.tenutz.storemngsim.web.api.dto.user.SocialSignupRequest request) {
 
         //구글은 access_token 대신 id_token 값으로
         SocialProfile socialProfile = oauthService.profile(socialType, request.getAccessToken());
@@ -55,16 +58,16 @@ public class UserApiController {
         }
 */
 
-        request.setPassword(passwordEncoder.encode(request.getPassword()));
-
         authService.socialSignup(socialProfile, socialType, request);
     }
 
+/*
     @PostMapping("/token")
     @ResponseStatus(HttpStatus.CREATED)
     public TokenResponse login(@RequestBody @Validated LoginRequest loginRequest) {
         return authService.login(loginRequest);
     }
+*/
 
     @PostMapping("/social/{socialType}/token")
     @ResponseStatus(HttpStatus.CREATED)
