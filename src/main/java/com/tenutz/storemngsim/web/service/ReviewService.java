@@ -7,7 +7,9 @@ import com.tenutz.storemngsim.utils.HttpReqRespUtils;
 import com.tenutz.storemngsim.web.api.dto.common.CommonCondition;
 import com.tenutz.storemngsim.web.api.dto.store.MenuReviewsResponse;
 import com.tenutz.storemngsim.web.api.dto.store.StoreReviewReplyCreateRequest;
+import com.tenutz.storemngsim.web.api.dto.store.StoreReviewReplyUpdateRequest;
 import com.tenutz.storemngsim.web.api.dto.store.StoreReviewsResponse;
+import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException.CStoreReviewNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
+
+import javax.validation.Valid;
 
 @Slf4j
 @Service
@@ -51,5 +55,15 @@ public class ReviewService {
                         HttpReqRespUtils.getClientIpAddressIfServletRequestExist()
                 )
         );
+    }
+
+    @Transactional
+    public void updateStoreReviewReply(Long replySeq, StoreReviewReplyUpdateRequest request) {
+        StoreReview foundStoreReply = storeReviewRepository.findById(replySeq).orElseThrow(CStoreReviewNotFoundException::new);
+        if(ObjectUtils.isEmpty(foundStoreReply.getNoLevel()) || foundStoreReply.getNoLevel() == 0) {
+            throw new CInvalidValueException.CNotAReplyException();
+        }
+        foundStoreReply.update(request.getContent(), HttpReqRespUtils.getClientIpAddressIfServletRequestExist());
+        storeReviewRepository.save(foundStoreReply);
     }
 }

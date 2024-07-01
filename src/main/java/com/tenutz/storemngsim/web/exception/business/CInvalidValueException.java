@@ -102,4 +102,10 @@ public class CInvalidValueException extends CBusinessException {
             super(ErrorCode.REPLY_MAXIMUM_LEVEL_EXCEEDED);
         }
     }
+
+    public static class CNotAReplyException extends CInvalidValueException {
+        public CNotAReplyException() {
+            super(ErrorCode.NOT_A_REPLY_ERROR);
+        }
+    }
 }
