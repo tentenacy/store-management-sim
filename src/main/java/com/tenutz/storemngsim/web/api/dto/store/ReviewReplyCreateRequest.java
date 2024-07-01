@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class StoreReviewReplyUpdateRequest {
+public class ReviewReplyCreateRequest {
 
     private String content;
 }
