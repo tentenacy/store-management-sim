@@ -59,6 +59,8 @@ public enum ErrorCode {
     NON_EXISTENT_OPTION_GROUP_INCLUDED(HttpStatus.BAD_REQUEST.value(), "MZS-1036", "요청에 존재하지 않는 옵션 그룹이 있습니다."),
     REPLY_MAXIMUM_LEVEL_EXCEEDED(HttpStatus.BAD_REQUEST.value(), "MZS-1037", "대댓글 허용 단계를 초과했습니다."),
     NOT_A_REPLY_ERROR(HttpStatus.BAD_REQUEST.value(), "MZS-1038", "대댓글이 아닙니다."),
+    NOT_USER_OWN_REPLY_ERROR(HttpStatus.BAD_REQUEST.value(), "MZS-1039", "사용자의 대댓글이 아닙니다."),
+    REPLY_MAXIMUM_COUNT_EXCEEDED(HttpStatus.BAD_REQUEST.value(), "MZS-1039", "대댓글 등록 허용 갯수를 초과했습니다."),
 
     /**
      * SOCIAL

@@ -108,4 +108,16 @@ public class CInvalidValueException extends CBusinessException {
             super(ErrorCode.NOT_A_REPLY_ERROR);
         }
     }
+
+    public static class CNotUserOwnReplyException extends CInvalidValueException {
+        public CNotUserOwnReplyException() {
+            super(ErrorCode.NOT_USER_OWN_REPLY_ERROR);
+        }
+    }
+
+    public static class CReplyMaximumCountExceededException extends CInvalidValueException {
+        public CReplyMaximumCountExceededException() {
+            super(ErrorCode.REPLY_MAXIMUM_COUNT_EXCEEDED);
+        }
+    }
 }
