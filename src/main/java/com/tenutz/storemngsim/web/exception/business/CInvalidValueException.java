@@ -43,19 +43,19 @@ public class CInvalidValueException extends CBusinessException {
         }
     }
 
-    public static class CNonExistentOptionGroupMainMenuIncludedException extends CEntityNotFoundException {
+    public static class CNonExistentOptionGroupMainMenuIncludedException extends CInvalidValueException {
         public CNonExistentOptionGroupMainMenuIncludedException() {
             super(ErrorCode.NON_EXISTENT_OPTION_GROUP_MAIN_MENU_INCLUDED);
         }
     }
 
-    public static class CNonExistentMainMenuIncludedException extends CEntityNotFoundException {
+    public static class CNonExistentMainMenuIncludedException extends CInvalidValueException {
         public CNonExistentMainMenuIncludedException() {
             super(ErrorCode.NON_EXISTENT_MAIN_MENU_INCLUDED);
         }
     }
 
-    public static class CNonExistentCategoryIncludedException extends CEntityNotFoundException {
+    public static class CNonExistentCategoryIncludedException extends CInvalidValueException {
         public CNonExistentCategoryIncludedException() {
             super(ErrorCode.NON_EXISTENT_CATEGORY_INCLUDED);
         }
@@ -67,7 +67,7 @@ public class CInvalidValueException extends CBusinessException {
         }
     }
 
-    public static class CNonExistentOptionIncludedException extends CEntityNotFoundException {
+    public static class CNonExistentOptionIncludedException extends CInvalidValueException {
         public CNonExistentOptionIncludedException() {
             super(ErrorCode.NON_EXISTENT_OPTION_INCLUDED);
         }
@@ -79,7 +79,7 @@ public class CInvalidValueException extends CBusinessException {
         }
     }
 
-    public static class CNonExistentOptionGroupOptionIncludedException extends CEntityNotFoundException {
+    public static class CNonExistentOptionGroupOptionIncludedException extends CInvalidValueException {
         public CNonExistentOptionGroupOptionIncludedException() {
             super(ErrorCode.NON_EXISTENT_OPTION_GROUP_MAIN_MENU_INCLUDED);
         }
@@ -91,9 +91,15 @@ public class CInvalidValueException extends CBusinessException {
         }
     }
 
-    public static class CNonExistentOptionGroupIncludedException extends CEntityNotFoundException {
+    public static class CNonExistentOptionGroupIncludedException extends CInvalidValueException {
         public CNonExistentOptionGroupIncludedException() {
             super(ErrorCode.NON_EXISTENT_OPTION_GROUP_INCLUDED);
+        }
+    }
+
+    public static class CReplyMaximumLevelExceededException extends CInvalidValueException {
+        public CReplyMaximumLevelExceededException() {
+            super(ErrorCode.REPLY_MAXIMUM_LEVEL_EXCEEDED);
         }
     }
 }

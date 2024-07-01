@@ -60,4 +60,16 @@ public class CEntityNotFoundException extends CBusinessException {
             super(ErrorCode.MENU_IMAGE_NOT_FOUND);
         }
     }
+
+    public static class CStoreReviewNotFoundException extends CEntityNotFoundException {
+        public CStoreReviewNotFoundException() {
+            super(ErrorCode.STORE_REVIEW_NOT_FOUND);
+        }
+    }
+
+    public static class CMenuReviewNotFoundException extends CEntityNotFoundException {
+        public CMenuReviewNotFoundException() {
+            super(ErrorCode.MENU_REVIEW_NOT_FOUND);
+        }
+    }
 }

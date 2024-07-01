@@ -2,9 +2,11 @@ package com.tenutz.storemngsim.web.service;
 
 import com.tenutz.storemngsim.domain.customer.StoreReviewRepository;
 import com.tenutz.storemngsim.domain.sales.SalesMasterRepository;
+import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.web.api.dto.common.CommonCondition;
 import com.tenutz.storemngsim.web.api.dto.store.*;
+import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -52,13 +54,5 @@ public class SalesService {
 
     public StatisticsSalesTotalByTimeResponse statisticsSalesTotalByTime(String siteCd, String strCd, CommonCondition commonCond) {
         return salesMasterRepository.statisticsSalesTotalByTime(siteCd, strCd, commonCond);
-    }
-
-    public Page<StoreReviewsResponse> storeReviews(String siteCd, String strCd, Pageable pageable, CommonCondition commonCond) {
-        return storeReviewRepository.reviews(siteCd, strCd, pageable, commonCond);
-    }
-
-    public Page<MenuReviewsResponse> menuReviews(String siteCd, String strCd, Pageable pageable, CommonCondition commonCond) {
-        return storeReviewRepository.menuReviews(siteCd, strCd, pageable, commonCond);
     }
 }

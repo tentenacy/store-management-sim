@@ -56,7 +56,8 @@ public enum ErrorCode {
     ALREADY_OPTION_MAPPED(HttpStatus.BAD_REQUEST.value(), "MZS-1033", "이미 옵션 그룹에 설정된 옵션입니다."),
     NON_EXISTENT_OPTION_GROUP_OPTION_INCLUDED(HttpStatus.BAD_REQUEST.value(), "MZS-1034", "요청에 존재하지 않는 옵션 옵션 그룹 매핑이 있습니다."),
     ALREADY_OPTION_GROUP_CREATED(HttpStatus.BAD_REQUEST.value(), "MZS-1035", "이미 생성된 옵션그룹입니다."),
-    NON_EXISTENT_OPTION_GROUP_INCLUDED(HttpStatus.BAD_REQUEST.value(), "MZS-1028", "요청에 존재하지 않는 옵션 그룹이 있습니다."),
+    NON_EXISTENT_OPTION_GROUP_INCLUDED(HttpStatus.BAD_REQUEST.value(), "MZS-1036", "요청에 존재하지 않는 옵션 그룹이 있습니다."),
+    REPLY_MAXIMUM_LEVEL_EXCEEDED(HttpStatus.BAD_REQUEST.value(), "MZS-1037", "대댓글 허용 단계를 초과했습니다."),
 
     /**
      * SOCIAL
