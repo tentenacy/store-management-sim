@@ -1,10 +1,7 @@
 package com.tenutz.storemngsim.web.api.controller;
 
-import com.tenutz.storemngsim.web.api.dto.common.MenuImageArgs;
-import com.tenutz.storemngsim.web.api.dto.common.OptionGroupPrioritiesChangeRequest;
-import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsDeleteRequest;
-import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsMappedByRequest;
-import com.tenutz.storemngsim.web.api.dto.option.*;
+import com.tenutz.storemngsim.web.api.dto.common.*;
+import com.tenutz.storemngsim.web.api.dto.optiongroup.option.*;
 import com.tenutz.storemngsim.web.api.dto.user.StoreArgs;
 import com.tenutz.storemngsim.web.service.OptionGroupService;
 import com.tenutz.storemngsim.web.service.OptionService;
@@ -34,9 +31,9 @@ public class OptionApiController {
      * @return
      */
     @GetMapping
-    public OptionsResponse options() {
+    public OptionsResponse options(@Valid CommonCondition commonCond) {
         StoreArgs storeArgs = userService.storeArgs();
-        return optionService.options(storeArgs.getSiteCd(), storeArgs.getStrCd());
+        return optionService.options(storeArgs.getSiteCd(), storeArgs.getStrCd(), commonCond);
     }
 
     /**

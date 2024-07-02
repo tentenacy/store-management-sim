@@ -4,13 +4,14 @@ import com.tenutz.storemngsim.domain.customer.MenuReview;
 import com.tenutz.storemngsim.domain.customer.MenuReviewRepository;
 import com.tenutz.storemngsim.domain.customer.StoreReview;
 import com.tenutz.storemngsim.domain.customer.StoreReviewRepository;
+import com.tenutz.storemngsim.domain.menu.CategoryRepository;
+import com.tenutz.storemngsim.domain.menu.MainMenuRepository;
 import com.tenutz.storemngsim.utils.HttpReqRespUtils;
 import com.tenutz.storemngsim.web.api.dto.common.CommonCondition;
 import com.tenutz.storemngsim.web.api.dto.store.MenuReviewsResponse;
 import com.tenutz.storemngsim.web.api.dto.store.ReviewReplyCreateRequest;
 import com.tenutz.storemngsim.web.api.dto.store.ReviewReplyUpdateRequest;
 import com.tenutz.storemngsim.web.api.dto.store.StoreReviewsResponse;
-import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException.CMenuReviewNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException.CStoreReviewNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
@@ -30,13 +31,15 @@ public class ReviewService {
 
     private final StoreReviewRepository storeReviewRepository;
     private final MenuReviewRepository menuReviewRepository;
+    private final CategoryRepository categoryRepository;
+    private final MainMenuRepository mainMenuRepository;
 
     public Page<StoreReviewsResponse> storeReviews(String siteCd, String strCd, Pageable pageable, CommonCondition commonCond) {
-        return storeReviewRepository.reviews(siteCd, strCd, pageable, commonCond);
+        return storeReviewRepository.reviews(siteCd, strCd, categoryRepository.storeMiddleCategories(siteCd, strCd, commonCond), pageable, commonCond);
     }
 
     public Page<MenuReviewsResponse> menuReviews(String siteCd, String strCd, Pageable pageable, CommonCondition commonCond) {
-        return menuReviewRepository.reviews(siteCd, strCd, pageable, commonCond);
+        return menuReviewRepository.reviews(siteCd, strCd, mainMenuRepository.storeMainMenus(siteCd, strCd, commonCond), pageable, commonCond);
     }
 
     @Transactional

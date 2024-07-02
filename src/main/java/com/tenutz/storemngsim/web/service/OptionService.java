@@ -3,8 +3,9 @@ package com.tenutz.storemngsim.web.service;
 import com.tenutz.storemngsim.domain.menu.*;
 import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
+import com.tenutz.storemngsim.web.api.dto.common.CommonCondition;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsMappedByRequest;
-import com.tenutz.storemngsim.web.api.dto.option.*;
+import com.tenutz.storemngsim.web.api.dto.optiongroup.option.*;
 import com.tenutz.storemngsim.web.client.UploadClient;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
@@ -30,8 +31,8 @@ public class OptionService {
     private final MenuImageRepository menuImageRepository;
     private final UploadClient s3Client;
 
-    public OptionsResponse options(String siteCd, String strCd) {
-        return new OptionsResponse(optionRepository.options(siteCd, strCd).stream().map(option ->
+    public OptionsResponse options(String siteCd, String strCd, CommonCondition commonCond) {
+        return new OptionsResponse(optionRepository.options(siteCd, strCd, commonCond).stream().map(option ->
                 new OptionsResponse.Option(
                         option.getStrCd(),
                         option.getOptCd(),

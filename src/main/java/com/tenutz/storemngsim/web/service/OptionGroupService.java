@@ -3,14 +3,15 @@ package com.tenutz.storemngsim.web.service;
 import com.tenutz.storemngsim.domain.menu.*;
 import com.tenutz.storemngsim.domain.menu.id.PartialOptionGroupMainMenuId;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
+import com.tenutz.storemngsim.web.api.dto.common.CommonCondition;
 import com.tenutz.storemngsim.web.api.dto.common.MainMenuSearchRequest;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupPrioritiesChangeRequest;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsDeleteRequest;
 import com.tenutz.storemngsim.web.api.dto.menu.MainMenuMappersResponse;
 import com.tenutz.storemngsim.web.api.dto.menu.MainMenuOptionGroupsResponse;
-import com.tenutz.storemngsim.web.api.dto.option.OptionMappersResponse;
-import com.tenutz.storemngsim.web.api.dto.option.OptionOptionGroupsResponse;
 import com.tenutz.storemngsim.web.api.dto.optiongroup.*;
+import com.tenutz.storemngsim.web.api.dto.optiongroup.option.OptionMappersResponse;
+import com.tenutz.storemngsim.web.api.dto.optiongroup.option.OptionOptionGroupsResponse;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
 import lombok.RequiredArgsConstructor;
@@ -114,8 +115,8 @@ public class OptionGroupService {
         });
     }
 
-    public OptionGroupsResponse optionGroups(String siteCd, String strCd) {
-        return new OptionGroupsResponse(optionGroupRepository.optionGroups(siteCd, strCd).stream().map(optionGroup ->
+    public OptionGroupsResponse optionGroups(String siteCd, String strCd, CommonCondition commonCond) {
+        return new OptionGroupsResponse(optionGroupRepository.optionGroups(siteCd, strCd, commonCond).stream().map(optionGroup ->
                 new OptionGroupsResponse.OptionGroup(
                         optionGroup.getOptGrpCd(),
                         optionGroup.getOptGrpKorNm(),
@@ -193,8 +194,8 @@ public class OptionGroupService {
         foundOptionGroups.forEach(OptionGroup::delete);
     }
 
-    public OptionGroupOptionsResponse optionGroupOptions(String siteCd, String strCd, String optionGroupCd) {
-        return new OptionGroupOptionsResponse(optionRepository.optionGroupOptions(siteCd, strCd, optionGroupCd).stream().map(option ->
+    public OptionGroupOptionsResponse optionGroupOptions(String siteCd, String strCd, String optionGroupCd, CommonCondition commonCond) {
+        return new OptionGroupOptionsResponse(optionRepository.optionGroupOptions(siteCd, strCd, optionGroupCd, commonCond).stream().map(option ->
                 new OptionGroupOptionsResponse.OptionGroupOption(
                         strCd,
                         option.getOptCd(),
@@ -253,8 +254,8 @@ public class OptionGroupService {
         foundOptionGroups.forEach(OptionGroupOption::delete);
     }
 
-    public OptionGroupMainMenusResponse optionGroupMainMenus(String siteCd, String strCd, String optionGroupCd, MainMenuSearchRequest request) {
-        return new OptionGroupMainMenusResponse(mainMenuRepository.optionGroupMainMenus(siteCd, strCd, optionGroupCd, request.getMainCateCd(), request.getMiddleCateCd(), request.getSubCateCd()).stream().map(mainMenu ->
+    public OptionGroupMainMenusResponse optionGroupMainMenus(String siteCd, String strCd, String optionGroupCd, MainMenuSearchRequest request, CommonCondition commonCond) {
+        return new OptionGroupMainMenusResponse(mainMenuRepository.optionGroupMainMenus(siteCd, strCd, optionGroupCd, request.getMainCateCd(), request.getMiddleCateCd(), request.getSubCateCd(), commonCond).stream().map(mainMenu ->
                 new OptionGroupMainMenusResponse.OptionGroupMainMenu(
                         strCd,
                         mainMenu.getMenuCd(),

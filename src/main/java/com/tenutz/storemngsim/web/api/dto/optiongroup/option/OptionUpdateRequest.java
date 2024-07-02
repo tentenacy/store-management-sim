@@ -1,4 +1,4 @@
-package com.tenutz.storemngsim.web.api.dto.option;
+package com.tenutz.storemngsim.web.api.dto.optiongroup.option;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
@@ -8,7 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

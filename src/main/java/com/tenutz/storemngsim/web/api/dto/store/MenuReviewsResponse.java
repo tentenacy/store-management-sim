@@ -17,6 +17,7 @@ public class MenuReviewsResponse {
     private String middleCategoryCode;
     private String subCategoryCode;
     private String menuCode;
+    private String menuName;
     private String createdBy;
     private String createdAt;
     private String content;
@@ -25,6 +26,24 @@ public class MenuReviewsResponse {
     private int rating;
     private int sno;
     private MenuReviewReply menuReviewReply;
+
+    public MenuReviewsResponse(long seq, String siteCode, String storeCode, String mainCategoryCode, String middleCategoryCode, String subCategoryCode, String menuCode, String createdBy, String createdAt, String content, int keyword, int level, int rating, int sno, MenuReviewReply menuReviewReply) {
+        this.seq = seq;
+        this.siteCode = siteCode;
+        this.storeCode = storeCode;
+        this.mainCategoryCode = mainCategoryCode;
+        this.middleCategoryCode = middleCategoryCode;
+        this.subCategoryCode = subCategoryCode;
+        this.menuCode = menuCode;
+        this.createdBy = createdBy;
+        this.createdAt = createdAt;
+        this.content = content;
+        this.keyword = keyword;
+        this.level = level;
+        this.rating = rating;
+        this.sno = sno;
+        this.menuReviewReply = menuReviewReply;
+    }
 
     @Data
     @NoArgsConstructor(access = AccessLevel.PROTECTED)

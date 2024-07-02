@@ -3,6 +3,7 @@ package com.tenutz.storemngsim.web.service;
 import com.tenutz.storemngsim.domain.menu.*;
 import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
+import com.tenutz.storemngsim.web.api.dto.common.CommonCondition;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsMappedByRequest;
 import com.tenutz.storemngsim.web.api.dto.menu.*;
 import com.tenutz.storemngsim.web.client.UploadClient;
@@ -34,8 +35,8 @@ public class MenuService {
     private final MenuImageRepository menuImageRepository;
     private final UploadClient s3Client;
 
-    public MainMenusResponse mainMenus(String siteCd, String strCd, String mainCateCd, String middleCateCd, String subCateCd) {
-        return new MainMenusResponse(mainMenuRepository.mainMenus(siteCd, strCd, mainCateCd, middleCateCd, subCateCd).stream().map(menu ->
+    public MainMenusResponse mainMenus(String siteCd, String strCd, String mainCateCd, String middleCateCd, String subCateCd, CommonCondition commonCond) {
+        return new MainMenusResponse(mainMenuRepository.mainMenus(siteCd, strCd, mainCateCd, middleCateCd, subCateCd, commonCond).stream().map(menu ->
                 new MainMenusResponse.MainMenu(
                         menu.getStrCd(),
                         menu.getCateCd1(),

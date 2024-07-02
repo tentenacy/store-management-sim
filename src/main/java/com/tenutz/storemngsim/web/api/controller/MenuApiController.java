@@ -1,9 +1,6 @@
 package com.tenutz.storemngsim.web.api.controller;
 
-import com.tenutz.storemngsim.web.api.dto.common.MenuImageArgs;
-import com.tenutz.storemngsim.web.api.dto.common.OptionGroupPrioritiesChangeRequest;
-import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsDeleteRequest;
-import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsMappedByRequest;
+import com.tenutz.storemngsim.web.api.dto.common.*;
 import com.tenutz.storemngsim.web.api.dto.menu.*;
 import com.tenutz.storemngsim.web.api.dto.user.StoreArgs;
 import com.tenutz.storemngsim.web.service.MenuService;
@@ -37,9 +34,9 @@ public class MenuApiController {
      * @return
      */
     @GetMapping("/main-menus")
-    public MainMenusResponse mainMenus(@PathVariable String mainCateCd, @PathVariable String middleCateCd, @PathVariable String subCateCd) {
+    public MainMenusResponse mainMenus(@PathVariable String mainCateCd, @PathVariable String middleCateCd, @PathVariable String subCateCd, @Valid CommonCondition commonCond) {
         StoreArgs storeArgs = userService.storeArgs();
-        return menuService.mainMenus(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, subCateCd);
+        return menuService.mainMenus(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, subCateCd, commonCond);
     }
 
     /**
@@ -164,7 +161,7 @@ public class MenuApiController {
             @PathVariable String middleCateCd,
             @PathVariable String subCateCd,
             @Valid @RequestBody MenusDeleteRequest request
-    ) {
+            ) {
         StoreArgs storeArgs = userService.storeArgs();
         menuService.deleteMainMenus(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, subCateCd, request);
     }
@@ -262,7 +259,7 @@ public class MenuApiController {
             @PathVariable String subCateCd,
             @PathVariable String mainMenuCd,
             @Valid @RequestBody OptionGroupsDeleteRequest request
-    ) {
+            ) {
         StoreArgs storeArgs = userService.storeArgs();
         optionGroupService.deleteMainMenuMappers(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, subCateCd, mainMenuCd, request);
     }
@@ -286,5 +283,5 @@ public class MenuApiController {
         StoreArgs storeArgs = userService.storeArgs();
         optionGroupService.changeMainMenuMapperPriorities(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, subCateCd, mainMenuCd, request);
     }
-
+    
 }

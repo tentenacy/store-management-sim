@@ -1,11 +1,9 @@
-package com.tenutz.storemngsim.web.api.dto.option;
+package com.tenutz.storemngsim.web.api.dto.optiongroup.option;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

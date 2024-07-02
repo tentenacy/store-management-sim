@@ -1,6 +1,7 @@
 package com.tenutz.storemngsim.web.api.controller;
 
 import com.tenutz.storemngsim.web.api.dto.category.*;
+import com.tenutz.storemngsim.web.api.dto.common.CommonCondition;
 import com.tenutz.storemngsim.web.api.dto.user.StoreArgs;
 import com.tenutz.storemngsim.web.service.CategoryService;
 import com.tenutz.storemngsim.web.service.UserService;
@@ -27,9 +28,9 @@ public class CategoryApiController {
      * @return
      */
     @GetMapping("/main")
-    public MainCategoriesResponse mainCategories() {
+    public MainCategoriesResponse mainCategories(@Valid CommonCondition commonCond) {
         StoreArgs storeArgs = userService.storeArgs();
-        return categoryService.mainCategories(storeArgs.getSiteCd(), storeArgs.getStrCd());
+        return categoryService.mainCategories(storeArgs.getSiteCd(), storeArgs.getStrCd(), commonCond);
     }
 
     /**
@@ -102,9 +103,9 @@ public class CategoryApiController {
      * @return
      */
     @GetMapping("/main/{mainCateCd}/middle")
-    public MiddleCategoriesResponse middleCategories(@PathVariable String mainCateCd) {
+    public MiddleCategoriesResponse middleCategories(@PathVariable String mainCateCd, @Valid CommonCondition commonCond) {
         StoreArgs storeArgs = userService.storeArgs();
-        return categoryService.middleCategories(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd);
+        return categoryService.middleCategories(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, commonCond);
     }
 
     /**
@@ -137,7 +138,7 @@ public class CategoryApiController {
 //        }
 
 //        try {
-        categoryService.createMiddleCategory(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, request);
+            categoryService.createMiddleCategory(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, request);
 //        } catch (Exception e) {
 //            if(!ObjectUtils.isEmpty(request.getImage())) {
 //                fileUploadService.deleteKioskMenuImage(request.getImageUrl(), args);
@@ -164,7 +165,7 @@ public class CategoryApiController {
 //        }
 
 //        try {
-        categoryService.updateMiddleCategory(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, request);
+            categoryService.updateMiddleCategory(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, request);
 //        } catch (Exception e) {
 //            if(!ObjectUtils.isEmpty(request.getImage())) {
 //                fileUploadService.deleteKioskMenuImage(request.getImageUrl(), args);
@@ -215,9 +216,9 @@ public class CategoryApiController {
      * @return
      */
     @GetMapping("/main/{mainCateCd}/middle/{middleCateCd}/sub")
-    public SubCategoriesResponse subCategories(@PathVariable String mainCateCd, @PathVariable String middleCateCd) {
+    public SubCategoriesResponse subCategories(@PathVariable String mainCateCd, @PathVariable String middleCateCd, @Valid CommonCondition commonCond) {
         StoreArgs storeArgs = userService.storeArgs();
-        return categoryService.subCategories(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd);
+        return categoryService.subCategories(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, commonCond);
     }
 
     /**

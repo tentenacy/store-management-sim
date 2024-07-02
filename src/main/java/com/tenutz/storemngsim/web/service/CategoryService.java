@@ -4,6 +4,7 @@ import com.tenutz.storemngsim.domain.menu.Category;
 import com.tenutz.storemngsim.domain.menu.CategoryRepository;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.web.api.dto.category.*;
+import com.tenutz.storemngsim.web.api.dto.common.CommonCondition;
 import com.tenutz.storemngsim.web.client.UploadClient;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
@@ -27,9 +28,9 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final UploadClient s3Client;
 
-    public MainCategoriesResponse mainCategories(String siteCd, String strCd) {
+    public MainCategoriesResponse mainCategories(String siteCd, String strCd, CommonCondition commonCond) {
         return new MainCategoriesResponse(
-                categoryRepository.mainCategories(siteCd, strCd).stream()
+                categoryRepository.mainCategories(siteCd, strCd, commonCond).stream()
                         .map(cat -> new MainCategoriesResponse.MainCategory(
                                 cat.getStrCd(),
                                 cat.getCateCd1(),
@@ -42,9 +43,9 @@ public class CategoryService {
         );
     }
 
-    public MiddleCategoriesResponse middleCategories(String siteCd, String strCd, String mainCateCd) {
+    public MiddleCategoriesResponse middleCategories(String siteCd, String strCd, String mainCateCd, CommonCondition commonCond) {
         return new MiddleCategoriesResponse(
-                categoryRepository.middleCategories(siteCd, strCd, mainCateCd).stream()
+                categoryRepository.middleCategories(siteCd, strCd, mainCateCd, commonCond).stream()
                         .map(cat -> new MiddleCategoriesResponse.MiddleCategory(
                                 cat.getStrCd(),
                                 cat.getCateCd1(),
@@ -60,9 +61,9 @@ public class CategoryService {
         );
     }
 
-    public SubCategoriesResponse subCategories(String siteCd, String strCd, String mainCateCd, String middleCateCd) {
+    public SubCategoriesResponse subCategories(String siteCd, String strCd, String mainCateCd, String middleCateCd, CommonCondition commonCond) {
         return new SubCategoriesResponse(
-                categoryRepository.subCategories(siteCd, strCd, mainCateCd, middleCateCd).stream()
+                categoryRepository.subCategories(siteCd, strCd, mainCateCd, middleCateCd, commonCond).stream()
                         .map(cat -> new SubCategoriesResponse.SubCategory(
                                 cat.getStrCd(),
                                 cat.getCateCd1(),

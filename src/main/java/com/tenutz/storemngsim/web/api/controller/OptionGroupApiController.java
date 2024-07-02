@@ -1,5 +1,6 @@
 package com.tenutz.storemngsim.web.api.controller;
 
+import com.tenutz.storemngsim.web.api.dto.common.CommonCondition;
 import com.tenutz.storemngsim.web.api.dto.common.MainMenuSearchRequest;
 import com.tenutz.storemngsim.web.api.dto.common.OptionGroupsDeleteRequest;
 import com.tenutz.storemngsim.web.api.dto.optiongroup.*;
@@ -27,9 +28,9 @@ public class OptionGroupApiController {
      * @return
      */
     @GetMapping
-    public OptionGroupsResponse optionGroups() {
+    public OptionGroupsResponse optionGroups(@Valid CommonCondition commonCond) {
         StoreArgs storeArgs = userService.storeArgs();
-        return optionGroupService.optionGroups(storeArgs.getSiteCd(), storeArgs.getStrCd());
+        return optionGroupService.optionGroups(storeArgs.getSiteCd(), storeArgs.getStrCd(), commonCond);
     }
 
     /**
@@ -93,9 +94,9 @@ public class OptionGroupApiController {
      * @return
      */
     @GetMapping("/{optionGroupCd}/options")
-    public OptionGroupOptionsResponse optionGroupOptions(@PathVariable String optionGroupCd) {
+    public OptionGroupOptionsResponse optionGroupOptions(@PathVariable String optionGroupCd, @Valid CommonCondition commonCond) {
         StoreArgs storeArgs = userService.storeArgs();
-        return optionGroupService.optionGroupOptions(storeArgs.getSiteCd(), storeArgs.getStrCd(), optionGroupCd);
+        return optionGroupService.optionGroupOptions(storeArgs.getSiteCd(), storeArgs.getStrCd(), optionGroupCd, commonCond);
     }
 
     /**
@@ -158,10 +159,11 @@ public class OptionGroupApiController {
     @GetMapping("/{optionGroupCd}/main-menus")
     public OptionGroupMainMenusResponse optionGroupMainMenus(
             @PathVariable String optionGroupCd,
-            @Valid MainMenuSearchRequest request
+            @Valid MainMenuSearchRequest request,
+            @Valid CommonCondition commonCond
     ) {
         StoreArgs storeArgs = userService.storeArgs();
-        return optionGroupService.optionGroupMainMenus(storeArgs.getSiteCd(), storeArgs.getStrCd(), optionGroupCd, request);
+        return optionGroupService.optionGroupMainMenus(storeArgs.getSiteCd(), storeArgs.getStrCd(), optionGroupCd, request, commonCond);
     }
 
     /**
