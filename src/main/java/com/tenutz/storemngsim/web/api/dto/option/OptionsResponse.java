@@ -22,7 +22,9 @@ public class OptionsResponse {
         private String storeCode;
         private String optionCode;
         private String optionName;
+        private String imageUrl;
+        private boolean outOfStock;
         private int price;
-        private boolean use;
+        private Boolean use;
     }
 }

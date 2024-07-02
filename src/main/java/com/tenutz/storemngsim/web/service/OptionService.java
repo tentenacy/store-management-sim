@@ -36,6 +36,10 @@ public class OptionService {
                         option.getStrCd(),
                         option.getOptCd(),
                         option.getOptNm(),
+                        menuImageRepository.findBySiteCdAndStrCdAndEquTypeAndFileNm(siteCd, strCd, "4", option.getImgNm())
+                                .map(image -> s3Client.getFileUrl(image.getFilePath().substring(image.getFilePath().indexOf("FILE_MANAGER"))) + "/" + image.getFileNm())
+                                .orElse(null),
+                        option.soldOutYn(),
                         option.getSellAmt(),
                         option.useYn()
                 )).collect(Collectors.toList())

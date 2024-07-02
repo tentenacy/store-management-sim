@@ -25,9 +25,11 @@ public class MainMenusResponse {
         private String subCategoryCode;
         private String menuCode;
         private String menuName;
+        private String imageUrl;
+        private boolean outOfStock;
         private int price;
         private int discountingPrice;
         private int discountedPrice;
-        private boolean use;
+        private Boolean use;
     }
 }

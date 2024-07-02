@@ -43,6 +43,10 @@ public class MenuService {
                         menu.getCateCd3(),
                         menu.getMenuCd(),
                         menu.getMenuNm(),
+                        menuImageRepository.findBySiteCdAndStrCdAndEquTypeAndFileNm(siteCd, strCd, "4", menu.getImgNm())
+                                .map(image -> s3Client.getFileUrl(image.getFilePath().substring(image.getFilePath().indexOf("FILE_MANAGER"))) + "/" + image.getFileNm())
+                                .orElse(null),
+                        menu.soldOutYn(),
                         menu.getSellAmt(),
                         menu.getSaleAmt(),
                         menu.getSellAmt() - menu.getSaleAmt(),
