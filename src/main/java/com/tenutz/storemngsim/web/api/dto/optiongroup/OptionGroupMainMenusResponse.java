@@ -22,7 +22,12 @@ public class OptionGroupMainMenusResponse {
         private String storeCode;
         private String menuCode;
         private String menuName;
+        private String imageUrl;
+        private boolean outOfStock;
         private Integer price;
+        private int discountingPrice;
+        private int discountedPrice;
+        private Boolean use;
         private String mainCategoryCode;
         private String middleCategoryCode;
         private String subCategoryCode;

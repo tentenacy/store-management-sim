@@ -43,7 +43,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 //Jwt 인증 시 세션이 필요하지 않으므로 생성하지 않음
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
+                .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST,
                         "/exception/**",
@@ -58,7 +58,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,
                         "/exception/**",
                         "/oauth/**",
-                        "/files/**"
+                        "/files/**",
+                        "/terms"
                 ).permitAll()
                 .antMatchers(HttpMethod.PUT, "/exception/**").permitAll()
                 .antMatchers(HttpMethod.PATCH, "/exception/**").permitAll()
@@ -66,11 +67,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.HEAD, "/exception/**").permitAll()
                 .antMatchers("/swagger-ui/**").permitAll()
                 .anyRequest().hasRole("USER")
-        .and()
+                .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(customAuthenticationEntryPoint)
                 .accessDeniedHandler(customAccessDeniedHandler)
-        .and()
+                .and()
                 //Jwt 인증 필터를 UsernamePasswordAuthenticationFilter 전에 삽입
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
 

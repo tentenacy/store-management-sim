@@ -22,6 +22,11 @@ public class OptionGroupOptionsResponse {
         private String storeCode;
         private String optionCode;
         private String optionName;
+        private String imageUrl;
+        private boolean outOfStock;
         private Integer price;
+        private int discountingPrice;
+        private int discountedPrice;
+        private Boolean use;
     }
 }

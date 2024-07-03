@@ -12,10 +12,8 @@ public class MainMenuSearchRequest {
 
     @NotEmpty
     private String mainCateCd;
-
     @NotEmpty
     private String middleCateCd;
-
     @NotEmpty
     private String subCateCd;
 }

@@ -20,6 +20,7 @@ public class StatisticsSalesByCreditCardResponse {
     public static class StatisticsSalesByCreditCard {
 
         private String date;
+        private String creditCardCode;
         private String creditCardCompany;
         private int salesAmount;
         private int salesCount;

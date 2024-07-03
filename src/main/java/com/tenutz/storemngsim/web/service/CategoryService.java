@@ -2,6 +2,7 @@ package com.tenutz.storemngsim.web.service;
 
 import com.tenutz.storemngsim.domain.menu.Category;
 import com.tenutz.storemngsim.domain.menu.CategoryRepository;
+import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.web.api.dto.category.*;
 import com.tenutz.storemngsim.web.api.dto.common.CommonCondition;
@@ -55,6 +56,8 @@ public class CategoryService {
                                 cat.getImgName(),
                                 StringUtils.hasText(cat.getImgUrl()) ? s3Client.getFileUrl(cat.getImgUrl()) : null,
                                 cat.getPriority(),
+                                cat.getPhoneNo(),
+                                cat.getAddr(),
                                 cat.getCreatedAt(),
                                 cat.getUpdatedAt()
                         )).collect(Collectors.toList())

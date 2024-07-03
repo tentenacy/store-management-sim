@@ -31,9 +31,9 @@ public class OptionService {
     private final MenuImageRepository menuImageRepository;
     private final UploadClient s3Client;
 
-    public OptionsResponse options(String siteCd, String strCd, CommonCondition commonCond) {
-        return new OptionsResponse(optionRepository.options(siteCd, strCd, commonCond).stream().map(option ->
-                new OptionsResponse.Option(
+    public com.tenutz.storemngsim.web.api.dto.optiongroup.option.OptionsResponse options(String siteCd, String strCd, CommonCondition commonCond) {
+        return new com.tenutz.storemngsim.web.api.dto.optiongroup.option.OptionsResponse(optionRepository.options(siteCd, strCd, commonCond).stream().map(option ->
+                new com.tenutz.storemngsim.web.api.dto.optiongroup.option.OptionsResponse.Option(
                         option.getStrCd(),
                         option.getOptCd(),
                         option.getOptNm(),
@@ -42,6 +42,8 @@ public class OptionService {
                                 .orElse(null),
                         option.soldOutYn(),
                         option.getSellAmt(),
+                        option.getSaleAmt(),
+                        option.getSellAmt() - option.getSaleAmt(),
                         option.useYn()
                 )).collect(Collectors.toList())
         );

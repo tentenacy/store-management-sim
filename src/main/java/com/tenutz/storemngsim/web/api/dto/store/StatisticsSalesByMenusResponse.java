@@ -18,6 +18,7 @@ public class StatisticsSalesByMenusResponse {
     private String mainCategoryCode;
     private String middleCategoryCode;
     private String subCategoryCode;
+    private String menuCode;
     private int cAuthAmount;
     private int cAuthCount;
     private int authAmount;

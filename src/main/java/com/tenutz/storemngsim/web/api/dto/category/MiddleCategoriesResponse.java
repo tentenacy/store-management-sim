@@ -27,14 +27,14 @@ public class MiddleCategoriesResponse {
         private String imageName;
         private String imageUrl;
         private Integer order;
-//        private String businessNumber;
+        //        private String businessNumber;
 //        private String representativeName;
-//        private String tel;
-//        private String address;
-//        private String tid;
+        private String tel;
+        private String address;
+        //        private String tid;
 //        private String creator;
         private String createdAt;
-//        private String lastModifier;
+        //        private String lastModifier;
         private String lastModifiedAt;
     }
 }

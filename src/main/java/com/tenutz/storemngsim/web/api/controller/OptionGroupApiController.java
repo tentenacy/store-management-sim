@@ -41,7 +41,7 @@ public class OptionGroupApiController {
     @GetMapping("/{optionGroupCd}")
     public OptionGroupResponse optionGroup(@PathVariable String optionGroupCd) {
         StoreArgs storeArgs = userService.storeArgs();
-        return optionGroupService.option(storeArgs.getSiteCd(), storeArgs.getStrCd(), optionGroupCd);
+        return optionGroupService.optionGroup(storeArgs.getSiteCd(), storeArgs.getStrCd(), optionGroupCd);
     }
 
     /**
