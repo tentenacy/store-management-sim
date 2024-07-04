@@ -1,14 +1,11 @@
 package com.tenutz.storemngsim.web.api.controller;
 
-import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.utils.enums.SocialType;
 import com.tenutz.storemngsim.web.api.dto.common.TokenRequest;
 import com.tenutz.storemngsim.web.api.dto.common.TokenResponse;
 import com.tenutz.storemngsim.web.api.dto.user.*;
 import com.tenutz.storemngsim.web.client.dto.SocialProfile;
-import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException.CUserNotFoundException;
-import com.tenutz.storemngsim.web.exception.social.CSocialException.CSocialAgreementException;
 import com.tenutz.storemngsim.web.service.AuthService;
 import com.tenutz.storemngsim.web.service.social.OAuthService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,7 +39,7 @@ public class UserApiController {
     @PostMapping("/social/{socialType}")
     @ResponseStatus(HttpStatus.CREATED)
     public void socialSignup(@PathVariable(name = "socialType") SocialType socialType,
-                             @RequestBody @Validated com.tenutz.storemngsim.web.api.dto.user.SocialSignupRequest request) {
+                             @RequestBody @Validated SocialSignupRequest request) {
 
         //구글은 access_token 대신 id_token 값으로
         SocialProfile socialProfile = oauthService.profile(socialType, request.getAccessToken());
@@ -91,6 +87,12 @@ public class UserApiController {
     @GetMapping("/details")
     public UserDetailsResponse userDetails() {
         return authService.userDetails();
+    }
+
+    @DeleteMapping("/{userSeq}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Integer userSeq) {
+        authService.delete(userSeq);
     }
 
 }

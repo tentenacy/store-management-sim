@@ -59,7 +59,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/exception/**",
                         "/oauth/**",
                         "/files/**",
-                        "/terms"
+                        "/terms",
+                        "/terms/{termsCd}",
+                        "/addr"
                 ).permitAll()
                 .antMatchers(HttpMethod.PUT, "/exception/**").permitAll()
                 .antMatchers(HttpMethod.PATCH, "/exception/**").permitAll()

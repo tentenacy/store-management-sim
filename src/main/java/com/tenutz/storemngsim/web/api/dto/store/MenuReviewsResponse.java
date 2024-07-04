@@ -1,5 +1,6 @@
 package com.tenutz.storemngsim.web.api.dto.store;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class MenuReviewsResponse {
     private String subCategoryCode;
     private String menuCode;
     private String menuName;
+    private String imageUrl;
     private String createdBy;
     private String createdAt;
     private String content;
@@ -26,6 +28,9 @@ public class MenuReviewsResponse {
     private int rating;
     private int sno;
     private MenuReviewReply menuReviewReply;
+
+    @JsonIgnore
+    private String imageName;
 
     public MenuReviewsResponse(long seq, String siteCode, String storeCode, String mainCategoryCode, String middleCategoryCode, String subCategoryCode, String menuCode, String createdBy, String createdAt, String content, int keyword, int level, int rating, int sno, MenuReviewReply menuReviewReply) {
         this.seq = seq;

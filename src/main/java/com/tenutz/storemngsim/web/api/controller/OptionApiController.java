@@ -127,9 +127,9 @@ public class OptionApiController {
      * @return
      */
     @GetMapping("/{optionCd}/option-groups")
-    public OptionOptionGroupsResponse optionOptionGroups(@PathVariable String optionCd) {
+    public OptionOptionGroupsResponse optionOptionGroups(@PathVariable String optionCd, @Valid CommonCondition commonCond) {
         StoreArgs storeArgs = userService.storeArgs();
-        return optionGroupService.optionOptionGroups(storeArgs.getSiteCd(), storeArgs.getStrCd(), optionCd);
+        return optionGroupService.optionOptionGroups(storeArgs.getSiteCd(), storeArgs.getStrCd(), optionCd, commonCond);
     }
 
     /**

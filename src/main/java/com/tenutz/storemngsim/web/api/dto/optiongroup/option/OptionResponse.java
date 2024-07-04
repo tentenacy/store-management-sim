@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -18,7 +20,7 @@ public class OptionResponse {
     private int additionalPackagingPrice;
     private String packaging;
     private boolean outOfStock;
-    private boolean use;
+    private Boolean use;
     private String imageName;
     private String imageUrl;
     private String optionNameKor;

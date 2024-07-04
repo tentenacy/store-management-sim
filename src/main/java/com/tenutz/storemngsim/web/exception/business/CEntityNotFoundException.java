@@ -78,4 +78,10 @@ public class CEntityNotFoundException extends CBusinessException {
             super(ErrorCode.MANAGER_NOT_FOUND);
         }
     }
+
+    public static class CTermsNotFoundException extends CEntityNotFoundException {
+        public CTermsNotFoundException() {
+            super(ErrorCode.TERMS_NOT_FOUND);
+        }
+    }
 }

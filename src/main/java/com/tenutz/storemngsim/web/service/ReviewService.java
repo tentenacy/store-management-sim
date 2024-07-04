@@ -6,12 +6,14 @@ import com.tenutz.storemngsim.domain.customer.StoreReview;
 import com.tenutz.storemngsim.domain.customer.StoreReviewRepository;
 import com.tenutz.storemngsim.domain.menu.CategoryRepository;
 import com.tenutz.storemngsim.domain.menu.MainMenuRepository;
+import com.tenutz.storemngsim.domain.menu.MenuImageRepository;
 import com.tenutz.storemngsim.utils.HttpReqRespUtils;
 import com.tenutz.storemngsim.web.api.dto.common.CommonCondition;
 import com.tenutz.storemngsim.web.api.dto.store.MenuReviewsResponse;
 import com.tenutz.storemngsim.web.api.dto.store.ReviewReplyCreateRequest;
 import com.tenutz.storemngsim.web.api.dto.store.ReviewReplyUpdateRequest;
 import com.tenutz.storemngsim.web.api.dto.store.StoreReviewsResponse;
+import com.tenutz.storemngsim.web.client.UploadClient;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException.CMenuReviewNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException.CStoreReviewNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
@@ -33,13 +35,23 @@ public class ReviewService {
     private final MenuReviewRepository menuReviewRepository;
     private final CategoryRepository categoryRepository;
     private final MainMenuRepository mainMenuRepository;
+    private final MenuImageRepository menuImageRepository;
+    private final UploadClient s3Client;
 
     public Page<StoreReviewsResponse> storeReviews(String siteCd, String strCd, Pageable pageable, CommonCondition commonCond) {
-        return storeReviewRepository.reviews(siteCd, strCd, categoryRepository.storeMiddleCategories(siteCd, strCd, commonCond), pageable, commonCond);
+//        return storeReviewRepository.reviews(siteCd, strCd, categoryRepository.storeMiddleCategories(siteCd, strCd, commonCond), pageable, commonCond);
+        return storeReviewRepository.reviews(siteCd, strCd, pageable, commonCond);
     }
 
     public Page<MenuReviewsResponse> menuReviews(String siteCd, String strCd, Pageable pageable, CommonCondition commonCond) {
-        return menuReviewRepository.reviews(siteCd, strCd, mainMenuRepository.storeMainMenus(siteCd, strCd, commonCond), pageable, commonCond);
+        return menuReviewRepository.reviews(siteCd, strCd, mainMenuRepository.storeMainMenus(siteCd, strCd, commonCond), pageable, commonCond).map(review -> {
+            review.setImageUrl(
+                    menuImageRepository.findBySiteCdAndStrCdAndEquTypeAndFileNm(siteCd, strCd, "4", review.getImageName())
+                            .map(image -> s3Client.getFileUrl(image.getFilePath().substring(image.getFilePath().indexOf("FILE_MANAGER"))) + "/" + image.getFileNm())
+                            .orElse(null)
+            );
+            return review;
+        });
     }
 
     @Transactional

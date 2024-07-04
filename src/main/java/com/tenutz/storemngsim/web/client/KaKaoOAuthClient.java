@@ -86,10 +86,25 @@ public class KaKaoOAuthClient implements OAuthClient {
                 .uri(kakaoProfileUrl)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .header("Authorization", "Bearer " + accessToken)
-                .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, response -> Mono.error(new CSocialCommunicationException()))
-                .onStatus(HttpStatus::is5xxServerError, response -> Mono.error(new CSocialCommunicationException()))
-                .bodyToMono(KakaoProfile.class)
+                .exchangeToMono(clientResponse -> {
+                    if (clientResponse.statusCode().is4xxClientError()) {
+                        return clientResponse
+                                .createException()
+                                .flatMap(Mono::error);
+                    }
+
+                    if (clientResponse.statusCode().is5xxServerError()) {
+                        return clientResponse
+                                .createException()
+                                .flatMap(Mono::error);
+                    }
+
+                    return clientResponse.bodyToMono(KakaoProfile.class);
+                })
+                .onErrorResume(error -> {
+                    log.error(error.getMessage());
+                    return Mono.error(new CSocialCommunicationException());
+                })
                 .block();
 
         return new SocialProfile(kakaoProfile.getId().toString(), kakaoProfile.getKakao_account().getEmail(), kakaoProfile.getProperties().getNickname(), kakaoProfile.getKakao_account().getProfile().getProfile_image_url());

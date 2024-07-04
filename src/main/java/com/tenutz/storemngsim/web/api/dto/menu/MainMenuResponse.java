@@ -22,7 +22,7 @@ public class MainMenuResponse {
     private int additionalPackagingPrice;
     private String packaging;
     private boolean outOfStock;
-    private boolean use;
+    private Boolean use;
     private boolean ingredientDisplay;
     private String imageName;
     private String imageUrl;

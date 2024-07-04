@@ -40,9 +40,9 @@ public class OptionGroupService {
     private final MenuImageRepository menuImageRepository;
     private final UploadClient s3Client;
 
-    public MainMenuOptionGroupsResponse mainMenuOptionGroups(String siteCd, String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd) {
+    public MainMenuOptionGroupsResponse mainMenuOptionGroups(String siteCd, String strCd, String mainCateCd, String middleCateCd, String subCateCd, String mainMenuCd, CommonCondition commonCond) {
         return new MainMenuOptionGroupsResponse(
-                optionGroupRepository.mainMenuOptionGroups(siteCd, strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).stream().map(optionGroup ->
+                optionGroupRepository.mainMenuOptionGroups(siteCd, strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd, commonCond).stream().map(optionGroup ->
                         new MainMenuOptionGroupsResponse.MainMenuOptionGroup(
                                 optionGroup.getOptGrpCd(),
                                 optionGroup.getOptGrpKorNm(),
@@ -79,9 +79,9 @@ public class OptionGroupService {
         });
     }
 
-    public OptionOptionGroupsResponse optionOptionGroups(String siteCd, String strCd, String optionCd) {
+    public OptionOptionGroupsResponse optionOptionGroups(String siteCd, String strCd, String optionCd, CommonCondition commonCond) {
         return new OptionOptionGroupsResponse(
-                optionGroupRepository.optionOptionGroups(siteCd, strCd, optionCd).stream().map(optionGroup ->
+                optionGroupRepository.optionOptionGroups(siteCd, strCd, optionCd, commonCond).stream().map(optionGroup ->
                         new OptionOptionGroupsResponse.OptionOptionGroup(
                                 optionGroup.getOptGrpCd(),
                                 optionGroup.getOptGrpKorNm(),

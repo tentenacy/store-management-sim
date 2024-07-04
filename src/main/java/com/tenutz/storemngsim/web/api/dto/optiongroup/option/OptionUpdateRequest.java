@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -25,7 +26,6 @@ public class OptionUpdateRequest {
     private String packaging;
     @NotNull
     private Boolean outOfStock;
-    @NotNull
     private Boolean use;
     private String optionNameKor;
     private String showDateFrom;

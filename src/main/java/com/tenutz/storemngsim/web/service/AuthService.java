@@ -10,17 +10,13 @@ import com.tenutz.storemngsim.domain.user.*;
 import com.tenutz.storemngsim.domain.user.id.ManagerId;
 import com.tenutz.storemngsim.utils.EntityUtils;
 import com.tenutz.storemngsim.utils.HttpReqRespUtils;
-import com.tenutz.storemngsim.utils.SecurityUtils;
 import com.tenutz.storemngsim.utils.enums.SocialType;
 import com.tenutz.storemngsim.web.api.dto.common.TokenRequest;
 import com.tenutz.storemngsim.web.api.dto.common.TokenResponse;
 import com.tenutz.storemngsim.web.api.dto.user.LoginRequest;
-import com.tenutz.storemngsim.web.api.dto.user.SignupRequest;
 import com.tenutz.storemngsim.web.api.dto.user.SocialSignupRequest;
 import com.tenutz.storemngsim.web.api.dto.user.UserDetailsResponse;
 import com.tenutz.storemngsim.web.client.dto.SocialProfile;
-import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
-import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException.CAlreadySignedupException;
 import com.tenutz.storemngsim.web.exception.security.CTokenException;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +27,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -50,7 +44,7 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final StoreMasterRepository storeMasterRepository;
     private final ManagerRepository managerRepository;
-    private final TermsAgreementRepository termsAgreementRepository;
+    private final com.tenutz.storemngsim.domain.user.TermsAgreementRepository termsAgreementRepository;
 
 /*
     @Transactional
@@ -174,5 +168,12 @@ public class AuthService {
                 user.getRegisteredAt(),
                 user.getReceiveYn()
         );
+    }
+
+    @Transactional
+    public void delete(Integer userSeq) {
+        userRepository.deleteById(userSeq);
+        termsAgreementRepository.deleteByUserSeq(userSeq);
+        refreshTokenRepository.deleteByKey(userSeq.toString());
     }
 }

@@ -26,7 +26,6 @@ public class MainMenuUpdateRequest {
     private String packaging;
     @NotNull
     private Boolean outOfStock;
-    @NotNull
     private Boolean use;
     @NotNull
     private Boolean ingredientDisplay;

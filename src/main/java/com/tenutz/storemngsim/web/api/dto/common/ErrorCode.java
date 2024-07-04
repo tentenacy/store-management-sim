@@ -61,7 +61,7 @@ public enum ErrorCode {
     NOT_A_REPLY_ERROR(HttpStatus.BAD_REQUEST.value(), "MZS-1038", "대댓글이 아닙니다."),
     NOT_USER_OWN_REPLY_ERROR(HttpStatus.BAD_REQUEST.value(), "MZS-1039", "사용자의 대댓글이 아닙니다."),
     REPLY_MAXIMUM_COUNT_EXCEEDED(HttpStatus.BAD_REQUEST.value(), "MZS-1040", "대댓글 등록 허용 갯수를 초과했습니다."),
-    MANAGER_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "MZS-1041", "매니저가 존재하지 않습니다.."),
+    MANAGER_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "MZS-1041", "매니저가 존재하지 않습니다."),
 
     /**
      * SOCIAL

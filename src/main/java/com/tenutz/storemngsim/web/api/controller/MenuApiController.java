@@ -197,10 +197,11 @@ public class MenuApiController {
             @PathVariable String mainCateCd,
             @PathVariable String middleCateCd,
             @PathVariable String subCateCd,
-            @PathVariable String mainMenuCd
+            @PathVariable String mainMenuCd,
+            @Valid CommonCondition commonCond
     ) {
         StoreArgs storeArgs = userService.storeArgs();
-        return optionGroupService.mainMenuOptionGroups(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, subCateCd, mainMenuCd);
+        return optionGroupService.mainMenuOptionGroups(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, subCateCd, mainMenuCd, commonCond);
     }
 
     /**
