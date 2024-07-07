@@ -44,7 +44,8 @@ public class ReviewService {
     }
 
     public Page<MenuReviewsResponse> menuReviews(String siteCd, String strCd, Pageable pageable, CommonCondition commonCond) {
-        return menuReviewRepository.reviews(siteCd, strCd, mainMenuRepository.storeMainMenus(siteCd, strCd, commonCond), pageable, commonCond).map(review -> {
+//        return menuReviewRepository.reviews(siteCd, strCd, mainMenuRepository.storeMainMenus(siteCd, strCd, commonCond), pageable, commonCond).map(review -> {
+        return menuReviewRepository.reviews(siteCd, strCd, pageable, commonCond).map(review -> {
             review.setImageUrl(
                     menuImageRepository.findBySiteCdAndStrCdAndEquTypeAndFileNm(siteCd, strCd, "4", review.getImageName())
                             .map(image -> s3Client.getFileUrl(image.getFilePath().substring(image.getFilePath().indexOf("FILE_MANAGER"))) + "/" + image.getFileNm())
@@ -172,5 +173,25 @@ public class ReviewService {
         if(!foundMenuReview.getDsSiteCd().equals(siteCd) || !foundMenuReview.getDsStrCd().equals(strCd)) {
             throw new CInvalidValueException.CNotUserOwnReplyException();
         }
+    }
+
+    @Transactional
+    public void updateAsMenu() {
+        menuReviewRepository.findAll().forEach(review -> {
+            mainMenuRepository.mainMenu(review.getDsSiteCd(), review.getDsStrCd(), review.getDsCateCd1(), review.getDsCateCd2(), review.getDsCateCd3(), review.getDsMenuCd()).ifPresent(menu -> {
+                review.updateAsMenu(menu.getMenuNm(), menu.getImgNm());
+                menuReviewRepository.save(review);
+            });
+        });
+    }
+
+    @Transactional
+    public void updateAsStore() {
+        storeReviewRepository.findAll().forEach(review -> {
+            categoryRepository.middleCategoryForTest(review.getDsSiteCd(), review.getDsStrCd(), review.getDsCateCd2()).stream().findFirst().ifPresent(menu -> {
+                review.updateAsMiddleCategory(menu.getCateName());
+                storeReviewRepository.save(review);
+            });
+        });
     }
 }

@@ -1,5 +1,6 @@
 package com.tenutz.storemngsim.web.service;
 
+import com.tenutz.storemngsim.domain.customer.MenuReviewRepository;
 import com.tenutz.storemngsim.domain.menu.*;
 import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
@@ -34,6 +35,7 @@ public class MenuService {
     private final OptionGroupMainMenuRepository optionGroupMainMenuRepository;
     private final MenuImageRepository menuImageRepository;
     private final UploadClient s3Client;
+    private final MenuReviewRepository menuReviewRepository;
 
     public MainMenusResponse mainMenus(String siteCd, String strCd, String mainCateCd, String middleCateCd, String subCateCd, CommonCondition commonCond) {
         return new MainMenusResponse(mainMenuRepository.mainMenus(siteCd, strCd, mainCateCd, middleCateCd, subCateCd, commonCond).stream().map(menu ->
@@ -117,7 +119,8 @@ public class MenuService {
 
         Optional<MainMenu> mainMenuOptional = mainMenuRepository.mainMenu(siteCd, strCd, mainCateCd, middleCateCd, subCateCd, request.getMenuCode());
         if(mainMenuOptional.isPresent() && mainMenuOptional.get().getUseYn().equals("D")) {
-            mainMenuOptional.get().update(
+            MainMenu foundMainMenu = mainMenuOptional.get();
+            foundMainMenu.update(
                     request.getMenuName(),
                     request.getPrice(),
                     !ObjectUtils.isEmpty(request.getDiscountedPrice()) ? request.getDiscountedPrice() : 0,
@@ -141,6 +144,10 @@ public class MenuService {
                     request.getEventDayOfWeek(),
                     request.getMemoKor()
             );
+            menuReviewRepository.menuReviews(siteCd, strCd, mainCateCd, middleCateCd, subCateCd, foundMainMenu.getMenuCd()).forEach(review -> {
+                review.updateAsMenu(foundMainMenu.getMenuNm(), foundMainMenu.getImgNm());
+                menuReviewRepository.save(review);
+            });
         } else if(mainMenuOptional.isPresent()) {
             throw new CInvalidValueException.CAlreadyMainMenuCreatedException();
         } else {
@@ -207,6 +214,10 @@ public class MenuService {
                 request.getEventDayOfWeek(),
                 request.getMemoKor()
         );
+        menuReviewRepository.menuReviews(siteCd, strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).forEach(review -> {
+            review.updateAsMenu(foundMainMenu.getMenuNm(), foundMainMenu.getImgNm());
+            menuReviewRepository.save(review);
+        });
     }
 
     @Transactional

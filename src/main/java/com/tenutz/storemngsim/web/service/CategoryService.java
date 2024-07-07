@@ -1,8 +1,8 @@
 package com.tenutz.storemngsim.web.service;
 
+import com.tenutz.storemngsim.domain.customer.StoreReviewRepository;
 import com.tenutz.storemngsim.domain.menu.Category;
 import com.tenutz.storemngsim.domain.menu.CategoryRepository;
-import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.web.api.dto.category.*;
 import com.tenutz.storemngsim.web.api.dto.common.CommonCondition;
@@ -28,6 +28,7 @@ public class CategoryService {
     private final StoreMasterRepository storeMasterRepository;
     private final CategoryRepository categoryRepository;
     private final UploadClient s3Client;
+    private final StoreReviewRepository storeReviewRepository;
 
     public MainCategoriesResponse mainCategories(String siteCd, String strCd, CommonCondition commonCond) {
         return new MainCategoriesResponse(
@@ -220,6 +221,7 @@ public class CategoryService {
     @Transactional
     public void updateMiddleCategory(String siteCd, String strCd, String mainCateCd, String middleCateCd, MiddleCategoryUpdateRequest request) {
         Category foundMainCategory = categoryRepository.middleCategory(siteCd, strCd, mainCateCd, middleCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
+        String prevCateName = foundMainCategory.getCateName();
         foundMainCategory.updateMiddleCategory(
                 request.getCategoryName(),
                 request.getUse(),
@@ -231,6 +233,10 @@ public class CategoryService {
                 request.getAddress(),
                 request.getTid()
         );
+        storeReviewRepository.storeReviews(siteCd, strCd, middleCateCd, prevCateName).forEach(review -> {
+            review.updateAsMiddleCategory(foundMainCategory.getCateName());
+            storeReviewRepository.save(review);
+        });
     }
 
     @Transactional

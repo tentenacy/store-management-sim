@@ -272,24 +272,13 @@ public class OptionGroupService {
     }
 
     public OptionGroupMainMenusResponse optionGroupMainMenus(String siteCd, String strCd, String optionGroupCd, MainMenuSearchRequest request, CommonCondition commonCond) {
-        return new OptionGroupMainMenusResponse(mainMenuRepository.optionGroupMainMenus(siteCd, strCd, optionGroupCd, request.getMainCateCd(), request.getMiddleCateCd(), request.getSubCateCd(), commonCond).stream().map(mainMenu ->
-                new OptionGroupMainMenusResponse.OptionGroupMainMenu(
-                        strCd,
-                        mainMenu.getMenuCd(),
-                        mainMenu.getMenuNm(),
-                        menuImageRepository.findBySiteCdAndStrCdAndEquTypeAndFileNm(siteCd, strCd, "4", mainMenu.getImgNm())
-                                .map(image -> s3Client.getFileUrl(image.getFilePath().substring(image.getFilePath().indexOf("FILE_MANAGER"))) + "/" + image.getFileNm())
-                                .orElse(null),
-                        mainMenu.soldOutYn(),
-                        mainMenu.getSellAmt(),
-                        mainMenu.getSaleAmt(),
-                        mainMenu.getSellAmt() - mainMenu.getSaleAmt(),
-                        mainMenu.useYn(),
-                        mainMenu.getCateCd1(),
-                        mainMenu.getCateCd2(),
-                        mainMenu.getCateCd3()
-                )).collect(Collectors.toList())
-        );
+        return new OptionGroupMainMenusResponse(mainMenuRepository.optionGroupMainMenus(siteCd, strCd, optionGroupCd, request.getMainCateCd(), request.getMiddleCateCd(), request.getSubCateCd(), commonCond).stream().peek(mainMenu -> {
+            mainMenu.setImageUrl(
+                    menuImageRepository.findBySiteCdAndStrCdAndEquTypeAndFileNm(siteCd, strCd, "4", mainMenu.getImageName())
+                            .map(image -> s3Client.getFileUrl(image.getFilePath().substring(image.getFilePath().indexOf("FILE_MANAGER"))) + "/" + image.getFileNm())
+                            .orElse(null)
+            );
+        }).collect(Collectors.toList()));
     }
 
     public OptionGroupMainMenuMappersResponse optionGroupMainMenuMappers(String siteCd, String strCd, String optionGroupCd) {

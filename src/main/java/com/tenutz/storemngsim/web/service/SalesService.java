@@ -53,4 +53,8 @@ public class SalesService {
     public StatisticsSalesTotalByTimeResponse statisticsSalesTotalByTime(String siteCd, String strCd, CommonCondition commonCond) {
         return salesMasterRepository.statisticsSalesTotalByTime(siteCd, strCd, commonCond);
     }
+
+    public StatisticsSalesByMenusTodayResponse statisticsSalesByMenusToday(String siteCd, String strCd) {
+        return salesMasterRepository.statisticsSalesByMenusToday(siteCd, strCd);
+    }
 }

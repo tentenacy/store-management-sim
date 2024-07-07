@@ -32,7 +32,7 @@ public class MenuReviewsResponse {
     @JsonIgnore
     private String imageName;
 
-    public MenuReviewsResponse(long seq, String siteCode, String storeCode, String mainCategoryCode, String middleCategoryCode, String subCategoryCode, String menuCode, String createdBy, String createdAt, String content, int keyword, int level, int rating, int sno, MenuReviewReply menuReviewReply) {
+    public MenuReviewsResponse(long seq, String siteCode, String storeCode, String mainCategoryCode, String middleCategoryCode, String subCategoryCode, String menuCode, String menuName, String imageName, String createdBy, String createdAt, String content, int keyword, int level, int rating, int sno, MenuReviewReply menuReviewReply) {
         this.seq = seq;
         this.siteCode = siteCode;
         this.storeCode = storeCode;
@@ -40,6 +40,8 @@ public class MenuReviewsResponse {
         this.middleCategoryCode = middleCategoryCode;
         this.subCategoryCode = subCategoryCode;
         this.menuCode = menuCode;
+        this.menuName = menuName;
+        this.imageName = imageName;
         this.createdBy = createdBy;
         this.createdAt = createdAt;
         this.content = content;
