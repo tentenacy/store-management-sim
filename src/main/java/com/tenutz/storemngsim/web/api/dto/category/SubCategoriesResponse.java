@@ -9,10 +9,14 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class SubCategoriesResponse {
 
     private List<SubCategory> subCategories;
+    private MiddleCategoryResponse middleCategory;
+
+    public SubCategoriesResponse(List<SubCategory> subCategories) {
+        this.subCategories = subCategories;
+    }
 
     @Data
     @NoArgsConstructor(access = AccessLevel.PROTECTED)

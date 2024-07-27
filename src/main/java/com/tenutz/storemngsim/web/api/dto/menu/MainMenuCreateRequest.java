@@ -34,7 +34,6 @@ public class MainMenuCreateRequest {
     private Boolean use;
     @NotNull
     private Boolean ingredientDisplay;
-    private String mainMenuNameKor;
     @NotEmpty
     private String highlightType;
     private String showDateFrom;
@@ -47,7 +46,7 @@ public class MainMenuCreateRequest {
     private String eventTimeFrom;
     private String eventTimeTo;
     private String eventDayOfWeek;
-    private String memoKor;
+    private String memo;
     private String ingredientDetails;
 
     @JsonIgnore

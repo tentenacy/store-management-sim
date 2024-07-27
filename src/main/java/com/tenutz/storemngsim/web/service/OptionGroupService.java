@@ -203,13 +203,10 @@ public class OptionGroupService {
                         strCd,
                         option.getOptCd(),
                         option.getOptNm(),
-                        menuImageRepository.findBySiteCdAndStrCdAndEquTypeAndFileNm(siteCd, strCd, "4", option.getImgNm())
+                        menuImageRepository.findBySiteCdAndStrCdAndFileNm(siteCd, strCd, option.getImgNm())
                                 .map(image -> s3Client.getFileUrl(image.getFilePath().substring(image.getFilePath().indexOf("FILE_MANAGER"))) + "/" + image.getFileNm())
                                 .orElse(null),
-                        option.soldOutYn(),
                         option.getSellAmt(),
-                        option.getSaleAmt(),
-                        option.getSellAmt() - option.getSaleAmt(),
                         option.useYn()
                 )).collect(Collectors.toList())
         );
@@ -218,7 +215,7 @@ public class OptionGroupService {
     public OptionGroupOptionMappersResponse optionGroupOptionMappers(String siteCd, String strCd, String optionGroupCd) {
         return new OptionGroupOptionMappersResponse(optionRepository.optionGroupOptionMappers(siteCd, strCd, optionGroupCd).stream().peek(mapper -> {
                     mapper.setImageUrl(
-                            menuImageRepository.findBySiteCdAndStrCdAndEquTypeAndFileNm(siteCd, strCd, "4", mapper.getImageName())
+                            menuImageRepository.findBySiteCdAndStrCdAndFileNm(siteCd, strCd, mapper.getImageName())
                                     .map(image -> s3Client.getFileUrl(image.getFilePath().substring(image.getFilePath().indexOf("FILE_MANAGER"))) + "/" + image.getFileNm())
                                     .orElse(null)
                     );
@@ -274,7 +271,7 @@ public class OptionGroupService {
     public OptionGroupMainMenusResponse optionGroupMainMenus(String siteCd, String strCd, String optionGroupCd, MainMenuSearchRequest request, CommonCondition commonCond) {
         return new OptionGroupMainMenusResponse(mainMenuRepository.optionGroupMainMenus(siteCd, strCd, optionGroupCd, request.getMainCateCd(), request.getMiddleCateCd(), request.getSubCateCd(), commonCond).stream().peek(mainMenu -> {
             mainMenu.setImageUrl(
-                    menuImageRepository.findBySiteCdAndStrCdAndEquTypeAndFileNm(siteCd, strCd, "4", mainMenu.getImageName())
+                    menuImageRepository.findBySiteCdAndStrCdAndFileNm(siteCd, strCd, mainMenu.getImageName())
                             .map(image -> s3Client.getFileUrl(image.getFilePath().substring(image.getFilePath().indexOf("FILE_MANAGER"))) + "/" + image.getFileNm())
                             .orElse(null)
             );
@@ -284,7 +281,7 @@ public class OptionGroupService {
     public OptionGroupMainMenuMappersResponse optionGroupMainMenuMappers(String siteCd, String strCd, String optionGroupCd) {
         return new OptionGroupMainMenuMappersResponse(mainMenuRepository.optionGroupMainMenuMappers(siteCd, strCd, optionGroupCd).stream().peek(mapper -> {
             mapper.setImageUrl(
-                    menuImageRepository.findBySiteCdAndStrCdAndEquTypeAndFileNm(siteCd, strCd, "4", mapper.getImageName())
+                    menuImageRepository.findBySiteCdAndStrCdAndFileNm(siteCd, strCd, mapper.getImageName())
                             .map(image -> s3Client.getFileUrl(image.getFilePath().substring(image.getFilePath().indexOf("FILE_MANAGER"))) + "/" + image.getFileNm())
                             .orElse(null)
             );

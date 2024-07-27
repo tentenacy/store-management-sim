@@ -1,5 +1,7 @@
 package com.tenutz.storemngsim.web.service;
 
+import com.tenutz.storemngsim.domain.menu.Category;
+import com.tenutz.storemngsim.domain.menu.CategoryRepository;
 import com.tenutz.storemngsim.domain.sales.SalesMasterRepository;
 import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
@@ -24,6 +26,7 @@ import static com.tenutz.storemngsim.utils.TimeUtils.*;
 @RequiredArgsConstructor
 public class StoreService {
 
+    private final CategoryRepository categoryRepository;
     private final StoreMasterRepository storeMasterRepository;
     private final SalesMasterRepository salesMasterRepository;
 
@@ -39,6 +42,8 @@ public class StoreService {
     public StoreMainResponse main(String siteCd, String strCd) {
 
         StoreMaster foundStoreMaster = storeMasterRepository.findAllByStrCd(strCd).stream().findAny().orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
+
+        Category foundMiddleCategory = categoryRepository.middleCategory(siteCd, strCd, "2000", "3000").orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
 
         SalesTotalResponse salesTotal = salesMasterRepository.totalSales(
                 siteCd,
@@ -57,7 +62,15 @@ public class StoreService {
                 strCd,
                 foundStoreMaster.getStrNm(),
                 foundStoreMaster.getStrMnger(),
-                salesTotal.getTotalTake()
+                salesTotal.getTotalTake(),
+                foundMiddleCategory.getCateCd1(),
+                foundMiddleCategory.getCateCd2(),
+                foundMiddleCategory.getImgName(),
+                foundMiddleCategory.getImgUrl(),
+                foundMiddleCategory.getPhoneNo(),
+                foundMiddleCategory.getAddr(),
+                foundMiddleCategory.getCreatedAt(),
+                foundMiddleCategory.getUpdatedAt()
         );
     }
 }

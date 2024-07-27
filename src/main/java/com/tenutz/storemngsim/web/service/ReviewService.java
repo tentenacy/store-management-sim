@@ -47,7 +47,7 @@ public class ReviewService {
 //        return menuReviewRepository.reviews(siteCd, strCd, mainMenuRepository.storeMainMenus(siteCd, strCd, commonCond), pageable, commonCond).map(review -> {
         return menuReviewRepository.reviews(siteCd, strCd, pageable, commonCond).map(review -> {
             review.setImageUrl(
-                    menuImageRepository.findBySiteCdAndStrCdAndEquTypeAndFileNm(siteCd, strCd, "4", review.getImageName())
+                    menuImageRepository.findBySiteCdAndStrCdAndFileNm(siteCd, strCd, review.getImageName())
                             .map(image -> s3Client.getFileUrl(image.getFilePath().substring(image.getFilePath().indexOf("FILE_MANAGER"))) + "/" + image.getFileNm())
                             .orElse(null)
             );

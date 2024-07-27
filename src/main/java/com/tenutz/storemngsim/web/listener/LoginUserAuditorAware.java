@@ -20,6 +20,6 @@ public class LoginUserAuditorAware implements AuditorAware<String> {
         if(principal.toString().equals("anonymousUser"))
             return Optional.empty();
 
-        return Optional.ofNullable(((User) principal).getUserId());
+        return Optional.ofNullable(((User) principal).getUsername());
     }
 }

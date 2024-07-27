@@ -2,11 +2,13 @@ package com.tenutz.storemngsim.web.service.cloud;
 
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.tenutz.storemngsim.domain.menu.MenuImage;
-import com.tenutz.storemngsim.domain.menu.MenuImageRepository;
+import com.tenutz.storemngsim.domain.menu.*;
+import com.tenutz.storemngsim.domain.menu.id.MainMenuId;
+import com.tenutz.storemngsim.domain.menu.id.OptionId;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.web.api.dto.common.MenuImageArgs;
 import com.tenutz.storemngsim.web.client.UploadClient;
+import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException.CMenuImageNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.tenutz.storemngsim.web.exception.io.CIOException.*;
 
@@ -27,16 +30,18 @@ import static com.tenutz.storemngsim.web.exception.io.CIOException.*;
 public class FileUploadService {
 
     private final MenuImageRepository menuImageRepository;
+    private final MainMenuRepository mainMenuRepository;
+    private final OptionRepository optionRepository;
     private final UploadClient s3Client;
-    private final StoreMasterRepository storeMasterRepository;
 
     @Transactional
     public String uploadKioskMenuImage(MenuImageArgs args) {
 
-        final int EQU_TYPE = 4;
-
         String newFileName = createFileName(args.getFileToUpload().getOriginalFilename());
-        String filePath = "FILE_MANAGER/" + args.getSiteCd() + "/" + args.getStoreCd() + "/" + EQU_TYPE;
+        String filePath = "FILE_MANAGER/" + args.getSiteCd() + "/" + args.getStoreCd();
+
+        inactivateMenuImageIfExists(args);
+
         menuImageRepository.save(
                 MenuImage.createKioskMenu(
                         args.getSiteCd(),
@@ -44,12 +49,45 @@ public class FileUploadService {
                         newFileName,
                         null,
                         (int) args.getFileToUpload().getSize(),
-                        "smartcast-img/" + filePath,
-                        1
+                        "sms-img/" + filePath
                 )
         );
         args.setNewFileName(newFileName);
         return upload(args.getFileToUpload(), filePath + "/" + newFileName);
+    }
+
+    private void inactivateMenuImageIfExists(MenuImageArgs args) {
+        AtomicReference<String> imageName = new AtomicReference<>("");
+
+        if(!args.getMainMenuCd().isEmpty()) {
+            mainMenuRepository.findById(
+                    MainMenuId.create(
+                            args.getSiteCd(),
+                            args.getStoreCd(),
+                            args.getMainCateCd(),
+                            args.getMiddleCateCd(),
+                            args.getSubCateCd(),
+                            args.getMainMenuCd()
+                    )
+            ).ifPresent(mainMenu -> { imageName.set(mainMenu.getImgNm()); });
+        } else if(!args.getOptionCd().isEmpty()) {
+            optionRepository.findById(
+                    OptionId.create(
+                            args.getSiteCd(),
+                            args.getStoreCd(),
+                            args.getOptionCd()
+                    )
+            ).ifPresent(option -> { imageName.set(option.getImgNm()); });
+        }
+
+        if(imageName.get() != null && !imageName.get().isEmpty()) {
+            MenuImage foundMenuImage = menuImageRepository.findBySiteCdAndStrCdAndFileNm(
+                    args.getSiteCd(),
+                    args.getStoreCd(),
+                    imageName.get()
+            ).orElseThrow(CMenuImageNotFoundException::new);
+            foundMenuImage.delete();
+        }
     }
 
     /*public String uploadRollbackable(MenuImageArgs args, List<String> uploadedFiles) {
@@ -82,7 +120,7 @@ public class FileUploadService {
 
     @Transactional
     public void deleteKioskMenuImage(String imageUrl, MenuImageArgs args) {
-        menuImageRepository.deleteBySiteCdAndStrCdAndEquTypeAndFileNm(args.getSiteCd(), args.getStoreCd(), "4", args.getNewFileName());
+        menuImageRepository.deleteBySiteCdAndStrCdAndFileNm(args.getSiteCd(), args.getStoreCd(), args.getNewFileName());
         delete(imageUrl);
     }
 

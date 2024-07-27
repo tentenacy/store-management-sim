@@ -220,9 +220,9 @@ public class CategoryService {
 
     @Transactional
     public void updateMiddleCategory(String siteCd, String strCd, String mainCateCd, String middleCateCd, MiddleCategoryUpdateRequest request) {
-        Category foundMainCategory = categoryRepository.middleCategory(siteCd, strCd, mainCateCd, middleCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
-        String prevCateName = foundMainCategory.getCateName();
-        foundMainCategory.updateMiddleCategory(
+        Category foundMiddleCategory = categoryRepository.middleCategory(siteCd, strCd, mainCateCd, middleCateCd).orElseThrow(CEntityNotFoundException.CCategoryNotFoundException::new);
+        String prevCateName = foundMiddleCategory.getCateName();
+        foundMiddleCategory.updateMiddleCategory(
                 request.getCategoryName(),
                 request.getUse(),
                 request.getImageName(),
@@ -234,7 +234,7 @@ public class CategoryService {
                 request.getTid()
         );
         storeReviewRepository.storeReviews(siteCd, strCd, middleCateCd, prevCateName).forEach(review -> {
-            review.updateAsMiddleCategory(foundMainCategory.getCateName());
+            review.updateAsMiddleCategory(foundMiddleCategory.getCateName());
             storeReviewRepository.save(review);
         });
     }

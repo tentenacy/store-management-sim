@@ -16,22 +16,7 @@ public class OptionResponse {
     private String optionCode;
     private String optionName;
     private int price;
-    private int discountedPrice;
-    private int additionalPackagingPrice;
-    private String packaging;
-    private boolean outOfStock;
     private Boolean use;
     private String imageName;
     private String imageUrl;
-    private String optionNameKor;
-    private String showDateFrom;
-    private String showDateTo;
-    private String showTimeFrom;
-    private String showTimeTo;
-    private String showDayOfWeek;
-    private String eventDateFrom;
-    private String eventDateTo;
-    private String eventTimeFrom;
-    private String eventTimeTo;
-    private String eventDayOfWeek;
 }

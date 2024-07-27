@@ -24,25 +24,19 @@ public class OptionGroupOptionMappersResponse {
         private String optionCode;
         private String optionName;
         private String imageUrl;
-        private boolean outOfStock;
         private Integer price;
-        private int discountingPrice;
-        private int discountedPrice;
         private Boolean use;
         private Integer priority;
 
         @JsonIgnore
         private String imageName;
 
-        public OptionGroupOptionMapper(String storeCode, String optionCode, String optionName, String imageName, String outOfStock, Integer price, int discountingPrice, int discountedPrice, String use, Integer priority) {
+        public OptionGroupOptionMapper(String storeCode, String optionCode, String optionName, String imageName, Integer price, String use, Integer priority) {
             this.storeCode = storeCode;
             this.optionCode = optionCode;
             this.optionName = optionName;
             this.imageName = imageName;
-            this.outOfStock = soldOutYn(outOfStock);
             this.price = price;
-            this.discountingPrice = discountingPrice;
-            this.discountedPrice = discountedPrice;
             this.use = useYn(use);
             this.priority = priority;
         }
@@ -55,10 +49,6 @@ public class OptionGroupOptionMappersResponse {
             } else {
                 return null;
             }
-        }
-
-        public boolean soldOutYn(String soldoutYn) {
-            return StringUtils.hasText(soldoutYn) && soldoutYn.equals("Y");
         }
     }
 }

@@ -26,7 +26,6 @@ public class MainMenuResponse {
     private boolean ingredientDisplay;
     private String imageName;
     private String imageUrl;
-    private String mainMenuNameKor;
     private String highlightType;
     private String showDateFrom;
     private String showDateTo;

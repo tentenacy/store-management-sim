@@ -21,25 +21,8 @@ public class OptionCreateRequest {
     private String optionName;
     @NotNull
     private Integer price;
-    private Integer discountedPrice;
-    private Integer additionalPackagingPrice;
-    @NotEmpty
-    private String packaging;
-    @NotNull
-    private Boolean outOfStock;
     @NotNull
     private Boolean use;
-    private String optionNameKor;
-    private String showDateFrom;
-    private String showDateTo;
-    private String showTimeFrom;
-    private String showTimeTo;
-    private String showDayOfWeek;
-    private String eventDateFrom;
-    private String eventDateTo;
-    private String eventTimeFrom;
-    private String eventTimeTo;
-    private String eventDayOfWeek;
 
     @JsonIgnore
     private String imageName;

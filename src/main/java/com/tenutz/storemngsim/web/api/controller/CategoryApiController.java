@@ -218,7 +218,12 @@ public class CategoryApiController {
     @GetMapping("/main/{mainCateCd}/middle/{middleCateCd}/sub")
     public SubCategoriesResponse subCategories(@PathVariable String mainCateCd, @PathVariable String middleCateCd, @Valid CommonCondition commonCond) {
         StoreArgs storeArgs = userService.storeArgs();
-        return categoryService.subCategories(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, commonCond);
+
+        SubCategoriesResponse subCategoriesResponse = categoryService.subCategories(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, commonCond);
+        MiddleCategoryResponse middleCategoryResponse = categoryService.middleCategory(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd);
+        subCategoriesResponse.setMiddleCategory(middleCategoryResponse);
+
+        return subCategoriesResponse;
     }
 
     /**

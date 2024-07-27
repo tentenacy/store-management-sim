@@ -31,19 +31,16 @@ public class OptionService {
     private final MenuImageRepository menuImageRepository;
     private final UploadClient s3Client;
 
-    public com.tenutz.storemngsim.web.api.dto.optiongroup.option.OptionsResponse options(String siteCd, String strCd, CommonCondition commonCond) {
-        return new com.tenutz.storemngsim.web.api.dto.optiongroup.option.OptionsResponse(optionRepository.options(siteCd, strCd, commonCond).stream().map(option ->
-                new com.tenutz.storemngsim.web.api.dto.optiongroup.option.OptionsResponse.Option(
+    public OptionsResponse options(String siteCd, String strCd, CommonCondition commonCond) {
+        return new OptionsResponse(optionRepository.options(siteCd, strCd, commonCond).stream().map(option ->
+                new OptionsResponse.Option(
                         option.getStrCd(),
                         option.getOptCd(),
                         option.getOptNm(),
-                        menuImageRepository.findBySiteCdAndStrCdAndEquTypeAndFileNm(siteCd, strCd, "4", option.getImgNm())
+                        menuImageRepository.findBySiteCdAndStrCdAndFileNm(siteCd, strCd, option.getImgNm())
                                 .map(image -> s3Client.getFileUrl(image.getFilePath().substring(image.getFilePath().indexOf("FILE_MANAGER"))) + "/" + image.getFileNm())
                                 .orElse(null),
-                        option.soldOutYn(),
                         option.getSellAmt(),
-                        option.getSaleAmt(),
-                        option.getSellAmt() - option.getSaleAmt(),
                         option.useYn()
                 )).collect(Collectors.toList())
         );
@@ -56,26 +53,11 @@ public class OptionService {
                 foundOption.getOptCd(),
                 foundOption.getOptNm(),
                 foundOption.getSellAmt(),
-                foundOption.getSaleAmt(),
-                foundOption.getTakeoutAmt(),
-                foundOption.getTakeoutGbcd(),
-                foundOption.soldOutYn(),
                 foundOption.useYn(),
                 foundOption.getImgNm(),
-                menuImageRepository.findBySiteCdAndStrCdAndEquTypeAndFileNm(siteCd, strCd, "4", foundOption.getImgNm())
+                menuImageRepository.findBySiteCdAndStrCdAndFileNm(siteCd, strCd, foundOption.getImgNm())
                         .map(image -> s3Client.getFileUrl(image.getFilePath().substring(image.getFilePath().indexOf("FILE_MANAGER"))) + "/" + image.getFileNm())
-                        .orElse(null),
-                foundOption.getOptKorNm(),
-                foundOption.getShowSdate(),
-                foundOption.getShowEdate(),
-                foundOption.getShowStime(),
-                foundOption.getShowEtime(),
-                foundOption.getShowWeekday(),
-                foundOption.getEvtSdate(),
-                foundOption.getEvtEdate(),
-                foundOption.getEvtStime(),
-                foundOption.getEvtEtime(),
-                foundOption.getEvtWeekday()
+                        .orElse(null)
         );
     }
 
@@ -89,23 +71,8 @@ public class OptionService {
             optionOptional.get().update(
                     request.getOptionName(),
                     request.getPrice(),
-                    !ObjectUtils.isEmpty(request.getDiscountedPrice()) ? request.getDiscountedPrice() : 0,
-                    !ObjectUtils.isEmpty(request.getAdditionalPackagingPrice()) ? request.getAdditionalPackagingPrice() : 0,
-                    request.getPackaging(),
-                    request.getOutOfStock(),
                     request.getUse(),
-                    request.getImageName(),
-                    request.getOptionNameKor(),
-                    request.getShowDateFrom(),
-                    request.getShowDateTo(),
-                    request.getShowTimeFrom(),
-                    request.getShowTimeTo(),
-                    request.getShowDayOfWeek(),
-                    request.getEventDateFrom(),
-                    request.getEventDateTo(),
-                    request.getEventTimeFrom(),
-                    request.getEventTimeTo(),
-                    request.getEventDayOfWeek()
+                    request.getImageName()
             );
         } else if(optionOptional.isPresent()) {
             throw new CInvalidValueException.CAlreadyOptionCreatedException();
@@ -117,23 +84,8 @@ public class OptionService {
                             request.getOptionCode(),
                             request.getOptionName(),
                             request.getPrice(),
-                            !ObjectUtils.isEmpty(request.getDiscountedPrice()) ? request.getDiscountedPrice() : 0,
-                            !ObjectUtils.isEmpty(request.getAdditionalPackagingPrice()) ? request.getAdditionalPackagingPrice() : 0,
-                            request.getPackaging(),
-                            request.getOutOfStock(),
                             request.getUse(),
-                            request.getImageName(),
-                            request.getOptionNameKor(),
-                            request.getShowDateFrom(),
-                            request.getShowDateTo(),
-                            request.getShowTimeFrom(),
-                            request.getShowTimeTo(),
-                            request.getShowDayOfWeek(),
-                            request.getEventDateFrom(),
-                            request.getEventDateTo(),
-                            request.getEventTimeFrom(),
-                            request.getEventTimeTo(),
-                            request.getEventDayOfWeek()
+                            request.getImageName()
                     )
             );
         }
@@ -145,23 +97,8 @@ public class OptionService {
         foundOption.update(
                 request.getOptionName(),
                 request.getPrice(),
-                !ObjectUtils.isEmpty(request.getDiscountedPrice()) ? request.getDiscountedPrice() : 0,
-                !ObjectUtils.isEmpty(request.getAdditionalPackagingPrice()) ? request.getAdditionalPackagingPrice() : 0,
-                request.getPackaging(),
-                request.getOutOfStock(),
                 request.getUse(),
-                request.getImageName(),
-                request.getOptionNameKor(),
-                request.getShowDateFrom(),
-                request.getShowDateTo(),
-                request.getShowTimeFrom(),
-                request.getShowTimeTo(),
-                request.getShowDayOfWeek(),
-                request.getEventDateFrom(),
-                request.getEventDateTo(),
-                request.getEventTimeFrom(),
-                request.getEventTimeTo(),
-                request.getEventDayOfWeek()
+                request.getImageName()
         );
     }
 

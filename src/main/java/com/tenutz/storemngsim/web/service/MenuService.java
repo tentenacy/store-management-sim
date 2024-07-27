@@ -46,7 +46,7 @@ public class MenuService {
                         menu.getCateCd3(),
                         menu.getMenuCd(),
                         menu.getMenuNm(),
-                        menuImageRepository.findBySiteCdAndStrCdAndEquTypeAndFileNm(siteCd, strCd, "4", menu.getImgNm())
+                        menuImageRepository.findBySiteCdAndStrCdAndFileNm(siteCd, strCd, menu.getImgNm())
                                 .map(image -> s3Client.getFileUrl(image.getFilePath().substring(image.getFilePath().indexOf("FILE_MANAGER"))) + "/" + image.getFileNm())
                                 .orElse(null),
                         menu.soldOutYn(),
@@ -75,10 +75,9 @@ public class MenuService {
                 foundMainMenu.useYn(),
                 foundMainMenu.showDetailYn(),
                 foundMainMenu.getImgNm(),
-                menuImageRepository.findBySiteCdAndStrCdAndEquTypeAndFileNm(siteCd, strCd, "4", foundMainMenu.getImgNm())
+                menuImageRepository.findBySiteCdAndStrCdAndFileNm(siteCd, strCd, foundMainMenu.getImgNm())
                         .map(image -> s3Client.getFileUrl(image.getFilePath().substring(image.getFilePath().indexOf("FILE_MANAGER"))) + "/" + image.getFileNm())
                         .orElse(null),
-                foundMainMenu.getMenuKorNm(),
                 foundMainMenu.getHighlightType(),
                 foundMainMenu.getShowSdate(),
                 foundMainMenu.getShowEdate(),
@@ -90,7 +89,7 @@ public class MenuService {
                 foundMainMenu.getEvtStime(),
                 foundMainMenu.getEvtEtime(),
                 foundMainMenu.getEvtWeekday(),
-                foundMainMenu.getMemoKor(),
+                foundMainMenu.getMemo(),
                 foundMainMenu.getSortNum(),
                 mainMenuDetailsRepository.details(siteCd, strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).map(MainMenuDetails::getDetails).orElse(null)
         );
@@ -130,7 +129,6 @@ public class MenuService {
                     request.getUse(),
                     request.getIngredientDisplay(),
                     request.getImageName(),
-                    request.getMainMenuNameKor(),
                     request.getHighlightType(),
                     request.getShowDateFrom(),
                     request.getShowDateTo(),
@@ -142,7 +140,7 @@ public class MenuService {
                     request.getEventTimeFrom(),
                     request.getEventTimeTo(),
                     request.getEventDayOfWeek(),
-                    request.getMemoKor()
+                    request.getMemo()
             );
             menuReviewRepository.menuReviews(siteCd, strCd, mainCateCd, middleCateCd, subCateCd, foundMainMenu.getMenuCd()).forEach(review -> {
                 review.updateAsMenu(foundMainMenu.getMenuNm(), foundMainMenu.getImgNm());
@@ -168,7 +166,6 @@ public class MenuService {
                             request.getUse(),
                             request.getIngredientDisplay(),
                             request.getImageName(),
-                            request.getMainMenuNameKor(),
                             request.getHighlightType(),
                             request.getShowDateFrom(),
                             request.getShowDateTo(),
@@ -180,7 +177,7 @@ public class MenuService {
                             request.getEventTimeFrom(),
                             request.getEventTimeTo(),
                             request.getEventDayOfWeek(),
-                            request.getMemoKor(),
+                            request.getMemo(),
                             latestPriority(mainMenuRepository.latestPriorities(siteCd, strCd, mainCateCd, middleCateCd, subCateCd)) + 1
                     )
             );
@@ -200,7 +197,6 @@ public class MenuService {
                 request.getUse(),
                 request.getIngredientDisplay(),
                 request.getImageName(),
-                request.getMainMenuNameKor(),
                 request.getHighlightType(),
                 request.getShowDateFrom(),
                 request.getShowDateTo(),
@@ -212,7 +208,7 @@ public class MenuService {
                 request.getEventTimeFrom(),
                 request.getEventTimeTo(),
                 request.getEventDayOfWeek(),
-                request.getMemoKor()
+                request.getMemo()
         );
         menuReviewRepository.menuReviews(siteCd, strCd, mainCateCd, middleCateCd, subCateCd, mainMenuCd).forEach(review -> {
             review.updateAsMenu(foundMainMenu.getMenuNm(), foundMainMenu.getImgNm());

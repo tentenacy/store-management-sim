@@ -2,12 +2,14 @@ package com.tenutz.storemngsim.web.service;
 
 import com.tenutz.storemngsim.config.security.JwtProvider;
 import com.tenutz.storemngsim.domain.common.enums.Role;
+import com.tenutz.storemngsim.domain.customer.StoreReviewRepository;
+import com.tenutz.storemngsim.domain.menu.Category;
+import com.tenutz.storemngsim.domain.menu.CategoryRepository;
 import com.tenutz.storemngsim.domain.refreshtoken.RefreshToken;
 import com.tenutz.storemngsim.domain.refreshtoken.RefreshTokenRepository;
 import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.domain.user.*;
-import com.tenutz.storemngsim.domain.user.id.ManagerId;
 import com.tenutz.storemngsim.utils.EntityUtils;
 import com.tenutz.storemngsim.utils.HttpReqRespUtils;
 import com.tenutz.storemngsim.utils.enums.SocialType;
@@ -16,6 +18,7 @@ import com.tenutz.storemngsim.web.api.dto.common.TokenResponse;
 import com.tenutz.storemngsim.web.api.dto.user.LoginRequest;
 import com.tenutz.storemngsim.web.api.dto.user.SocialSignupRequest;
 import com.tenutz.storemngsim.web.api.dto.user.UserDetailsResponse;
+import com.tenutz.storemngsim.web.api.dto.user.UserUpdateRequest;
 import com.tenutz.storemngsim.web.client.dto.SocialProfile;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException.CAlreadySignedupException;
 import com.tenutz.storemngsim.web.exception.security.CTokenException;
@@ -43,8 +46,9 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final RefreshTokenRepository refreshTokenRepository;
     private final StoreMasterRepository storeMasterRepository;
-    private final ManagerRepository managerRepository;
-    private final com.tenutz.storemngsim.domain.user.TermsAgreementRepository termsAgreementRepository;
+    private final TermsAgreementRepository termsAgreementRepository;
+    private final CategoryRepository categoryRepository;
+    private final StoreReviewRepository storeReviewRepository;
 
 /*
     @Transactional
@@ -65,8 +69,33 @@ public class AuthService {
                     throw new CAlreadySignedupException();
                 });
 
-        StoreMaster foundStoreMaster = storeMasterRepository.findByBusinessNumber(request.getBusinessNumber()).orElseThrow(CStoreMasterNotFoundException::new);
-        Manager foundManager = managerRepository.findById(new ManagerId(foundStoreMaster.getSiteCd(), foundStoreMaster.getStrCd(), request.getPhoneNumber())).orElseThrow(CManagerNotFoundException::new);
+        storeMasterRepository.findByBusinessNumber(request.getBusinessNumber())
+                .ifPresent(user -> {
+                    throw new CAlreadySignedupException();
+                });
+
+        StoreMaster createdStoreMaster = storeMasterRepository.save(
+                StoreMaster.create(
+                        request.getBusinessNumber(),
+                        request.getPhoneNumber(),
+                        request.getManagerName(),
+                        request.getStoreName(),
+                        request.getAddress()
+                )
+        );
+
+        categoryRepository.save(Category.createEmptyMainCategory(createdStoreMaster.getSiteCd(), createdStoreMaster.getStrCd()));
+        categoryRepository.save(
+                Category.createEmptyMiddleCategory(
+                        createdStoreMaster.getSiteCd(),
+                        createdStoreMaster.getStrCd(),
+                        createdStoreMaster.getStrNm(),
+                        createdStoreMaster.getBusinessNumber(),
+                        createdStoreMaster.getStrMnger(),
+                        createdStoreMaster.getTelNo(),
+                        createdStoreMaster.getStrAddr()
+                )
+        );
 
         User createdUser = userRepository.saveAndFlush(
                 User.createSocial(
@@ -74,7 +103,7 @@ public class AuthService {
                         passwordEncoder.encode(UUID.randomUUID().toString()),
                         socialType.name().toLowerCase(),
                         socialProfile.getSnsId(),
-                        foundManager.getManagerName(),
+                        request.getManagerName(),
                         request.getBusinessNumber(),
                         request.getPhoneNumber()
                 )
@@ -150,6 +179,8 @@ public class AuthService {
         TokenResponse newCreatedToken = jwtProvider.createToken(foundUser.getSeq().toString(), foundUser.getRoles().stream().map(Role::getValue).collect(Collectors.toList()));
         refreshToken.update(newCreatedToken.getRefreshToken());
 
+        log.debug(newCreatedToken.getAccessToken());
+
         return newCreatedToken;
     }
 
@@ -160,14 +191,36 @@ public class AuthService {
                 user.getSeq().toString(),
                 foundStoreMaster.getSiteCd(),
                 foundStoreMaster.getStrCd(),
+                user.getUserId(),
                 user.getUsername(),
+                user.getProvider(),
                 user.getBusinessNo(),
                 user.getContact(),
-                user.getUserId(),
-                user.getProvider(),
-                user.getRegisteredAt(),
-                user.getReceiveYn()
+                foundStoreMaster.getStrNm(),
+                foundStoreMaster.getStrAddr(),
+                user.getRegisteredAt()
         );
+    }
+
+    @Transactional
+    public void update(Integer userSeq, UserUpdateRequest request) {
+        User foundUser = userRepository.findById(userSeq)
+                .orElseThrow(CUserNotFoundException::new);
+        StoreMaster foundStoreMaster = storeMasterRepository.findByBusinessNumber(request.getBusinessNumber())
+                .orElseThrow(CStoreMasterNotFoundException::new);
+        Category foundCategory = categoryRepository.middleCategory(foundStoreMaster.getSiteCd(), foundStoreMaster.getStrCd(), "2000", "3000")
+                .orElseThrow(CCategoryNotFoundException::new);
+
+        String prevCateName = foundCategory.getCateName();
+
+        foundUser.update(request.getBusinessNumber(), request.getUsername(), request.getPhoneNumber());
+        foundStoreMaster.update(request.getBusinessNumber(), request.getUsername(), request.getPhoneNumber(), request.getStoreName(), request.getAddress());
+        foundCategory.updateMiddleCategory(request.getStoreName(), request.getBusinessNumber(), request.getUsername(), request.getPhoneNumber(), request.getAddress());
+
+        storeReviewRepository.storeReviews(foundStoreMaster.getSiteCd(), foundStoreMaster.getStrCd(), "3000", prevCateName).forEach(review -> {
+            review.updateAsMiddleCategory(foundCategory.getCateName());
+            storeReviewRepository.save(review);
+        });
     }
 
     @Transactional

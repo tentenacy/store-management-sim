@@ -89,6 +89,11 @@ public class UserApiController {
         return authService.userDetails();
     }
 
+    @PutMapping("/{userSeq}")
+    public void update(@PathVariable Integer userSeq, @RequestBody @Validated UserUpdateRequest request) {
+        authService.update(userSeq, request);
+    }
+
     @DeleteMapping("/{userSeq}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer userSeq) {

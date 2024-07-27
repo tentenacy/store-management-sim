@@ -23,10 +23,7 @@ public class OptionsResponse {
         private String optionCode;
         private String optionName;
         private String imageUrl;
-        private boolean outOfStock;
         private int price;
-        private int discountingPrice;
-        private int discountedPrice;
         private Boolean use;
     }
 }

@@ -55,7 +55,7 @@ public class OptionApiController {
     public void createOption(@Valid OptionCreateRequest request) {
         StoreArgs storeArgs = userService.storeArgs();
 
-        MenuImageArgs args = new MenuImageArgs(request.getImage(), storeArgs.getSiteCd(), storeArgs.getStrCd());
+        MenuImageArgs args = new MenuImageArgs(request.getImage(), storeArgs.getSiteCd(), storeArgs.getStrCd(), request.getOptionCode());
 
         if(!ObjectUtils.isEmpty(request.getImage())) {
             String imageUrl = fileUploadService.uploadKioskMenuImage(args);
@@ -81,7 +81,7 @@ public class OptionApiController {
     @PutMapping("/{optionCd}")
     public void updateOption(@PathVariable String optionCd, @Valid OptionUpdateRequest request) {
         StoreArgs storeArgs = userService.storeArgs();
-        MenuImageArgs args = new MenuImageArgs(request.getImage(), storeArgs.getSiteCd(), storeArgs.getStrCd());
+        MenuImageArgs args = new MenuImageArgs(request.getImage(), storeArgs.getSiteCd(), storeArgs.getStrCd(), optionCd);
 
         if(!ObjectUtils.isEmpty(request.getImage())) {
             String imageUrl = fileUploadService.uploadKioskMenuImage(args);

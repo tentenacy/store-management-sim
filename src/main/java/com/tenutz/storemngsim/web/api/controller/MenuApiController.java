@@ -75,7 +75,7 @@ public class MenuApiController {
     ) {
         StoreArgs storeArgs = userService.storeArgs();
 
-        MenuImageArgs args = new MenuImageArgs(request.getImage(), storeArgs.getSiteCd(), storeArgs.getStrCd());
+        MenuImageArgs args = new MenuImageArgs(request.getImage(), storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, subCateCd, request.getMenuCode());
 
         if(!ObjectUtils.isEmpty(request.getImage())) {
             String imageUrl = fileUploadService.uploadKioskMenuImage(args);
@@ -110,7 +110,7 @@ public class MenuApiController {
             @Valid MainMenuUpdateRequest request
     ) {
         StoreArgs storeArgs = userService.storeArgs();
-        MenuImageArgs args = new MenuImageArgs(request.getImage(), storeArgs.getSiteCd(), storeArgs.getStrCd());
+        MenuImageArgs args = new MenuImageArgs(request.getImage(), storeArgs.getSiteCd(), storeArgs.getStrCd(), mainCateCd, middleCateCd, subCateCd, mainMenuCd);
 
         if(!ObjectUtils.isEmpty(request.getImage())) {
             String imageUrl = fileUploadService.uploadKioskMenuImage(args);

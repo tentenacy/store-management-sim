@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SocialSignupRequest {
     @NotEmpty
     private String accessToken;
@@ -18,4 +17,11 @@ public class SocialSignupRequest {
     private String businessNumber;
     @NotEmpty
     private String phoneNumber;
+    private String managerName;
+    private String storeName;
+    private String address;
+
+    protected SocialSignupRequest() {
+        managerName = "익명";
+    }
 }
