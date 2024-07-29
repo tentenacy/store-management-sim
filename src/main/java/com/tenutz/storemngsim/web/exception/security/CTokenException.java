@@ -1,6 +1,6 @@
 package com.tenutz.storemngsim.web.exception.security;
 
-import com.tenutz.storemngsim.web.api.dto.common.ErrorCode;
+import com.tenutz.storemngsim.web.api.common.dto.ErrorCode;
 
 public class CTokenException extends CSecurityException {
     public CTokenException(ErrorCode errorCode) {

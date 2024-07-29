@@ -53,7 +53,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/users/social/kakao/**",
                         "/users/social/google/**",
                         "/users/social/naver/**",
-                        "/users/social/facebook/**"
+                        "/users/social/facebook/**",
+                        "/app/kiosk/users",
+                        "/app/kiosk/users/token",
+                        "/app/kiosk/users/token/expiration",
+                        "/app/kiosk/users/social/kakao/**",
+                        "/app/kiosk/users/social/google/**",
+                        "/app/kiosk/users/social/naver/**",
+                        "/app/kiosk/users/social/facebook/**"
                 ).permitAll()
                 .antMatchers(HttpMethod.GET,
                         "/exception/**",

@@ -13,23 +13,24 @@ import com.tenutz.storemngsim.domain.user.*;
 import com.tenutz.storemngsim.utils.EntityUtils;
 import com.tenutz.storemngsim.utils.HttpReqRespUtils;
 import com.tenutz.storemngsim.utils.enums.SocialType;
-import com.tenutz.storemngsim.web.api.dto.common.TokenRequest;
-import com.tenutz.storemngsim.web.api.dto.common.TokenResponse;
-import com.tenutz.storemngsim.web.api.dto.user.LoginRequest;
-import com.tenutz.storemngsim.web.api.dto.user.SocialSignupRequest;
-import com.tenutz.storemngsim.web.api.dto.user.UserDetailsResponse;
-import com.tenutz.storemngsim.web.api.dto.user.UserUpdateRequest;
-import com.tenutz.storemngsim.web.client.dto.SocialProfile;
+import com.tenutz.storemngsim.web.api.common.dto.TokenRequest;
+import com.tenutz.storemngsim.web.api.common.dto.TokenResponse;
+import com.tenutz.storemngsim.web.api.kiosksim.dto.user.KioskSocialSignupRequest;
+import com.tenutz.storemngsim.web.api.storemngsim.dto.user.LoginRequest;
+import com.tenutz.storemngsim.web.api.storemngsim.dto.user.SocialSignupRequest;
+import com.tenutz.storemngsim.web.api.storemngsim.dto.user.UserDetailsResponse;
+import com.tenutz.storemngsim.web.api.storemngsim.dto.user.UserUpdateRequest;
+import com.tenutz.storemngsim.web.client.common.dto.SocialProfile;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException.CAlreadySignedupException;
 import com.tenutz.storemngsim.web.exception.security.CTokenException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -126,6 +127,35 @@ public class AuthService {
 
     }
 
+    @Transactional
+    public TokenResponse kioskSocialSignupOrLogin(SocialProfile socialProfile, SocialType socialType) {
+
+        if(userRepository.findBySnsIdAndProvider(socialProfile.getSnsId(), socialType.name().toLowerCase()).isPresent()) {
+            return socialLogin(new LoginRequest(socialProfile.getSnsId(), null, socialType.name().toLowerCase()));
+        }
+
+        User createdUser = userRepository.saveAndFlush(
+                User.createKioskSocial(
+                        passwordEncoder.encode(UUID.randomUUID().toString()),
+                        socialType.name().toLowerCase(),
+                        socialProfile.getSnsId(),
+                        socialProfile.getUsername()
+                )
+        );
+
+        final TokenResponse tokenResponse;
+
+        try {
+            tokenResponse = socialLogin(createdUser);
+        } catch (Exception e) {
+            userRepository.delete(createdUser);
+            throw e;
+        }
+
+        return tokenResponse;
+    }
+
+
 /*
     @Transactional
     public TokenResponse login(LoginRequest request) {
@@ -142,6 +172,21 @@ public class AuthService {
 
     @Transactional
     public TokenResponse socialLogin(LoginRequest request) {
+        User user = userRepository.findBySnsIdAndProvider(request.getId(), request.getProvider())
+                .orElseThrow(CUserNotFoundException::new);
+        return socialLogin(user);
+    }
+
+    @Transactional
+    public TokenResponse socialLogin(User user) {
+        refreshTokenRepository.findByKey(user.getSeq().toString()).ifPresent(refreshTokenRepository::delete);
+        TokenResponse tokenResponse = jwtProvider.createToken(user.getSeq().toString(), user.getRoles().stream().map(Role::getValue).collect(Collectors.toList()));
+        refreshTokenRepository.save(RefreshToken.create(user.getSeq().toString(), tokenResponse.getRefreshToken()));
+        return tokenResponse;
+    }
+
+    @Transactional
+    public TokenResponse kioskSocialLogin(LoginRequest request) {
         User user = userRepository.findBySnsIdAndProvider(request.getId(), request.getProvider())
                 .orElseThrow(CUserNotFoundException::new);
         refreshTokenRepository.findByKey(user.getSeq().toString()).ifPresent(refreshTokenRepository::delete);

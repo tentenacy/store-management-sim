@@ -1,6 +1,6 @@
 package com.tenutz.storemngsim.web.exception.io;
 
-import com.tenutz.storemngsim.web.api.dto.common.ErrorCode;
+import com.tenutz.storemngsim.web.api.common.dto.ErrorCode;
 import lombok.Getter;
 
 @Getter

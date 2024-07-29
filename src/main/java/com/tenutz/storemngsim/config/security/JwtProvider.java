@@ -1,6 +1,6 @@
 package com.tenutz.storemngsim.config.security;
 
-import com.tenutz.storemngsim.web.api.dto.common.TokenResponse;
+import com.tenutz.storemngsim.web.api.common.dto.TokenResponse;
 import com.tenutz.storemngsim.web.exception.security.CSecurityException;
 import com.tenutz.storemngsim.web.service.security.CustomUserDetailsService;
 import io.jsonwebtoken.*;
@@ -26,8 +26,8 @@ import java.util.List;
 public class JwtProvider {
 
     public final String ROLES = "roles";
-//    private final Long accessTokenValidMillisecond = 60 * 60 * 1000L; //1 hours
-    private final Long accessTokenValidMillisecond = 15 * 1000L; //15 seconds
+    private final Long accessTokenValidMillisecond = 60 * 60 * 1000L; //1 hours
+//    private final Long accessTokenValidMillisecond = 15 * 1000L; //15 seconds
     private final Long refreshTokenValidMillisecond = 90 * 24 * 60 * 60 * 1000L; //90 days
 //    private final Long refreshTokenValidMillisecond = 30 * 1000L; //30 seconds
     private final CustomUserDetailsService userDetailsService;

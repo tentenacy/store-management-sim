@@ -1,10 +1,8 @@
 package com.tenutz.storemngsim.web.service;
 
-import com.tenutz.storemngsim.domain.customer.StoreReviewRepository;
 import com.tenutz.storemngsim.domain.sales.SalesMasterRepository;
-import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
-import com.tenutz.storemngsim.web.api.dto.common.CommonCondition;
-import com.tenutz.storemngsim.web.api.dto.store.*;
+import com.tenutz.storemngsim.web.api.common.dto.CommonCondition;
+import com.tenutz.storemngsim.web.api.storemngsim.dto.store.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

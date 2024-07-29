@@ -2,8 +2,8 @@ package com.tenutz.storemngsim.web.service;
 
 import com.tenutz.storemngsim.domain.user.Terms;
 import com.tenutz.storemngsim.domain.user.TermsRepository;
-import com.tenutz.storemngsim.web.api.dto.term.TermResponse;
-import com.tenutz.storemngsim.web.api.dto.term.TermsResponse;
+import com.tenutz.storemngsim.web.api.storemngsim.dto.term.TermResponse;
+import com.tenutz.storemngsim.web.api.storemngsim.dto.term.TermsResponse;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

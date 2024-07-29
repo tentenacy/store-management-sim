@@ -1,6 +1,6 @@
 package com.tenutz.storemngsim.config.security;
 
-import com.tenutz.storemngsim.web.api.dto.common.ErrorCode;
+import com.tenutz.storemngsim.web.api.common.dto.ErrorCode;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import com.tenutz.storemngsim.web.exception.security.CSecurityException;
 import lombok.RequiredArgsConstructor;
