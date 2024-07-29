@@ -62,6 +62,7 @@ public class StoreService {
                 strCd,
                 foundStoreMaster.getStrNm(),
                 foundStoreMaster.getStrMnger(),
+                foundStoreMaster.getKioskCd(),
                 salesTotal.getTotalTake(),
                 foundMiddleCategory.getCateCd1(),
                 foundMiddleCategory.getCateCd2(),

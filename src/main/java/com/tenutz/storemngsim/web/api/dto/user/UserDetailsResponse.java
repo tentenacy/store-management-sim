@@ -20,5 +20,6 @@ public class UserDetailsResponse {
     private String phoneNumber;
     private String storeName;
     private String address;
+    private String kioskCode;
     private String registeredAt;
 }

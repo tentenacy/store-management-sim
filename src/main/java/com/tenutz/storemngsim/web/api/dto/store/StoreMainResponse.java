@@ -1,13 +1,9 @@
 package com.tenutz.storemngsim.web.api.dto.store;
 
-import com.tenutz.storemngsim.web.api.dto.category.MiddleCategoryResponse;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -18,6 +14,7 @@ public class StoreMainResponse {
     private String storeCode;
     private String storeName;
     private String storeManagerName;
+    private String kioskCode;
     private Integer todaySalesAmountTotal;
 
     private String mainCategoryCode;

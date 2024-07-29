@@ -68,6 +68,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE, "/exception/**").permitAll()
                 .antMatchers(HttpMethod.HEAD, "/exception/**").permitAll()
                 .antMatchers("/swagger-ui/**").permitAll()
+                .antMatchers("/app/kiosk/**").hasRole("KIOSK_USER")
                 .anyRequest().hasRole("USER")
                 .and()
                 .exceptionHandling()

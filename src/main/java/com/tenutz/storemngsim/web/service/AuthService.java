@@ -99,7 +99,6 @@ public class AuthService {
 
         User createdUser = userRepository.saveAndFlush(
                 User.createSocial(
-                        socialType.name().toLowerCase() + RandomStringUtils.random(15, true, true),
                         passwordEncoder.encode(UUID.randomUUID().toString()),
                         socialType.name().toLowerCase(),
                         socialProfile.getSnsId(),
@@ -198,6 +197,7 @@ public class AuthService {
                 user.getContact(),
                 foundStoreMaster.getStrNm(),
                 foundStoreMaster.getStrAddr(),
+                foundStoreMaster.getKioskCd(),
                 user.getRegisteredAt()
         );
     }

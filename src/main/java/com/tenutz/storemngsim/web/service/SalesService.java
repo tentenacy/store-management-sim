@@ -19,8 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class SalesService {
 
     private final SalesMasterRepository salesMasterRepository;
-    private final StoreMasterRepository storeMasterRepository;
-    private final StoreReviewRepository storeReviewRepository;
 
     public Page<SalesResponse> sales(String siteCd, String strCd, Pageable pageable, CommonCondition commonCond, SalesRequest request) {
         return salesMasterRepository.sales(siteCd, strCd, pageable, commonCond, request);
