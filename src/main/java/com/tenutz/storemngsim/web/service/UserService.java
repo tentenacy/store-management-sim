@@ -27,8 +27,8 @@ public class UserService {
         );
     }
 
-    public StoreArgs storeArgs(String businessNumber) {
-        StoreMaster foundStoreMaster = storeMasterRepository.findByBusinessNumber(businessNumber)
+    public StoreArgs storeArgs(String kioskCode) {
+        StoreMaster foundStoreMaster = storeMasterRepository.findByKioskCd(kioskCode)
                 .orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
         return new StoreArgs(
                 foundStoreMaster.getSiteCd(),

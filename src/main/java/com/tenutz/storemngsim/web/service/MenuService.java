@@ -5,6 +5,7 @@ import com.tenutz.storemngsim.domain.menu.*;
 import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.web.api.common.dto.CommonCondition;
+import com.tenutz.storemngsim.web.api.kiosksim.dto.menu.KioskMenusResponse;
 import com.tenutz.storemngsim.web.api.storemngsim.dto.common.OptionGroupsMappedByRequest;
 import com.tenutz.storemngsim.web.api.storemngsim.dto.menu.*;
 import com.tenutz.storemngsim.web.client.common.client.UploadClient;
@@ -272,5 +273,21 @@ public class MenuService {
 
     private int latestPriority(List<Integer> latestPriorities) {
         return latestPriorities.isEmpty() ? 0 : (ObjectUtils.isEmpty(latestPriorities.get(0)) ? 0 : latestPriorities.get(0));
+    }
+
+    public KioskMenusResponse categoriesMenus(String siteCd, String strCd) {
+
+        List<KioskMenusResponse.MenusCategory> menusCategories = mainMenuRepository.categoriesMenus(siteCd, strCd);
+
+        menusCategories.forEach(foundMenusCategory -> {
+            foundMenusCategory.getCategoryMenus().forEach(foundCategoryMenu -> {
+                if(foundCategoryMenu.getImageName() == null || foundCategoryMenu.getImageName().isEmpty()) return;
+                foundCategoryMenu.setImageUrl(menuImageRepository.findBySiteCdAndStrCdAndFileNm(siteCd, strCd, foundCategoryMenu.getImageName())
+                        .map(image -> s3Client.getFileUrl(image.getFilePath().substring(image.getFilePath().indexOf("FILE_MANAGER"))) + "/" + image.getFileNm())
+                        .orElse(null));
+            });
+        });
+
+        return new KioskMenusResponse(menusCategories);
     }
 }

@@ -48,8 +48,8 @@ public class KioskUserApiController {
     }
 
     /**
-     * 매장키오스크확인
-     * @param kioskCode 키오스크 코드
+     * 매장존재확인
+     * @param kioskCode 키오스크코드
      */
     @GetMapping("/existing-stores/kiosk/{kioskCode}")
     public void storeExists(@PathVariable(name = "kioskCode") String kioskCode) {
