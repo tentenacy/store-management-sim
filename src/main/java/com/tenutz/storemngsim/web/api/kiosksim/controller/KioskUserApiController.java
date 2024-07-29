@@ -4,12 +4,10 @@ import com.tenutz.storemngsim.utils.enums.SocialType;
 import com.tenutz.storemngsim.web.api.common.dto.TokenRequest;
 import com.tenutz.storemngsim.web.api.common.dto.TokenResponse;
 import com.tenutz.storemngsim.web.api.kiosksim.dto.user.KioskSocialRequest;
-import com.tenutz.storemngsim.web.api.kiosksim.dto.user.KioskSocialSignupRequest;
-import com.tenutz.storemngsim.web.api.storemngsim.dto.user.LoginRequest;
-import com.tenutz.storemngsim.web.api.storemngsim.dto.common.SocialLoginRequest;
 import com.tenutz.storemngsim.web.client.common.dto.SocialProfile;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import com.tenutz.storemngsim.web.service.AuthService;
+import com.tenutz.storemngsim.web.service.StoreService;
 import com.tenutz.storemngsim.web.service.social.OAuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +24,7 @@ public class KioskUserApiController {
 
     private final AuthService authService;
     private final OAuthService oauthService;
+    private final StoreService storeService;
 
 
     @PostMapping("/social/{socialType}/token")
@@ -46,5 +45,14 @@ public class KioskUserApiController {
     @ResponseStatus(HttpStatus.CREATED)
     public TokenResponse reissue(@RequestBody @Validated TokenRequest request) {
         return authService.reissue(request);
+    }
+
+    /**
+     * 매장키오스크확인
+     * @param kioskCode 키오스크 코드
+     */
+    @GetMapping("/existing-stores/kiosk/{kioskCode}")
+    public void storeExists(@PathVariable(name = "kioskCode") String kioskCode) {
+        storeService.existsByKioskCode(kioskCode);
     }
 }

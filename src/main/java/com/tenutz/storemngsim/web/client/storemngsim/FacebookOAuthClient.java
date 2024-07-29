@@ -1,7 +1,6 @@
 package com.tenutz.storemngsim.web.client.storemngsim;
 
-import com.tenutz.storemngsim.web.client.common.CommonFacebookOAuthClient;
-import com.tenutz.storemngsim.web.client.common.OAuthClient;
+import com.tenutz.storemngsim.web.client.common.client.CommonFacebookOAuthClient;
 import com.tenutz.storemngsim.web.client.common.dto.FacebookProfile;
 import com.tenutz.storemngsim.web.client.common.dto.OAuthTokenResponse;
 import com.tenutz.storemngsim.web.client.common.dto.SocialProfile;

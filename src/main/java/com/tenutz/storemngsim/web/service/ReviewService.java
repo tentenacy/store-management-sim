@@ -13,7 +13,7 @@ import com.tenutz.storemngsim.web.api.storemngsim.dto.store.MenuReviewsResponse;
 import com.tenutz.storemngsim.web.api.storemngsim.dto.store.ReviewReplyCreateRequest;
 import com.tenutz.storemngsim.web.api.storemngsim.dto.store.ReviewReplyUpdateRequest;
 import com.tenutz.storemngsim.web.api.storemngsim.dto.store.StoreReviewsResponse;
-import com.tenutz.storemngsim.web.client.common.UploadClient;
+import com.tenutz.storemngsim.web.client.common.client.UploadClient;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException.CMenuReviewNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException.CStoreReviewNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;

@@ -74,4 +74,8 @@ public class StoreService {
                 foundMiddleCategory.getUpdatedAt()
         );
     }
+
+    public void existsByKioskCode(String kioskCode) {
+        storeMasterRepository.findByKioskCd(kioskCode).orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
+    }
 }

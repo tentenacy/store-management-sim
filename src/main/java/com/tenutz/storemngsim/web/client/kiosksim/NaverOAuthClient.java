@@ -1,7 +1,6 @@
 package com.tenutz.storemngsim.web.client.kiosksim;
 
-import com.tenutz.storemngsim.web.client.common.CommonNaverOAuthClient;
-import com.tenutz.storemngsim.web.client.common.OAuthClient;
+import com.tenutz.storemngsim.web.client.common.client.CommonNaverOAuthClient;
 import com.tenutz.storemngsim.web.client.common.dto.NaverProfile;
 import com.tenutz.storemngsim.web.client.common.dto.OAuthTokenResponse;
 import com.tenutz.storemngsim.web.client.common.dto.SocialProfile;

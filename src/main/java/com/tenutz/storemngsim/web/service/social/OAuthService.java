@@ -1,12 +1,11 @@
 package com.tenutz.storemngsim.web.service.social;
 
 import com.tenutz.storemngsim.utils.enums.SocialType;
-import com.tenutz.storemngsim.web.client.common.OAuthClient;
+import com.tenutz.storemngsim.web.client.common.client.OAuthClient;
 import com.tenutz.storemngsim.web.client.common.dto.OAuthTokenResponse;
 import com.tenutz.storemngsim.web.client.common.dto.SocialProfile;
 import com.tenutz.storemngsim.web.exception.social.CSocialException.CInvalidSocialTypeException;
 import com.tenutz.storemngsim.web.exception.social.CSocialException.CSocialCommunicationException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

@@ -6,7 +6,7 @@ import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.web.api.common.dto.CommonCondition;
 import com.tenutz.storemngsim.web.api.storemngsim.dto.common.OptionGroupsMappedByRequest;
 import com.tenutz.storemngsim.web.api.storemngsim.dto.optiongroup.option.*;
-import com.tenutz.storemngsim.web.client.common.UploadClient;
+import com.tenutz.storemngsim.web.client.common.client.UploadClient;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
 import lombok.RequiredArgsConstructor;

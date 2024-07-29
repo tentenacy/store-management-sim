@@ -1,12 +1,8 @@
-package com.tenutz.storemngsim.web.client.common;
+package com.tenutz.storemngsim.web.client.common.client;
 
 import com.tenutz.storemngsim.utils.enums.SocialType;
 import com.tenutz.storemngsim.web.client.common.dto.OAuthTokenResponse;
 import com.tenutz.storemngsim.web.client.common.dto.SocialProfile;
-import com.tenutz.storemngsim.web.client.storemngsim.FacebookOAuthClient;
-import com.tenutz.storemngsim.web.client.storemngsim.GoogleOAuthClient;
-import com.tenutz.storemngsim.web.client.storemngsim.KaKaoOAuthClient;
-import com.tenutz.storemngsim.web.client.storemngsim.NaverOAuthClient;
 
 public interface OAuthClient {
 

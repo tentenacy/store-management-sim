@@ -6,7 +6,7 @@ import com.tenutz.storemngsim.domain.menu.*;
 import com.tenutz.storemngsim.domain.menu.id.MainMenuId;
 import com.tenutz.storemngsim.domain.menu.id.OptionId;
 import com.tenutz.storemngsim.web.api.storemngsim.dto.common.MenuImageArgs;
-import com.tenutz.storemngsim.web.client.common.UploadClient;
+import com.tenutz.storemngsim.web.client.common.client.UploadClient;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException.CMenuImageNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

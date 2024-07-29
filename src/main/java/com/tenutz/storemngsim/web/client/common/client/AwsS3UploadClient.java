@@ -1,4 +1,4 @@
-package com.tenutz.storemngsim.web.client.common;
+package com.tenutz.storemngsim.web.client.common.client;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;

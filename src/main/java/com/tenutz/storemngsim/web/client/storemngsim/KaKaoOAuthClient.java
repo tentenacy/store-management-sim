@@ -1,8 +1,7 @@
 package com.tenutz.storemngsim.web.client.storemngsim;
 
 import com.google.gson.Gson;
-import com.tenutz.storemngsim.web.client.common.CommonKaKaoOAuthClient;
-import com.tenutz.storemngsim.web.client.common.OAuthClient;
+import com.tenutz.storemngsim.web.client.common.client.CommonKaKaoOAuthClient;
 import com.tenutz.storemngsim.web.client.common.dto.KakaoProfile;
 import com.tenutz.storemngsim.web.client.common.dto.OAuthTokenResponse;
 import com.tenutz.storemngsim.web.client.common.dto.SocialProfile;

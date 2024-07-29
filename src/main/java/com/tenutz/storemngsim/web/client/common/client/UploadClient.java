@@ -1,4 +1,4 @@
-package com.tenutz.storemngsim.web.client.common;
+package com.tenutz.storemngsim.web.client.common.client;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
 
@@ -15,5 +15,5 @@ public interface UploadClient {
 
     void delete(String fileName);
 
-    boolean doesFileExists(String filaName);
+    boolean doesFileExists(String fileName);
 }
