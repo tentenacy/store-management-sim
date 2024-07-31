@@ -120,4 +120,10 @@ public class CInvalidValueException extends CBusinessException {
             super(ErrorCode.REPLY_MAXIMUM_COUNT_EXCEEDED);
         }
     }
+
+    public static class CAlreadyPaymentCanceledException extends CInvalidValueException {
+        public CAlreadyPaymentCanceledException() {
+            super(ErrorCode.ALREADY_PAYMENT_CANCELED);
+        }
+    }
 }

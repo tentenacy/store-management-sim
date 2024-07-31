@@ -90,4 +90,16 @@ public class CEntityNotFoundException extends CBusinessException {
             super(ErrorCode.SALES_MASTER_NOT_FOUND);
         }
     }
+
+    public static class CSalesPaymentNotFoundException extends CEntityNotFoundException {
+        public CSalesPaymentNotFoundException() {
+            super(ErrorCode.SALES_PAYMENT_NOT_FOUND);
+        }
+    }
+
+    public static class CSalesDetailsNotFoundException extends CEntityNotFoundException {
+        public CSalesDetailsNotFoundException() {
+            super(ErrorCode.SALES_DETAILS_NOT_FOUND);
+        }
+    }
 }

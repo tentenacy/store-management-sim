@@ -1,6 +1,7 @@
 package com.tenutz.storemngsim.web.api.kiosksim.controller;
 
 import com.tenutz.storemngsim.web.api.kiosksim.dto.payment.KioskMenuPaymentCreateRequest;
+import com.tenutz.storemngsim.web.api.kiosksim.dto.payment.KioskMenuPaymentCreateResponse;
 import com.tenutz.storemngsim.web.api.storemngsim.dto.user.StoreArgs;
 import com.tenutz.storemngsim.web.service.SalesService;
 import com.tenutz.storemngsim.web.service.UserService;
@@ -22,8 +23,19 @@ public class KioskMenuPaymentApiController {
 
     @PostMapping("/payments")
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@PathVariable("kioskCode") String kioskCode, @Valid @RequestBody KioskMenuPaymentCreateRequest request) {
+    public KioskMenuPaymentCreateResponse create(@PathVariable("kioskCode") String kioskCode, @Valid @RequestBody KioskMenuPaymentCreateRequest request) {
         StoreArgs storeArgs = userService.storeArgs(kioskCode);
-        salesService.createKioskMenusPayments(storeArgs.getSiteCd(), storeArgs.getStrCd(), request);
+        if(request.getPaymentCode().equals("02")) {
+            return salesService.createKioskMenusPaymentsByCreditCard(storeArgs.getSiteCd(), storeArgs.getStrCd(), kioskCode, request);
+        } else {
+            return salesService.createKioskMenusPaymentsByCashOrCoupon(storeArgs.getSiteCd(), storeArgs.getStrCd(), kioskCode, request);
+        }
+    }
+
+    @DeleteMapping("/payments/call-numbers/{callNumber}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable("kioskCode") String kioskCode, @PathVariable("callNumber") String callNumber) {
+        StoreArgs storeArgs = userService.storeArgs(kioskCode);
+        salesService.deleteKioskMenusPayments(storeArgs.getSiteCd(), storeArgs.getStrCd(), kioskCode, callNumber);
     }
 }

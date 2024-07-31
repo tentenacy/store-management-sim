@@ -67,4 +67,39 @@ public class PaymentUtils {
 
         return sb.toString();
     }
+
+    public static String generateNumberString(String input, int desiredLength) {
+        StringBuilder numberString = new StringBuilder();
+
+        // 입력 문자열의 각 문자의 ASCII 값을 사용하여 숫자 생성
+        for (char c : input.toCharArray()) {
+            int asciiValue = (int) c;
+            numberString.append(asciiValue % 10); // 0-9 사이의 숫자로 변환
+
+            // 원하는 길이에 도달하면 종료
+            if (numberString.length() >= desiredLength) {
+                break;
+            }
+        }
+
+        // 만약 원하는 길이가 부족하면 반복하여 채우기
+        while (numberString.length() < desiredLength) {
+            numberString.append((int)(Math.random() * 10)); // 0-9 사이의 랜덤 숫자 추가
+        }
+
+        return numberString.substring(0, desiredLength); // 원하는 길이로 자르기
+    }
+
+    public static String decryptNumberString(String numberString, String input) {
+        StringBuilder originalString = new StringBuilder();
+
+        // 숫자 문자열의 각 숫자를 ASCII 값으로 변환하여 원래 문자 복원
+        for (char digit : numberString.toCharArray()) {
+            int number = Character.getNumericValue(digit);
+            char originalChar = (char) (number + '0'); // 원래 문자를 복원
+            originalString.append(originalChar);
+        }
+
+        return originalString.toString();
+    }
 }
