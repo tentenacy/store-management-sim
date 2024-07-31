@@ -1,10 +1,13 @@
 package com.tenutz.storemngsim.web.api.storemngsim.controller;
 
 import com.tenutz.storemngsim.utils.enums.SocialType;
-import com.tenutz.storemngsim.web.api.storemngsim.dto.common.SocialLoginRequest;
 import com.tenutz.storemngsim.web.api.common.dto.TokenRequest;
 import com.tenutz.storemngsim.web.api.common.dto.TokenResponse;
-import com.tenutz.storemngsim.web.api.storemngsim.dto.user.*;
+import com.tenutz.storemngsim.web.api.storemngsim.dto.common.SocialLoginRequest;
+import com.tenutz.storemngsim.web.api.storemngsim.dto.user.LoginRequest;
+import com.tenutz.storemngsim.web.api.storemngsim.dto.user.SocialSignupRequest;
+import com.tenutz.storemngsim.web.api.storemngsim.dto.user.UserDetailsResponse;
+import com.tenutz.storemngsim.web.api.storemngsim.dto.user.UserUpdateRequest;
 import com.tenutz.storemngsim.web.client.common.dto.SocialProfile;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException.CUserNotFoundException;
 import com.tenutz.storemngsim.web.service.AuthService;

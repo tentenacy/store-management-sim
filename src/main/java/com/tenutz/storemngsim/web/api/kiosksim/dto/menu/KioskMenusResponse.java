@@ -1,7 +1,6 @@
 package com.tenutz.storemngsim.web.api.kiosksim.dto.menu;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;

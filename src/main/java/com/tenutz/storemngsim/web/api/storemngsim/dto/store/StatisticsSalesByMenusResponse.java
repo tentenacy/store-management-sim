@@ -13,6 +13,8 @@ public class StatisticsSalesByMenusResponse {
     private String soldAt;
     private String menuName;
     private String categoryName;
+    private String mainEquipmentName;
+    private String middleEquipmentName;
     private String mainCategoryCode;
     private String middleCategoryCode;
     private String subCategoryCode;

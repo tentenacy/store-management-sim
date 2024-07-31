@@ -3,7 +3,6 @@ package com.tenutz.storemngsim.utils;
 import com.tenutz.storemngsim.domain.user.User;
 import com.tenutz.storemngsim.domain.user.UserRepository;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException.CUserNotFoundException;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 public class EntityUtils {
     public static User userThrowable() {

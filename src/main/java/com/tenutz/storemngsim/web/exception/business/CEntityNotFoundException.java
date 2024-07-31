@@ -84,4 +84,10 @@ public class CEntityNotFoundException extends CBusinessException {
             super(ErrorCode.TERMS_NOT_FOUND);
         }
     }
+
+    public static class CSalesMasterNotFoundException extends CEntityNotFoundException {
+        public CSalesMasterNotFoundException() {
+            super(ErrorCode.SALES_MASTER_NOT_FOUND);
+        }
+    }
 }

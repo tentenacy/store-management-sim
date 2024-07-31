@@ -28,4 +28,13 @@ public class TextUtils {
         }
         return sb.toString();
     }
+
+    public static String toNonStartZero(String text) {
+        if(text.startsWith("0")) {
+            return "1" + text.substring(1);
+        } else {
+            return text;
+        }
+    }
+
 }

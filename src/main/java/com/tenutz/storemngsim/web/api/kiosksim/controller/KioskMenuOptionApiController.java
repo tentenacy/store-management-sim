@@ -25,5 +25,4 @@ public class KioskMenuOptionApiController {
         StoreArgs storeArgs = userService.storeArgs(kioskCode);
         return optionService.kioskMenuOptions(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainMenuCode);
     }
-
 }

@@ -9,13 +9,15 @@ import com.tenutz.storemngsim.domain.refreshtoken.RefreshToken;
 import com.tenutz.storemngsim.domain.refreshtoken.RefreshTokenRepository;
 import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
-import com.tenutz.storemngsim.domain.user.*;
+import com.tenutz.storemngsim.domain.user.TermsAgreement;
+import com.tenutz.storemngsim.domain.user.TermsAgreementRepository;
+import com.tenutz.storemngsim.domain.user.User;
+import com.tenutz.storemngsim.domain.user.UserRepository;
 import com.tenutz.storemngsim.utils.EntityUtils;
 import com.tenutz.storemngsim.utils.HttpReqRespUtils;
 import com.tenutz.storemngsim.utils.enums.SocialType;
 import com.tenutz.storemngsim.web.api.common.dto.TokenRequest;
 import com.tenutz.storemngsim.web.api.common.dto.TokenResponse;
-import com.tenutz.storemngsim.web.api.kiosksim.dto.user.KioskSocialSignupRequest;
 import com.tenutz.storemngsim.web.api.storemngsim.dto.user.LoginRequest;
 import com.tenutz.storemngsim.web.api.storemngsim.dto.user.SocialSignupRequest;
 import com.tenutz.storemngsim.web.api.storemngsim.dto.user.UserDetailsResponse;
@@ -30,7 +32,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 

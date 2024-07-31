@@ -57,6 +57,9 @@ dependencies {
 	implementation "io.springfox:springfox-swagger-ui:${swaggerVersion}"
 	implementation "org.apache.commons:commons-io:1.3.2"
 	implementation "org.apache.commons:commons-lang3:3.12.0"
+	implementation "org.apache.poi:poi:4.1.2"
+	implementation "org.apache.poi:poi-ooxml:4.1.2"
+	implementation "org.apache.poi:poi-scratchpad:4.1.2"
 	swaggerUI "org.webjars:swagger-ui:3.52.3"
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'

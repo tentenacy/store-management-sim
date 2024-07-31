@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
-import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -36,7 +35,6 @@ public class KioskMenuOptionsResponse {
     private String imageUrl;
 
     public KioskMenuOptionsResponse(String storeCode, String mainCategoryCode, String middleCategoryCode, String subCategoryCode, String menuCode, String menuName, int price, int discountedPrice, int additionalPackagingPrice, String packaging, String outOfStock, String imageName, String highlightType, String eventDateFrom, String eventDateTo, String eventTimeFrom, String eventTimeTo, String eventDayOfWeek) {
-        this.menuOptionGroups = Collections.emptyList();
         this.storeCode = storeCode;
         this.mainCategoryCode = mainCategoryCode;
         this.middleCategoryCode = middleCategoryCode;
