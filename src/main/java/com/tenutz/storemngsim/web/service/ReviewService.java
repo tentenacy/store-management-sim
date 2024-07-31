@@ -5,15 +5,22 @@ import com.tenutz.storemngsim.domain.customer.MenuReviewRepository;
 import com.tenutz.storemngsim.domain.customer.StoreReview;
 import com.tenutz.storemngsim.domain.customer.StoreReviewRepository;
 import com.tenutz.storemngsim.domain.menu.CategoryRepository;
+import com.tenutz.storemngsim.domain.menu.MainMenu;
 import com.tenutz.storemngsim.domain.menu.MainMenuRepository;
 import com.tenutz.storemngsim.domain.menu.MenuImageRepository;
+import com.tenutz.storemngsim.domain.store.StoreMaster;
+import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
+import com.tenutz.storemngsim.utils.EntityUtils;
 import com.tenutz.storemngsim.utils.HttpReqRespUtils;
 import com.tenutz.storemngsim.web.api.common.dto.CommonCondition;
+import com.tenutz.storemngsim.web.api.kiosksim.dto.review.MenuReviewCreateRequest;
+import com.tenutz.storemngsim.web.api.kiosksim.dto.review.StoreReviewCreateRequest;
 import com.tenutz.storemngsim.web.api.storemngsim.dto.store.MenuReviewsResponse;
 import com.tenutz.storemngsim.web.api.storemngsim.dto.store.ReviewReplyCreateRequest;
 import com.tenutz.storemngsim.web.api.storemngsim.dto.store.ReviewReplyUpdateRequest;
 import com.tenutz.storemngsim.web.api.storemngsim.dto.store.StoreReviewsResponse;
 import com.tenutz.storemngsim.web.client.common.client.UploadClient;
+import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException.CMenuReviewNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CEntityNotFoundException.CStoreReviewNotFoundException;
 import com.tenutz.storemngsim.web.exception.business.CInvalidValueException;
@@ -36,6 +43,7 @@ public class ReviewService {
     private final CategoryRepository categoryRepository;
     private final MainMenuRepository mainMenuRepository;
     private final MenuImageRepository menuImageRepository;
+    private final StoreMasterRepository storeMasterRepository;
     private final UploadClient s3Client;
 
     public Page<StoreReviewsResponse> storeReviews(String siteCd, String strCd, Pageable pageable, CommonCondition commonCond) {
@@ -56,16 +64,36 @@ public class ReviewService {
     }
 
     @Transactional
+    public void createKioskStoreReview(String siteCd, String strCd, String kioskCode, StoreReviewCreateRequest request) {
+
+        StoreMaster foundStoreMaster = storeMasterRepository.findByKioskCd(kioskCode).orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
+
+        storeReviewRepository.save(
+                StoreReview.create(
+                        siteCd,
+                        strCd,
+                        foundStoreMaster.getStrNm(),
+                        EntityUtils.userThrowable().getSeq(),
+                        request.getRating(),
+                        request.getContents(),
+                        request.getName(),
+                        HttpReqRespUtils.getClientIpAddressIfServletRequestExist()
+                )
+        );
+    }
+
+    @Transactional
     public void createStoreReviewReply(Long reviewSeq, ReviewReplyCreateRequest request) {
         StoreReview foundStoreReview = storeReviewRepository.storeReview(reviewSeq).orElseThrow(CStoreReviewNotFoundException::new);
         validateReplyCreation(foundStoreReview);
         storeReviewRepository.save(
-                StoreReview.create(
+                StoreReview.createReply(
                         foundStoreReview.getDsSiteCd(),
                         foundStoreReview.getDsStrCd(),
                         request.getContent(),
                         foundStoreReview.getNoReviewSeq(),
                         foundStoreReview.getDsCateCd2(),
+                        EntityUtils.userThrowable().getUsername(),
                         HttpReqRespUtils.getClientIpAddressIfServletRequestExist()
                 )
         );
@@ -88,20 +116,45 @@ public class ReviewService {
     }
 
     @Transactional
+    public void createKioskMenuReview(String siteCd, String strCd, MenuReviewCreateRequest request) {
+
+        MainMenu foundMainMenu = mainMenuRepository.mainMenu(siteCd, strCd, request.getMainCategoryCode(), request.getMiddleCategoryCode(), request.getSubCategoryCode(), request.getMenuCode())
+                .orElseThrow(CEntityNotFoundException.CMainMenuNotFoundException::new);
+
+        menuReviewRepository.save(
+                MenuReview.create(
+                        siteCd,
+                        strCd,
+                        request.getMainCategoryCode(),
+                        request.getMiddleCategoryCode(),
+                        request.getSubCategoryCode(),
+                        request.getMenuCode(),
+                        foundMainMenu.getMenuNm(),
+                        foundMainMenu.getImgNm(),
+                        EntityUtils.userThrowable().getSeq(),
+                        request.getRating(),
+                        request.getContents(),
+                        request.getName(),
+                        HttpReqRespUtils.getClientIpAddressIfServletRequestExist()
+                )
+        );
+    }
+
+    @Transactional
     public void createMenuReviewReply(Long reviewSeq, ReviewReplyCreateRequest request) {
         MenuReview foundMenuReview = menuReviewRepository.menuReview(reviewSeq).orElseThrow(CMenuReviewNotFoundException::new);
         validateReplyCreation(foundMenuReview);
         menuReviewRepository.save(
-                MenuReview.create(
+                MenuReview.createReply(
                         foundMenuReview.getDsSiteCd(),
                         foundMenuReview.getDsStrCd(),
                         foundMenuReview.getDsCateCd1(),
                         foundMenuReview.getDsCateCd2(),
                         foundMenuReview.getDsCateCd3(),
                         foundMenuReview.getDsMenuCd(),
-                        foundMenuReview.getNoOrderSeq(),
                         request.getContent(),
                         foundMenuReview.getNoReviewSeq(),
+                        EntityUtils.userThrowable().getUsername(),
                         HttpReqRespUtils.getClientIpAddressIfServletRequestExist()
                 )
         );
@@ -111,7 +164,7 @@ public class ReviewService {
     public void updateMenuReviewReply(Long replySeq, String siteCd, String strCd, ReviewReplyUpdateRequest request) {
         MenuReview foundMenuReply = menuReviewRepository.menuReview(replySeq).orElseThrow(CMenuReviewNotFoundException::new);
         validateReply(foundMenuReply, siteCd, strCd);
-        foundMenuReply.update(request.getContent(), HttpReqRespUtils.getClientIpAddressIfServletRequestExist());
+        foundMenuReply.updateReply(request.getContent(), HttpReqRespUtils.getClientIpAddressIfServletRequestExist());
         menuReviewRepository.save(foundMenuReply);
     }
 

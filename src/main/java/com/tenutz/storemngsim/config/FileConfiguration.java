@@ -47,8 +47,6 @@ public class FileConfiguration {
 
             Sheet worksheet = workbook.getSheetAt(0);
 
-
-
             // getPhysicalNumberOfRow() : 행의 갯수 가져오기
             for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
 
@@ -73,8 +71,8 @@ public class FileConfiguration {
                 }
 
                 creditCardBINRows.add(creditCardBINRow);
-
             }
+
             workbook.close();
         }
         catch (Exception e) {

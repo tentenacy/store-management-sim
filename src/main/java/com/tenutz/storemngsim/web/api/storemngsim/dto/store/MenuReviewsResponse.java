@@ -23,7 +23,6 @@ public class MenuReviewsResponse {
     private String createdBy;
     private String createdAt;
     private String content;
-    private int keyword;
     private int level;
     private int rating;
     private int sno;
@@ -32,7 +31,7 @@ public class MenuReviewsResponse {
     @JsonIgnore
     private String imageName;
 
-    public MenuReviewsResponse(long seq, String siteCode, String storeCode, String mainCategoryCode, String middleCategoryCode, String subCategoryCode, String menuCode, String menuName, String imageName, String createdBy, String createdAt, String content, int keyword, int level, int rating, int sno, MenuReviewReply menuReviewReply) {
+    public MenuReviewsResponse(long seq, String siteCode, String storeCode, String mainCategoryCode, String middleCategoryCode, String subCategoryCode, String menuCode, String menuName, String imageName, String createdBy, String createdAt, String content, int level, int rating, int sno, MenuReviewReply menuReviewReply) {
         this.seq = seq;
         this.siteCode = siteCode;
         this.storeCode = storeCode;
@@ -45,7 +44,6 @@ public class MenuReviewsResponse {
         this.createdBy = createdBy;
         this.createdAt = createdAt;
         this.content = content;
-        this.keyword = keyword;
         this.level = level;
         this.rating = rating;
         this.sno = sno;

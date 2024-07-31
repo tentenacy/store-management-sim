@@ -25,7 +25,7 @@ public class KioskCategoryMenuApiController {
      * @param kioskCode 키오스크코드
      * @return 키오스크 카테고리별메뉴목록
      */
-    @GetMapping("/menus")
+    @GetMapping("/main-menus")
     public KioskMenusResponse kioskCategoriesMenus(@PathVariable("kioskCode") String kioskCode) {
         StoreArgs storeArgs = userService.storeArgs(kioskCode);
         return menuService.kioskCategoriesMenus(storeArgs.getSiteCd(), storeArgs.getStrCd());

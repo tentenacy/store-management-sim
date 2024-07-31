@@ -18,13 +18,12 @@ public class StoreReviewsResponse {
     private String createdBy;
     private String createdAt;
     private String content;
-    private int keyword;
     private int level;
     private int rating;
     private long sno;
     private StoreReviewReply storeReviewReply;
 
-    public StoreReviewsResponse(long seq, String siteCode, String storeCode, String middleCategoryCode, String createdBy, String createdAt, String content, int keyword, int level, int rating, long sno, StoreReviewReply storeReviewReply) {
+    public StoreReviewsResponse(long seq, String siteCode, String storeCode, String middleCategoryCode, String createdBy, String createdAt, String content, int level, int rating, long sno, StoreReviewReply storeReviewReply) {
         this.seq = seq;
         this.siteCode = siteCode;
         this.storeCode = storeCode;
@@ -32,7 +31,6 @@ public class StoreReviewsResponse {
         this.createdBy = createdBy;
         this.createdAt = createdAt;
         this.content = content;
-        this.keyword = keyword;
         this.level = level;
         this.rating = rating;
         this.sno = sno;
