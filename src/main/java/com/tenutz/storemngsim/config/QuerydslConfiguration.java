@@ -1,5 +1,6 @@
 package com.tenutz.storemngsim.config;
 
+import com.querydsl.jpa.JPQLTemplates;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,11 +19,11 @@ public class QuerydslConfiguration {
 
     @Bean
     public JPAQueryFactory smsdbJpaQueryFactory() {
-        return new JPAQueryFactory(smsdbEm);
+        return new JPAQueryFactory(JPQLTemplates.DEFAULT, smsdbEm);
     }
 
     @Bean
     public JPAQueryFactory mmsdbJpaQueryFactory() {
-        return new JPAQueryFactory(mmsdbEm);
+        return new JPAQueryFactory(JPQLTemplates.DEFAULT, mmsdbEm);
     }
 }

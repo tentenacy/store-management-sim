@@ -275,7 +275,7 @@ public class MenuService {
         return latestPriorities.isEmpty() ? 0 : (ObjectUtils.isEmpty(latestPriorities.get(0)) ? 0 : latestPriorities.get(0));
     }
 
-    public KioskMenusResponse categoriesMenus(String siteCd, String strCd) {
+    public KioskMenusResponse kioskCategoriesMenus(String siteCd, String strCd) {
 
         List<KioskMenusResponse.MenusCategory> menusCategories = mainMenuRepository.categoriesMenus(siteCd, strCd);
 

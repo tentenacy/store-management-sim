@@ -4,6 +4,7 @@ import com.tenutz.storemngsim.domain.menu.*;
 import com.tenutz.storemngsim.domain.store.StoreMaster;
 import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.web.api.common.dto.CommonCondition;
+import com.tenutz.storemngsim.web.api.kiosksim.dto.option.KioskMenuOptionsResponse;
 import com.tenutz.storemngsim.web.api.storemngsim.dto.common.OptionGroupsMappedByRequest;
 import com.tenutz.storemngsim.web.api.storemngsim.dto.optiongroup.option.*;
 import com.tenutz.storemngsim.web.client.common.client.UploadClient;
@@ -142,5 +143,16 @@ public class OptionService {
 
     private int latestPriority(List<Integer> latestPriorities) {
         return latestPriorities.isEmpty() ? 0 : (ObjectUtils.isEmpty(latestPriorities.get(0)) ? 0 : latestPriorities.get(0));
+    }
+
+    public KioskMenuOptionsResponse kioskMenuOptions(String siteCd, String strCd, String mainMenuCode) {
+
+        KioskMenuOptionsResponse kioskMenuOptionsResponse = optionRepository.kioskMenuOptions(siteCd, strCd, mainMenuCode);
+
+        kioskMenuOptionsResponse.setImageUrl(menuImageRepository.findBySiteCdAndStrCdAndFileNm(siteCd, strCd, kioskMenuOptionsResponse.getImageName())
+                .map(image -> s3Client.getFileUrl(image.getFilePath().substring(image.getFilePath().indexOf("FILE_MANAGER"))) + "/" + image.getFileNm())
+                .orElse(null));
+
+        return kioskMenuOptionsResponse;
     }
 }

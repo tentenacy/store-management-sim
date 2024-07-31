@@ -18,8 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Collectors;
 
-import static com.tenutz.storemngsim.utils.TimeUtils.*;
-
 @Slf4j
 @Service
 @Transactional(readOnly = true)

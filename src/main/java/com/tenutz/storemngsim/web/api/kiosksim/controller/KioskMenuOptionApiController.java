@@ -1,8 +1,8 @@
 package com.tenutz.storemngsim.web.api.kiosksim.controller;
 
-import com.tenutz.storemngsim.web.api.kiosksim.dto.menu.KioskMenusResponse;
+import com.tenutz.storemngsim.web.api.kiosksim.dto.option.KioskMenuOptionsResponse;
 import com.tenutz.storemngsim.web.api.storemngsim.dto.user.StoreArgs;
-import com.tenutz.storemngsim.web.service.MenuService;
+import com.tenutz.storemngsim.web.service.OptionService;
 import com.tenutz.storemngsim.web.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,22 +13,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/app/kiosk/{kioskCode}/categories")
+@RequestMapping("/app/kiosk/{kioskCode}/main-menus")
 @RequiredArgsConstructor
-public class KioskCategoryMenuApiController {
+public class KioskMenuOptionApiController {
 
     private final UserService userService;
-    private final MenuService menuService;
+    private final OptionService optionService;
 
-    /**
-     * 키오스크 카테고리별메뉴조회
-     * @param kioskCode 키오스크코드
-     * @return 키오스크 카테고리별메뉴목록
-     */
-    @GetMapping("/menus")
-    public KioskMenusResponse kioskCategoriesMenus(@PathVariable("kioskCode") String kioskCode) {
+    @GetMapping("/{mainMenuCode}/options")
+    public KioskMenuOptionsResponse kioskMenuOptions(@PathVariable("kioskCode") String kioskCode, @PathVariable("mainMenuCode") String mainMenuCode) {
         StoreArgs storeArgs = userService.storeArgs(kioskCode);
-        return menuService.kioskCategoriesMenus(storeArgs.getSiteCd(), storeArgs.getStrCd());
+        return optionService.kioskMenuOptions(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainMenuCode);
     }
 
 }
