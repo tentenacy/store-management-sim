@@ -6,10 +6,9 @@ import com.tenutz.storemngsim.web.service.OptionService;
 import com.tenutz.storemngsim.web.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Slf4j
 @RestController
@@ -21,8 +20,8 @@ public class KioskMenuOptionApiController {
     private final OptionService optionService;
 
     @GetMapping("/{mainMenuCode}/options")
-    public KioskMenuOptionsResponse kioskMenuOptions(@PathVariable("kioskCode") String kioskCode, @PathVariable("mainMenuCode") String mainMenuCode) {
+    public KioskMenuOptionsResponse kioskMenuOptions(@PathVariable("kioskCode") String kioskCode, @PathVariable("mainMenuCode") String mainMenuCode, String subCategoryCode) {
         StoreArgs storeArgs = userService.storeArgs(kioskCode);
-        return optionService.kioskMenuOptions(storeArgs.getSiteCd(), storeArgs.getStrCd(), mainMenuCode);
+        return optionService.kioskMenuOptions(storeArgs.getSiteCd(), storeArgs.getStrCd(), subCategoryCode, mainMenuCode);
     }
 }

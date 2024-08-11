@@ -11,8 +11,16 @@ import javax.validation.constraints.NotNull;
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class StoreReviewCreateRequest {
+public class KioskMenuReviewCreateRequest {
 
+    @NotEmpty
+    private String mainCategoryCode;
+    @NotEmpty
+    private String middleCategoryCode;
+    @NotEmpty
+    private String subCategoryCode;
+    @NotEmpty
+    private String menuCode;
     @NotEmpty
     private String name;
     @NotEmpty

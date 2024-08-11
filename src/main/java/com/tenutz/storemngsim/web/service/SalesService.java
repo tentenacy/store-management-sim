@@ -122,7 +122,7 @@ public class SalesService {
                                         menuPayment.getItemType(),
                                         request.getMainCategoryCode(),
                                         request.getMiddleCategoryCode(),
-                                        request.getSubCategoryCode(),
+                                        menuPayment.getSubCategoryCode(),
                                         menuPayment.getItemCode(),
                                         menuPayment.getItemName(),
                                         menuPayment.getQuantity(),
@@ -182,7 +182,7 @@ public class SalesService {
                                         menuPayment.getItemType(),
                                         request.getMainCategoryCode(),
                                         request.getMiddleCategoryCode(),
-                                        request.getSubCategoryCode(),
+                                        menuPayment.getSubCategoryCode(),
                                         menuPayment.getItemCode(),
                                         menuPayment.getItemName(),
                                         menuPayment.getQuantity(),
@@ -253,7 +253,6 @@ public class SalesService {
                 throw  e;
             }
 
-
         } else {
 
             PaymentInfo.PaymentInfoNoCreditCard paymentInfoNoCreditCard = cashOrCouponPaymentInfo(siteCd, strCd, kioskCode, true);
@@ -295,7 +294,7 @@ public class SalesService {
         }
     }
 
-    public PaymentInfo creditCardPaymentInfo(String siteCd, String strCd, String kioskCode, String creditCardCompanyCode, boolean canceled) {
+    private PaymentInfo creditCardPaymentInfo(String siteCd, String strCd, String kioskCode, String creditCardCompanyCode, boolean canceled) {
 
         PaymentInfo.PaymentInfoNoCreditCard paymentInfoNoCreditCard = cashOrCouponPaymentInfo(siteCd, strCd, kioskCode, canceled);
 
@@ -349,7 +348,7 @@ public class SalesService {
         );
     }
 
-    public PaymentInfo.PaymentInfoNoCreditCard cashOrCouponPaymentInfo(String siteCd, String strCd, String kioskCode, boolean canceled) {
+    private PaymentInfo.PaymentInfoNoCreditCard cashOrCouponPaymentInfo(String siteCd, String strCd, String kioskCode, boolean canceled) {
         //SalesMaster - 1. 포스번호(POS_NO), 2. 영수증번호(BILL_NO), 3. 호출번호(CALL_NO, 고객기준 주문번호), 4. 주문번호(ORD_ID)
 
         //1. 포스번호(POS_NO) XXXX-XX-XXX-XXX

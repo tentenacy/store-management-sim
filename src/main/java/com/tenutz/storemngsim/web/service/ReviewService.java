@@ -13,8 +13,10 @@ import com.tenutz.storemngsim.domain.store.StoreMasterRepository;
 import com.tenutz.storemngsim.utils.EntityUtils;
 import com.tenutz.storemngsim.utils.HttpReqRespUtils;
 import com.tenutz.storemngsim.web.api.common.dto.CommonCondition;
-import com.tenutz.storemngsim.web.api.kiosksim.dto.review.MenuReviewCreateRequest;
-import com.tenutz.storemngsim.web.api.kiosksim.dto.review.StoreReviewCreateRequest;
+import com.tenutz.storemngsim.web.api.kiosksim.dto.review.KioskMenuReviewCreateRequest;
+import com.tenutz.storemngsim.web.api.kiosksim.dto.review.KioskMenuReviewsResponse;
+import com.tenutz.storemngsim.web.api.kiosksim.dto.review.KioskStoreReviewCreateRequest;
+import com.tenutz.storemngsim.web.api.kiosksim.dto.review.KioskStoreReviewsResponse;
 import com.tenutz.storemngsim.web.api.storemngsim.dto.store.MenuReviewsResponse;
 import com.tenutz.storemngsim.web.api.storemngsim.dto.store.ReviewReplyCreateRequest;
 import com.tenutz.storemngsim.web.api.storemngsim.dto.store.ReviewReplyUpdateRequest;
@@ -31,8 +33,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
-
-import java.util.ArrayList;
 
 @Slf4j
 @Service
@@ -65,8 +65,70 @@ public class ReviewService {
         });
     }
 
+    public Page<KioskStoreReviewsResponse> kioskStoreReviews(String siteCd, String strCd, Pageable pageable, CommonCondition commonCond) {
+        return storeReviews(siteCd, strCd, pageable, commonCond).map(review -> {
+            return new KioskStoreReviewsResponse(
+                    review.getSeq(),
+                    review.getSiteCode(),
+                    review.getStoreCode(),
+                    review.getMiddleCategoryCode(),
+                    review.getMiddleCategoryName(),
+                    review.getCreatedBy(),
+                    review.getCreatedAt(),
+                    review.getContent(),
+                    review.getLevel(),
+                    review.getRating(),
+                    review.getSno(),
+                    review.getStoreReviewReply() != null ? new KioskStoreReviewsResponse.StoreReviewReply(
+                            review.getStoreReviewReply().getSeq(),
+                            review.getStoreReviewReply().getSiteCode(),
+                            review.getStoreReviewReply().getStoreCode(),
+                            review.getStoreReviewReply().getMiddleCategoryCode(),
+                            review.getStoreReviewReply().getCreatedBy(),
+                            review.getStoreReviewReply().getCreatedAt(),
+                            review.getStoreReviewReply().getContent()
+                    ) : null
+            );
+        });
+    }
+
+    public Page<KioskMenuReviewsResponse> kioskMenuReviews(String siteCd, String strCd, Pageable pageable, CommonCondition commonCond) {
+        Page<MenuReviewsResponse> response = menuReviews(siteCd, strCd, pageable, commonCond);
+        return response.map(review -> {
+            return new KioskMenuReviewsResponse(
+                    review.getSeq(),
+                    review.getSiteCode(),
+                    review.getStoreCode(),
+                    review.getMainCategoryCode(),
+                    review.getMiddleCategoryCode(),
+                    review.getSubCategoryCode(),
+                    review.getMenuCode(),
+                    review.getMenuName(),
+                    review.getImageUrl(),
+                    review.getCreatedBy(),
+                    review.getCreatedAt(),
+                    review.getContent(),
+                    review.getLevel(),
+                    review.getRating(),
+                    review.getSno(),
+                    review.getMenuReviewReply() != null ? new KioskMenuReviewsResponse.MenuReviewReply(
+                            review.getMenuReviewReply().getSeq(),
+                            review.getMenuReviewReply().getSiteCode(),
+                            review.getMenuReviewReply().getStoreCode(),
+                            review.getMenuReviewReply().getMainCategoryCode(),
+                            review.getMenuReviewReply().getMiddleCategoryCode(),
+                            review.getMenuReviewReply().getSubCategoryCode(),
+                            review.getMenuReviewReply().getMenuCode(),
+                            review.getMenuReviewReply().getCreatedBy(),
+                            review.getMenuReviewReply().getCreatedAt(),
+                            review.getMenuReviewReply().getContent()
+                    ) : null
+            );
+        });
+    }
+
     @Transactional
-    public void createKioskStoreReview(String siteCd, String strCd, String kioskCode, StoreReviewCreateRequest request) {
+    public void createKioskStoreReview(String siteCd, String strCd, String kioskCode, KioskStoreReviewCreateRequest request) {
 
         StoreMaster foundStoreMaster = storeMasterRepository.findByKioskCd(kioskCode).orElseThrow(CEntityNotFoundException.CStoreMasterNotFoundException::new);
 
@@ -118,7 +180,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public void createKioskMenuReview(String siteCd, String strCd, MenuReviewCreateRequest request) {
+    public void createKioskMenuReview(String siteCd, String strCd, KioskMenuReviewCreateRequest request) {
 
         MainMenu foundMainMenu = mainMenuRepository.mainMenu(siteCd, strCd, request.getMainCategoryCode(), request.getMiddleCategoryCode(), request.getSubCategoryCode(), request.getMenuCode())
                 .orElseThrow(CEntityNotFoundException.CMainMenuNotFoundException::new);

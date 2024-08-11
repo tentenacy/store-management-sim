@@ -30,5 +30,4 @@ public class KioskCategoryMenuApiController {
         StoreArgs storeArgs = userService.storeArgs(kioskCode);
         return menuService.kioskCategoriesMenus(storeArgs.getSiteCd(), storeArgs.getStrCd());
     }
-
 }

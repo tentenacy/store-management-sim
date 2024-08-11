@@ -109,6 +109,6 @@ public class GoogleOAuthClient implements CommonGoogleOAuthClient {
                 .bodyToMono(GoogleProfile.class)
                 .block();
 
-        return new SocialProfile(googleProfile.getAzp(), googleProfile.getEmail(), googleProfile.getName(), googleProfile.getPicture());
+        return new SocialProfile(googleProfile.getSub()+googleProfile.getAzp(), googleProfile.getEmail(), googleProfile.getName(), googleProfile.getPicture());
     }
 }

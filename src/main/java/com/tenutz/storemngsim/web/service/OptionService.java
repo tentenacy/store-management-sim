@@ -145,9 +145,9 @@ public class OptionService {
         return latestPriorities.isEmpty() ? 0 : (ObjectUtils.isEmpty(latestPriorities.get(0)) ? 0 : latestPriorities.get(0));
     }
 
-    public KioskMenuOptionsResponse kioskMenuOptions(String siteCd, String strCd, String mainMenuCode) {
+    public KioskMenuOptionsResponse kioskMenuOptions(String siteCd, String strCd, String subCategoryCode, String mainMenuCode) {
 
-        KioskMenuOptionsResponse kioskMenuOptionsResponse = optionRepository.kioskMenuOptions(siteCd, strCd, mainMenuCode);
+        KioskMenuOptionsResponse kioskMenuOptionsResponse = optionRepository.kioskMenuOptions(siteCd, strCd, subCategoryCode, mainMenuCode);
 
         kioskMenuOptionsResponse.setImageUrl(menuImageRepository.findBySiteCdAndStrCdAndFileNm(siteCd, strCd, kioskMenuOptionsResponse.getImageName())
                 .map(image -> s3Client.getFileUrl(image.getFilePath().substring(image.getFilePath().indexOf("FILE_MANAGER"))) + "/" + image.getFileNm())

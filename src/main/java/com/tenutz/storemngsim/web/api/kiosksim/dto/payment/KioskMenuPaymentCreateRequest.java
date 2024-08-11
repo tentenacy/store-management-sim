@@ -23,9 +23,6 @@ public class KioskMenuPaymentCreateRequest {
     private String middleCategoryCode;
 
     @NotEmpty
-    private String subCategoryCode;
-
-    @NotEmpty
     private String orderType;
 
     @NotEmpty
@@ -39,6 +36,9 @@ public class KioskMenuPaymentCreateRequest {
     @Data
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class MenuPayment {
+
+        @NotEmpty
+        private String subCategoryCode;
 
         @NotEmpty
         private String itemCode;

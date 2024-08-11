@@ -28,6 +28,8 @@ public class CreditCardBINTable {
      * 카드사코드 16 -> 신협
      * 카드사코드 17 -> 카카오뱅크
      * 카드사코드 18 -> 케이뱅크
+     * 카드사코드 19 -> 저축은행
+     * 카드사코드 20 -> KDB산업
      */
     Map<String, String> issuerMapper = new HashMap<String, String>() {{
         put("01", "KB국민카드");
@@ -48,6 +50,8 @@ public class CreditCardBINTable {
         put("16", "BC카드");
         put("17", "국민카드");
         put("18", "BC카드");
+        put("19", "BC카드");
+        put("20", "BC카드");
     }};
 
     Map<String, String> purchaserMapper = new HashMap<String, String>() {{
@@ -69,6 +73,8 @@ public class CreditCardBINTable {
         put("16", "비씨카드");
         put("17", "국민카드");
         put("18", "비씨카드");
+        put("19", "비씨카드");
+        put("20", "비씨카드");
     }};
 
     public CreditCardBINTable(List<CreditCardBINRow> creditCardBINRows) {
